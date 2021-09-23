@@ -11,11 +11,13 @@ function App() {
 		event.preventDefault();
 
 		for (let i = 0; i < 3; i++) {
-			if (event.target[i].value.length === 0)
-				return alert('Please fill up all input fields!');
+			if (event.target[i].value.length === 0) return;
 		}
-		event.target.reset();
 
+		event.target.reset();
+		setEmail('');
+		setPassword('');
+		setConfirmation('');
 		// console.log(event.target[0].value);
 		// console.log(event.target[1].value);
 		// console.log(event.target[2].value);
@@ -56,8 +58,12 @@ function App() {
 			{ password: '12345' },
 			{ password_confirmation: '12345' }
 		)
-			.then((result) => console.log(result))
-			.catch((error) => console.log(error));
+			.then((result) =>
+				console.log(
+					`Success: ${result.success}\nError: ${result.errors}\nStatus: ${result.status}`
+				)
+			)
+			.catch((error) => console.log(error.error));
 
 		// fetch('http://206.189.91.54//api/v1/auth', {
 		// 	method: 'POST',
