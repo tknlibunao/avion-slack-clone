@@ -51,19 +51,20 @@ function App() {
 		console.log(`Password: ${password}`);
 		console.log(`Confirmation: ${confirmation}`);
 
+		var body = {
+			email: 'user2@gmail.com',
+			password: '12345678',
+			password_confirmation: '12345678',
+		};
+
 		// call fetch here
-		post(
-			'http://206.189.91.54//api/v1/auth',
-			{ email: 'thea@gmailcom' },
-			{ password: '12345' },
-			{ password_confirmation: '12345' }
-		)
+		post('http://206.189.91.54//api/v1/auth', body)
 			.then((result) =>
 				console.log(
 					`Success: ${result.success}\nError: ${result.errors}\nStatus: ${result.status}`
 				)
 			)
-			.catch((error) => console.log(error.error));
+			.catch((error) => console.log(error.errors));
 
 		// fetch('http://206.189.91.54//api/v1/auth', {
 		// 	method: 'POST',
