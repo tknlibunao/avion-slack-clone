@@ -18,15 +18,10 @@ function App() {
 		setEmail('');
 		setPassword('');
 		setConfirmation('');
-		// console.log(event.target[0].value);
-		// console.log(event.target[1].value);
-		// console.log(event.target[2].value);
-		// console.log(typeof event.target);
 	};
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
-		// console.log(name, value);
 		switch (name) {
 			case 'email':
 				return setEmail(value);
@@ -39,7 +34,7 @@ function App() {
 		}
 	};
 
-	const submitData = () => {
+	const registerData = () => {
 		// check if input data is updated
 		if (
 			email.length === 0 ||
@@ -51,41 +46,45 @@ function App() {
 		console.log(`Password: ${password}`);
 		console.log(`Confirmation: ${confirmation}`);
 
-		var body = {
-			email: 'user2@gmail.com',
-			password: '12345678',
-			password_confirmation: '12345678',
+		// call fetch here
+		var myHeaders = new Headers();
+		myHeaders.append('Content-Type', 'application/json');
+
+		var raw = JSON.stringify({
+			email: `${email}`,
+			password: `${password}`,
+			password_confirmation: `${confirmation}`,
+		});
+
+		var requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
 		};
 
 		// call fetch here
-		post('http://206.189.91.54//api/v1/auth', body)
+		post('http://206.189.91.54//api/v1/auth', requestOptions)
 			.then((result) =>
 				console.log(
-					`Success: ${result.success}\nError: ${result.errors}\nStatus: ${result.status}`
+					`Data: ${result.data.email}\nStatus: ${result.status}`
 				)
 			)
 			.catch((error) => console.log(error.errors));
 
-		// fetch('http://206.189.91.54//api/v1/auth', {
-		// 	method: 'POST',
-		// 	body: {
-		// 		email: { email },
-		// 		password: { password },
-		// 		password_confirmation: { confirmation },
-		// 	},
-		// 	redirect: 'follow',
-		// })
+		// fetch('http://206.189.91.54//api/v1/auth/', requestOptions)
 		// 	.then((response) => response.text())
-		// 	.then((result) => console.log(result))
-		// 	.catch((error) => console.log(error));
+		// 	.then((result) => {
+		// 		console.log(`${result}`);
+		// 		console.log(typeof(result));
+		// 		console.log(`${result.success}`);
+		// 	})
+		// 	.catch((error) => console.log('error', error));
+		
 	};
 
-	async function post(url = '', data = {}) {
-		const response = await fetch(url, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			redirect: 'follow',
-		});
+	async function post(url = '', requestOptions = {}) {
+		const response = await fetch(url, requestOptions);
 		return response.json();
 	}
 
@@ -97,7 +96,7 @@ function App() {
 					className='Form'
 					onSubmit={submitFormHandler}
 					onChange={handleChange}
-					onClick={submitData}
+					onClick={registerData}
 				/>
 			</header>
 		</div>
