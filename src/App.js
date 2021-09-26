@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Form from './components/Form/Form';
 import './App.css';
+import Mainpage from './components/MainPage/MainPage'
 
 function App() {
 	const [email, setEmail] = useState('');
@@ -18,10 +19,6 @@ function App() {
 		setEmail('');
 		setPassword('');
 		setConfirmation('');
-		// console.log(event.target[0].value);
-		// console.log(event.target[1].value);
-		// console.log(event.target[2].value);
-		// console.log(typeof event.target);
 	};
 
 	const handleChange = (event) => {
@@ -46,43 +43,33 @@ function App() {
 			password.length === 0 ||
 			confirmation.length === 0
 		)
-			return alert('Please fill up all input fields!');
+		return alert('Please fill up all input fields!');
 		console.log(`Email: ${email}`);
 		console.log(`Password: ${password}`);
 		console.log(`Confirmation: ${confirmation}`);
 
 		var body = {
-			email: 'user2@gmail.com',
-			password: '12345678',
-			password_confirmation: '12345678',
+			email: `${email}`,
+			password: `${password}`,
+			password_confirmation: `${confirmation}`,
 		};
 
 		// call fetch here
-		post('http://206.189.91.54//api/v1/auth', body)
+		post('{{url}}/api/v1/auth/', body)
 			.then((result) =>
 				console.log(
-					`Success: ${result.success}\nError: ${result.errors}\nStatus: ${result.status}`
+					`Success: ${result.success}
+					\nError: ${result.errors}
+					\nStatus: ${result.status}`
 				)
 			)
 			.catch((error) => console.log(error.errors));
-
-		// fetch('http://206.189.91.54//api/v1/auth', {
-		// 	method: 'POST',
-		// 	body: {
-		// 		email: { email },
-		// 		password: { password },
-		// 		password_confirmation: { confirmation },
-		// 	},
-		// 	redirect: 'follow',
-		// })
-		// 	.then((response) => response.text())
-		// 	.then((result) => console.log(result))
-		// 	.catch((error) => console.log(error));
 	};
 
 	async function post(url = '', data = {}) {
 		const response = await fetch(url, {
 			method: 'POST',
+			headers: ('Content-Type','application/json'),
 			body: JSON.stringify(data),
 			redirect: 'follow',
 		});
