@@ -1,0 +1,79 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 0.8em;
+}
+
+.header-container {
+    width: 100%;
+}
+
+.header {
+    height: 40px;
+    background-color: var(--header-color);
+    color: var(--font-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    top: 0;
+}
+
+.MuiSvgIcon-root {
+    cursor: pointer;
+}
+
+.header-menu {
+    padding-left: 10px;
+}
+
+.header-history {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 50%;
+}
+
+.history-buttons {
+    display: flex;
+    width: 120px;
+    justify-content: space-evenly;
+}
+
+.header-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    height: 50%;
+    width: 80%;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 4px;
+    user-select: none;
+    color: #fff !important;
+    
+}
+/* Header User Container */
+.user-container {
+    position: relative;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.user-image {
+    border-radius: 5px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
