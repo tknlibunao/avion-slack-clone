@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Input from "../Input/Input";
 import axios from "axios";
 
 function Login() {
@@ -24,22 +25,57 @@ function Login() {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
+    <div style={divStyle}>
+      <form onSubmit={handleSubmit} style={formStyle}>
+        <Input
+          style={inputStyle}
           type="text"
+          placeholder="Enter email.."
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email.."
         />
-        <input
+        <Input
+          style={inputStyle}
           type="password"
+          placeholder="Enter password"
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password.."
         />
-        <input type="Submit" />
+        <Input type="Submit" value="Login" style={btnStyle} readOnly={true} />
       </form>
     </div>
   );
 }
+
+const divStyle = {
+  width: "100vw",
+  height: "100vh",
+  display: "flex",
+  backgroundColor: "white",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+const formStyle = {
+  display: "flex",
+  flexDirection: "column",
+  width: "400px",
+  height: "400px",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+const inputStyle = {
+  fontSize: "1.5rem",
+  margin: "0.5rem",
+  outline: "0",
+  paddingLeft: "0.5rem",
+};
+
+const btnStyle = {
+  backgroundColor: "#4A154B",
+  border: "0",
+  color: "white",
+  padding: "0.5rem 1rem",
+  borderRadius: "3px",
+};
 
 export default Login;
