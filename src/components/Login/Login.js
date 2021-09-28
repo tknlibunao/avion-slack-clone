@@ -76,6 +76,7 @@ const btnStyle = {
   color: "white",
   padding: "0.5rem 1rem",
   borderRadius: "3px",
+  cursor: "pointer",
 };
 
 export default Login;
