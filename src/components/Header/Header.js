@@ -29,11 +29,12 @@ export default Header;
 
 const Container = styled.div`
 	background: #350d36;
+	color: white;
 	display: flex;
 	position: relative;
 	justify-content: center;
 	align-items: center;
-	color: white;
+	box-shadow: 0 1px 0 0 rgb(255 255 255 / 10%);
 `;
 
 const Main = styled.div`
