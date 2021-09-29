@@ -2,41 +2,28 @@
 
 :root {
   --header-color: #360D35;
-  --font-color: #CDC3CD;
+  --header-font-color: #CDC3CD;
   --sidebar-color: #400E3F;
+  --sidebar-font-color: #CDC3CD;
+  --sidebar-hover: #360D35;
+  --workspace-color: #FFFFFF;
+  --search-color: #FFFFFF;
   --chatarea-color: #FFFFFF;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+input[type=text],
+input[type=text]:focus {
+  outline: none;
 }
 
 body {
   font-family: 'Noto Sans', sans-serif;
-}
-
-button {
-  cursor: pointer;
-}
-
-.App {
-	text-align: center;
-}
-
-.App-header {
-	background-color: #282c34;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	font-size: calc(10px + 2vmin);
-	color: white;
-}
-
-.Form {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center
-}
-
-.Label {
-	display: block;
 }
