@@ -1,27 +1,58 @@
-import React from "react";
-import Input from "../Input/Input";
+import Input from "../Input/Input.js";
 import { useHistory } from "react-router";
 
-function Login({ onSubmit, inputUser, inputPassword }) {
+const Register = ({
+  onSubmit,
+  inputUser,
+  inputPassword,
+  inputConfirmation,
+  error,
+}) => {
   let history = new useHistory();
   return (
     <div style={divStyle}>
-      <form onSubmit={onSubmit} style={formStyle}>
+      <form onSubmit={(e) => onSubmit(e)} style={formStyle}>
+        <label style={labelStyle}>{error}</label>
         <Input
+          divClass="Input"
           label="Email"
-          style={inputStyle}
+          inputClass="Input-field"
           type="text"
-          placeholder="Enter email.."
+          name="email"
+          autoComplete="off"
           onChange={inputUser}
+          style={inputStyle}
+        />
+        <br />
+        <Input
+          divClass="Input"
+          label="Password"
+          inputClass="Input-field"
+          type="password"
+          name="password"
+          autoComplete="off"
+          onChange={inputPassword}
+          style={inputStyle}
+        />
+        <br />
+        <Input
+          divClass="Input"
+          label="Confirm Password"
+          inputClass="Input-field"
+          type="password"
+          name="confirmation"
+          autoComplete="off"
+          onChange={inputConfirmation}
+          style={inputStyle}
         />
         <Input
-          label="Password"
-          style={inputStyle}
-          type="password"
-          placeholder="Enter password"
-          onChange={inputPassword}
+          divClass="Button"
+          inputClass="Submit-btn"
+          type="submit"
+          value="Register"
+          style={btnStyle}
         />
-        <Input type="Submit" value="Login" style={btnStyle} readOnly={true} />
+
         <button
           onClick={() => {
             history.push("/");
@@ -33,7 +64,7 @@ function Login({ onSubmit, inputUser, inputPassword }) {
       </form>
     </div>
   );
-}
+};
 
 const divStyle = {
   background: "#f8f8f8",
@@ -86,4 +117,8 @@ const backBtnStyle = {
   borderRadius: "4px",
   cursor: " pointer",
 };
-export default Login;
+
+const labelStyle = {
+  color: "red",
+};
+export default Register;

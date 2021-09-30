@@ -9,6 +9,7 @@ import {
   // useRouteMatch,
   // useParams,
 } from "react-router-dom";
+// import { useHistory } from "react-router";
 
 import Loading from "./components/Loading/Loading";
 import Header from "./components/Header/Header";
@@ -16,6 +17,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 // import Register from './components/Login/Register';
 import styled from "styled-components";
 
@@ -29,7 +31,9 @@ function App() {
   /* USER PARAMETERS */
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [confirmation, setConfirmation] = useState('');
+  const [confirmation, setConfirmation] = useState("");
+
+  const [error, setError] = useState("");
 
   /* API DATA */
   // const [channelsList, setChannelsList] = useState([]);
@@ -44,6 +48,19 @@ function App() {
   /* Define URL */
   const url = "http://206.189.91.54//api/v1";
 
+  const inputUser = (e) => {
+    setEmail(e.target.value);
+  };
+  const inputPassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const inputConfirmation = (e) => {
+    setConfirmation(e.target.value);
+  };
+
+  // let history = new useHistory();
+
   /* Initialize Headers */
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -52,36 +69,63 @@ function App() {
   myHeaders.append("expiry", localStorage.getItem("expiry"));
   myHeaders.append("uid", localStorage.getItem("uid"));
 
-  // const registerUser = () => {
-  // 	let myHeaders = new Headers();
-  // 	myHeaders.append('Content-Type', 'application/json');
+  const registerUser = (e) => {
+    e.preventDefault();
+    // let myHeaders = new Headers();
+    // myHeaders.append("Content-Type", "application/json");
 
-  // 	let raw = JSON.stringify({
-  // 		email: 'usersample03@gmail.com',
-  // 		password: '12345678',
-  // 		password_confirmation: '12345678',
-  // 	});
+    // let raw = JSON.stringify({
+    //   email: "usersample03@gmail.com",
+    //   password: "12345678",
+    //   password_confirmation: "12345678",
+    // });
 
-  // 	let requestOptions = {
-  // 		method: 'POST',
-  // 		headers: myHeaders,
-  // 		body: raw,
-  // 		redirect: 'follow',
-  // 	};
+    // let requestOptions = {
+    //   method: "POST",
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: "follow",
+    // };
 
-  // 	// call fetch here
-  // 	post('http://206.189.91.54//api/v1/auth', requestOptions)
-  // 		.then((result) =>
-  // 			console.log(`Data: ${result.data.email}\nStatus: ${result.status}`)
-  // 		)
-  // 		.catch((error) => console.log(error.errors));
-  // };
+    // call fetch here
 
-  const inputUser = (e) => {
-    setEmail(e.target.value);
-  };
-  const inputPassword = (e) => {
-    setPassword(e.target.value);
+    fetch("http://206.189.91.54//api/v1/auth", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        password_confirmation: confirmation,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+    })
+      .then((result) => {
+        if (email === "") {
+          setError("Field empty: email");
+        } else if (password === "") {
+          setError("Field empty: password");
+        } else if (confirmation === "") {
+          setError("Field empty: password confirmation");
+        } else if (password !== confirmation) {
+          setError("Password does not match");
+        } else if (result.status === 422) {
+          setError("Email already taken");
+        } else {
+          alert("Registration Successful!");
+          setError("");
+          e.target.reset();
+          setEmail("");
+          setPassword("");
+          setConfirmation("");
+        }
+
+        // history.push("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const loginUser = (e) => {
@@ -415,7 +459,13 @@ function App() {
               {localStorage.getItem("token") !== null ? (
                 <Redirect to="/room" />
               ) : (
-                <Register />
+                <Register
+                  onSubmit={registerUser}
+                  inputUser={inputUser}
+                  inputPassword={inputPassword}
+                  inputConfirmation={inputConfirmation}
+                  error={error}
+                />
               )}
             </Route>
             <Route path="/login">
@@ -458,6 +508,10 @@ const Main = styled.div`
 	grid-template-columns: 260px auto;
 `;
 
-const Register = () => {
-  return <h1>Register Form</h1>;
-};
+// const Login = () => {
+//   return <h1>Login Form</h1>
+// }
+
+// const Register = () => {
+//   return <h1>Register Form</h1>;
+// };
