@@ -124,7 +124,7 @@ function App() {
           }
         });
         if (response.status === 200) {
-          alert("LOGIN SUCCESS");
+          // alert("LOGIN SUCCESS");
           setSuccess(true);
           // localStorage.setItem("success", success);
         }
