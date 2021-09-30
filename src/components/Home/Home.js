@@ -1,31 +1,31 @@
-import React from 'react';
-import { useHistory } from 'react-router';
-import styled from 'styled-components';
+import React from "react";
+import { useHistory } from "react-router";
+import styled from "styled-components";
 
 function Home() {
-	const history = useHistory();
+  const history = useHistory();
 
-	const signIn = () => {
-		history.push('/login');
-	};
+  const signIn = () => {
+    history.push("/login");
+  };
 
-	const signUp = () => {
-		history.push('/signup');
-	};
+  const signUp = () => {
+    history.push("/signup");
+  };
 
-	return (
-		<Container>
-			<Content>
-				<SlackImg src='http://assets.stickpng.com/images/5cb480cd5f1b6d3fbadece79.png' />
-				<h1>Slack App</h1>
-				<SignInButton onClick={signIn}>Sign In</SignInButton>
-				<SignUpButton onClick={signUp}>Sign Up</SignUpButton>
-				{/* <span>
+  return (
+    <Container>
+      <Content>
+        <SlackImg src="http://assets.stickpng.com/images/5cb480cd5f1b6d3fbadece79.png" />
+        <h1>Slack App</h1>
+        <SignInButton onClick={signIn}>Sign In</SignInButton>
+        <SignUpButton onClick={signUp}>Sign Up</SignUpButton>
+        {/* <span>
 					or <a href='/'> create new account </a>
 				</span> */}
-			</Content>
-		</Container>
-	);
+      </Content>
+    </Container>
+  );
 }
 
 export default Home;
