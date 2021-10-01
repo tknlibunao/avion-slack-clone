@@ -1,45 +1,79 @@
-import React from 'react';
-import { sidebarItemsData } from '../../data/SidebarData';
-import styled from 'styled-components';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import AddIcon from '@material-ui/icons/Add';
+import React from "react";
+import { useHistory } from "react-router";
+import { sidebarItemsData } from "../../data/SidebarData";
+import styled from "styled-components";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddIcon from "@material-ui/icons/Add";
 
-function Sidebar({ channelsList, addChannel }) {
-	return (
-		<div>
-			<Container>
-				<WorkspaceContainer>
-					<Name>My Workspace</Name>
-					<NewMessage>
-						<AddCircleOutlineIcon />
-					</NewMessage>
-				</WorkspaceContainer>
-				<MainChannels>
-					{sidebarItemsData.map((item, index) => (
-						<MainChannelItem key={index}>
-							{item.icon}
-							{item.text}
-						</MainChannelItem>
-					))}
-				</MainChannels>
-				<ChannelsContainer>
-					<NewChannelContainer>
-						<div>Channels</div>
-						<NewChannel>
-							<AddIcon onClick={addChannel} />
-						</NewChannel>
-					</NewChannelContainer>
-					<ChannelsList>
-						{/* <Channel>#Channel 1</Channel>
+function Sidebar({ channelsList, addChannel, DMList }) {
+  const history = useHistory();
+
+  const goToChannel = (id) => {
+    if (id) {
+      history.push(`/room/channel/${id}`);
+    }
+  };
+
+  const goToDM = (id) => {
+    if (id) {
+      history.push(`/room/messages/${id}`);
+    }
+  };
+
+  return (
+    <div>
+      <Container>
+        <WorkspaceContainer>
+          <Name>My Workspace</Name>
+          <NewMessage>
+            <AddCircleOutlineIcon />
+          </NewMessage>
+        </WorkspaceContainer>
+        <MainChannels>
+          {sidebarItemsData.map((item, index) => (
+            <MainChannelItem key={index}>
+              {item.icon}
+              {item.text}
+            </MainChannelItem>
+          ))}
+        </MainChannels>
+        <ChannelsContainer>
+          <NewChannelContainer>
+            <div>Channels</div>
+            <NewChannel>
+              <AddIcon onClick={addChannel} />
+            </NewChannel>
+          </NewChannelContainer>
+          <ChannelsList>
+            {/* <Channel>#Channel 1</Channel>
 						<Channel>#Channel 2</Channel> */}
-						{channelsList.map((item, index) => (
-							<Channel key={index}>#{item.name}</Channel>
-						))}
-					</ChannelsList>
-				</ChannelsContainer>
-			</Container>
-		</div>
-	);
+            {channelsList.map((item, index) => (
+              <Channel key={index} onClick={() => goToChannel(item.id)}>
+                ▶ {item.name}
+              </Channel>
+            ))}
+          </ChannelsList>
+        </ChannelsContainer>
+        <DMContainer>
+          <NewChannelContainer>
+            <div>Recent DMs</div>
+            <NewChannel>
+              <AddIcon />
+            </NewChannel>
+          </NewChannelContainer>
+          <ChannelsList>
+            {/* <Channel>#Channel 1</Channel>
+						<Channel>#Channel 2</Channel> */}
+            {DMList.map((item, index) => (
+              <Channel key={index} onClick={() => goToDM(item.id)}>
+                ▶ {item.uid}
+              </Channel>
+            ))}
+          </ChannelsList>
+        </DMContainer>
+      </Container>
+    </div>
+  );
 }
 
 export default Sidebar;
@@ -82,7 +116,6 @@ const NewChannel = styled.div`
 	align-items: center;
 	border-radius: 50%;
 	cursor: pointer;
-
 	:hover {
 		background: #350d36;
 	}
@@ -100,13 +133,21 @@ const MainChannelItem = styled.div`
 	grid-template-columns: 15% auto;
 	align-items: center;
 	cursor: pointer;
-
 	:hover {
 		background: #350d36;
 	}
 `;
 
 const ChannelsContainer = styled.div`
+	// background: orange;
+	height: 190px;
+	color: rgb(188, 171, 188);
+	margin-top: 10px;
+`;
+
+const DMContainer = styled.div`
+	// background: red;
+	height: 190px;
 	color: rgb(188, 171, 188);
 	margin-top: 10px;
 `;
@@ -121,9 +162,9 @@ const NewChannelContainer = styled.div`
 `;
 
 const ChannelsList = styled.div`
-	height: 306px;
+	// height: 306px;
+	height: 148px;
 	overflow-y: scroll;
-
 	::-webkit-scrollbar {
 		width: 5px;
 	}
@@ -143,7 +184,6 @@ const Channel = styled.div`
 	display: flex;
 	align-items: center;
 	cursor: pointer;
-
 	:hover {
 		background: #350d36;
 	}

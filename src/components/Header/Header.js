@@ -1,28 +1,28 @@
-import React from 'react';
-import styled from 'styled-components';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import React from "react";
+import styled from "styled-components";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
-function Header() {
-	return (
-		<Container>
-			<Main>
-				<AccessTimeIcon />
-				<SearchContainer>
-					<Search>
-						<input type='text' placeholder='Search...' />
-					</Search>
-				</SearchContainer>
-				<HelpOutlineIcon />
-			</Main>
-			<UserContainer>
-				<Name>Juan Dela Cruz</Name>
-				<UserImage>
-					<img src='https://i.imgur.com/6VBx3io.png' alt='display user' />
-				</UserImage>
-			</UserContainer>
-		</Container>
-	);
+function Header({ name }) {
+  return (
+    <Container>
+      <Main>
+        <AccessTimeIcon />
+        <SearchContainer>
+          <Search>
+            <input type="text" placeholder="Search..." />
+          </Search>
+        </SearchContainer>
+        <HelpOutlineIcon />
+      </Main>
+      <UserContainer>
+        <Name>{name}</Name>
+        <UserImage>
+          <img src="https://i.imgur.com/6VBx3io.png" alt="display user" />
+        </UserImage>
+      </UserContainer>
+    </Container>
+  );
 }
 
 export default Header;
@@ -55,7 +55,6 @@ const Search = styled.div`
 	align-items: center;
 	border-radius: 6px;
 	box-shadow: inset 0 0 0 1px rgb(104 74 104);
-
 	input {
 		background: transparent;
 		width: 90%;
@@ -66,7 +65,6 @@ const Search = styled.div`
 		padding-right: 8px;
 		color: white;
 	}
-
 	input: focus {
 		outline: none;
 	}
@@ -89,7 +87,6 @@ const UserImage = styled.div`
 	height: 28px;
 	border: 2px solid white;
 	border-radius: 3px;
-
 	img {
 		width: 100%;
 	}

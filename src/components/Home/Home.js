@@ -16,7 +16,7 @@ function Home() {
   return (
     <Container>
       <Content>
-        <SlackImg src="http://assets.stickpng.com/images/5cb480cd5f1b6d3fbadece79.png" />
+        <SlackImg src="https://images.prismic.io/smarttask/1c150a8e-9f13-420e-8b0f-e6365219250f_slack.png?auto=compress,format" />
         <h1>Slack App</h1>
         <SignInButton onClick={signIn}>Sign In</SignInButton>
         <SignUpButton onClick={signUp}>Sign Up</SignUpButton>
