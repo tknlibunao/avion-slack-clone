@@ -415,14 +415,14 @@ function App() {
 						</Route>
 
 						<Route path='/signup'>
-							{success ? <Redirect to='/room/:channelId' /> : <Register />}
+							{success ? <Redirect to='/room/:path/:id' /> : <Register />}
 						</Route>
 						<Route path='/login'>
-							{success ? <Redirect to='/room/:channelId' /> : <Login />}
+							{success ? <Redirect to='/room/:path/:id' /> : <Login />}
 						</Route>
 
 						<Route path='/'>
-							{success ? <Redirect to='/room/:channelId' /> : <Home />}
+							{success ? <Redirect to='/room/:path/:id' /> : <Home />}
 						</Route>
 					</Switch>
 				</Router>
