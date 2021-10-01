@@ -35,7 +35,7 @@ function App() {
 	// const [channelsList, setChannelsList] = useState([]);
 	// const [usersList, setUsersList] = useState([]);
 	const [myChannels, setMyChannels] = useState([]);
-	// const [DMList, setDMList] = useState([]);
+	const [DMList, setDMList] = useState([]);
 
 	/*  FLAGS */
 	const [success, setSuccess] = useState(false);
@@ -79,8 +79,8 @@ function App() {
 
 	const loginUser = () => {
 		let raw = JSON.stringify({
-			email: 'user2@example.com',
-			// email: 'usersample03@gmail.com',
+			email: 'user2@example.com', // already existing in the database beforehand
+			// email: 'usersample03@gmail.com', // own registered test account
 			password: '12345678',
 		});
 
@@ -113,7 +113,7 @@ function App() {
 				});
 				if (response.status === 200) {
 					// console.log('LOGIN SUCCESS');
-					// setSuccess(true);
+					setSuccess(true);
 				}
 			})
 			.catch((error) => console.log('error', error));
@@ -197,33 +197,35 @@ function App() {
 	// 		.catch((error) => console.log('error', error));
 	// };
 
-	// const getDMs = () => {
-	// 	var myHeaders = new Headers();
-	// 	myHeaders.append('access-token', `${accessToken}`);
-	// 	myHeaders.append('client', `${client}`);
-	// 	myHeaders.append('expiry', `${expiry}`);
-	// 	myHeaders.append('uid', `${uid}`);
+	const getDMs = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-	// 	var requestOptions = {
-	// 		method: 'GET',
-	// 		headers: myHeaders,
-	// 		redirect: 'follow',
-	// 	};
+		fetch('http://206.189.91.54//api/v1/users/recent', requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						id: item.id,
+						uid: item.uid,
+						created_at: item.created_at,
+					});
+				});
+				updatedList = removeDuplicate(updatedList);
+				setDMList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-	// 	fetch('http://206.189.91.54//api/v1/users/recent', requestOptions)
-	// 		.then((response) => response.json())
-	// 		.then((result) => {
-	// 			let updatedList = [];
-	// 			result.data.forEach((item) => {
-	// 				updatedList.push({
-	// 					id: item.id,
-	// 					uid: item.uid,
-	// 				});
-	// 			});
-	// 			setDMList(updatedList);
-	// 		})
-	// 		.catch((error) => console.log('error', error));
-	// };
+	const removeDuplicate = (list) => {
+		return list.filter(
+			(item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
+		);
+	};
 
 	// const retrieveMessage = () => {
 	// 	var myHeaders = new Headers();
@@ -345,10 +347,13 @@ function App() {
 	// 	if (success) getAllUsers();
 	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// useEffect(() => {
-	// 	getDMs();
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getDMs();
+	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	// useEffect(() => {
+	// 	console.log(DMList);
+	// }, [DMList]);
 	// useEffect(() => {
 	// 	retrieveMessage();
 	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -357,9 +362,9 @@ function App() {
 	// 	selectChannel();
 	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	useEffect(() => {
-		console.log(myChannels);
-	}, [myChannels]);
+	// useEffect(() => {
+	// 	console.log(myChannels);
+	// }, [myChannels]);
 
 	// useEffect(() => {
 	// 	console.log(DMList);
@@ -385,27 +390,39 @@ function App() {
 						<Route path='/room'>
 							{success ? (
 								<Container>
-									<Header />
+									<Header name={uid} />
 									<Main>
 										<Sidebar
 											channelsList={myChannels}
 											addChannel={createNewChannel}
+											DMList={DMList}
 										/>
-										<Chat />
+										<Route path='/room/:path/:id'>
+											<Chat
+												channelsList={myChannels}
+												DMList={DMList}
+												myHeaders={myHeaders}
+												url={url}
+											/>
+										</Route>
+										{/* <Route path='/room'>Select channel</Route> */}
 									</Main>
 								</Container>
 							) : (
 								<Loading />
+								// <Home />
 							)}
 						</Route>
+
 						<Route path='/signup'>
-							{success ? <Redirect to='/room' /> : <Register />}
+							{success ? <Redirect to='/room/:channelId' /> : <Register />}
 						</Route>
 						<Route path='/login'>
-							{success ? <Redirect to='/room' /> : <Login />}
+							{success ? <Redirect to='/room/:channelId' /> : <Login />}
 						</Route>
+
 						<Route path='/'>
-							{success ? <Redirect to='/room' /> : <Home />}
+							{success ? <Redirect to='/room/:channelId' /> : <Home />}
 						</Route>
 					</Switch>
 				</Router>
@@ -434,7 +451,5 @@ const Login = () => {
 };
 
 const Register = () => {
-	return (
-		<h1>Register Form</h1>
-	)
-}
+	return <h1>Register Form</h1>;
+};
