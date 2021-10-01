@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function ChatMessage() {
+function ChatMessage({ sender, body, date }) {
 	return (
 		<Container>
 			<UserAvatar>
@@ -9,10 +9,10 @@ function ChatMessage() {
 			</UserAvatar>
 			<MessageContent>
 				<Name>
-					Juan Dela Cruz
-					<span>2/23/2021 11:13:36 AM</span>
+					{sender}
+					<span>{date}</span>
 				</Name>
-				<Text>Insert message body here!</Text>
+				<Text>{body}</Text>
 			</MessageContent>
 		</Container>
 	);
@@ -25,9 +25,9 @@ const Container = styled.div`
 	display: flex;
 	align-items: center;
 
-    :hover {
-        background: grey;
-    }
+	:hover {
+		background: #e5e5e5;
+	}
 `;
 
 const UserAvatar = styled.div`

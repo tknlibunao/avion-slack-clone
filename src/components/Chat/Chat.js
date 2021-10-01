@@ -118,7 +118,6 @@ function Chat({
     </Container>
   );
 }
-
 export default Chat;
 
 const Container = styled.div`
