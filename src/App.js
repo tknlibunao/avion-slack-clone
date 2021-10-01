@@ -7,6 +7,7 @@ import {
 	Redirect,
 	// Link,
 	// useRouteMatch,
+	// useParams,
 } from 'react-router-dom';
 
 import Loading from './components/Loading/Loading';
@@ -14,21 +15,23 @@ import Header from './components/Header/Header';
 import Sidebar from './components/Sidebar/Sidebar';
 import Chat from './components/Chat/Chat';
 import Home from './components/Home/Home';
-// import Login from './components/Login/Login';
-// import Register from './components/Login/Register';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
 import styled from 'styled-components';
 
 function App() {
 	/* HEADER PARAMETERS */
-	const [accessToken, setAccessToken] = useState('');
-	const [client, setClient] = useState('');
-	const [expiry, setExpiry] = useState('');
-	const [uid, setUID] = useState('');
+	// const [accessToken, setAccessToken] = useState('');
+	// const [client, setClient] = useState('');
+	// const [expiry, setExpiry] = useState('');
+	// const [uid, setUID] = useState('');
 
 	/* USER PARAMETERS */
-	// const [email, setEmail] = useState('');
-	// const [password, setPassword] = useState('');
-	// const [confirmation, setConfirmation] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [confirmation, setConfirmation] = useState('');
+
+	const [error, setError] = useState('');
 
 	/* API DATA */
 	// const [channelsList, setChannelsList] = useState([]);
@@ -43,13 +46,131 @@ function App() {
 	/* Define URL */
 	const url = 'http://206.189.91.54//api/v1';
 
+	const inputUser = (e) => {
+		setEmail(e.target.value);
+	};
+	const inputPassword = (e) => {
+		setPassword(e.target.value);
+	};
+
+	const inputConfirmation = (e) => {
+		setConfirmation(e.target.value);
+	};
+
 	/* Initialize Headers */
 	var myHeaders = new Headers();
 	myHeaders.append('Content-Type', 'application/json');
-	myHeaders.append('access-token', `${accessToken}`);
-	myHeaders.append('client', `${client}`);
-	myHeaders.append('expiry', `${expiry}`);
-	myHeaders.append('uid', `${uid}`);
+	myHeaders.append('access-token', localStorage.getItem('token'));
+	myHeaders.append('client', localStorage.getItem('client'));
+	myHeaders.append('expiry', localStorage.getItem('expiry'));
+	myHeaders.append('uid', localStorage.getItem('uid'));
+
+	const registerUser = (e) => {
+		e.preventDefault();
+		// let myHeaders = new Headers();
+		// myHeaders.append("Content-Type", "application/json");
+
+		// let raw = JSON.stringify({
+		//   email: "usersample03@gmail.com",
+		//   password: "12345678",
+		//   password_confirmation: "12345678",
+		// });
+
+		// let requestOptions = {
+		//   method: "POST",
+		//   headers: myHeaders,
+		//   body: raw,
+		//   redirect: "follow",
+		// };
+
+		// call fetch here
+
+		fetch('http://206.189.91.54//api/v1/auth', {
+			method: 'POST',
+			body: JSON.stringify({
+				email: email,
+				password: password,
+				password_confirmation: confirmation,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			redirect: 'follow',
+		})
+			.then((result) => {
+				if (email === '') {
+					setError('Field empty: email');
+				} else if (password === '') {
+					setError('Field empty: password');
+				} else if (confirmation === '') {
+					setError('Field empty: password confirmation');
+				} else if (password !== confirmation) {
+					setError('Password does not match');
+				} else if (result.status === 422) {
+					setError('Email already taken');
+				} else {
+					alert('Registration Successful!');
+					setError('');
+					e.target.reset();
+					setEmail('');
+					setPassword('');
+					setConfirmation('');
+				}
+
+				// history.push("/login");
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const loginUser = (e) => {
+		e.preventDefault();
+		let raw = JSON.stringify({
+			email: email,
+			// email: 'usersample03@gmail.com',
+			password: password,
+		});
+
+		let requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
+		};
+
+		fetch(`${url}/auth/sign_in`, requestOptions)
+			.then((response) => {
+				response.headers.forEach((item, key) => {
+					switch (key) {
+						case 'access-token':
+							// setAccessToken(item);
+							localStorage.setItem('token', item);
+							break;
+						case 'client':
+							// setClient(item);
+							localStorage.setItem('client', item);
+							break;
+						case 'expiry':
+							// setExpiry(item);
+							localStorage.setItem('expiry', item);
+							break;
+						case 'uid':
+							// setUID(item);
+							localStorage.setItem('uid', item);
+							break;
+						default:
+							break;
+					}
+				});
+				if (response.status === 200) {
+					// alert("LOGIN SUCCESS");
+					setSuccess(true);
+					// localStorage.setItem("success", success);
+				}
+			})
+			.catch((error) => console.log('error', error));
+	};
 
 	// const registerUser = () => {
 	// 	let myHeaders = new Headers();
@@ -76,47 +197,47 @@ function App() {
 	// 		.catch((error) => console.log(error.errors));
 	// };
 
-	const loginUser = () => {
-		let raw = JSON.stringify({
-			email: 'user2@example.com', // already existing in the database beforehand
-			// email: 'usersample03@gmail.com', // own registered test account
-			password: '12345678',
-		});
+	// const loginUser = () => {
+	// 	let raw = JSON.stringify({
+	// 		email: 'user2@example.com', // already existing in the database beforehand
+	// 		// email: 'usersample03@gmail.com', // own registered test account
+	// 		password: '12345678',
+	// 	});
 
-		let requestOptions = {
-			method: 'POST',
-			headers: myHeaders,
-			body: raw,
-			redirect: 'follow',
-		};
+	// 	let requestOptions = {
+	// 		method: 'POST',
+	// 		headers: myHeaders,
+	// 		body: raw,
+	// 		redirect: 'follow',
+	// 	};
 
-		fetch(`${url}/auth/sign_in`, requestOptions)
-			.then((response) => {
-				response.headers.forEach((item, key) => {
-					switch (key) {
-						case 'access-token':
-							setAccessToken(item);
-							break;
-						case 'client':
-							setClient(item);
-							break;
-						case 'expiry':
-							setExpiry(item);
-							break;
-						case 'uid':
-							setUID(item);
-							break;
-						default:
-							break;
-					}
-				});
-				if (response.status === 200) {
-					// console.log('LOGIN SUCCESS');
-					setSuccess(true);
-				}
-			})
-			.catch((error) => console.log('error', error));
-	};
+	// 	fetch(`${url}/auth/sign_in`, requestOptions)
+	// 		.then((response) => {
+	// 			response.headers.forEach((item, key) => {
+	// 				switch (key) {
+	// 					case 'access-token':
+	// 						setAccessToken(item);
+	// 						break;
+	// 					case 'client':
+	// 						setClient(item);
+	// 						break;
+	// 					case 'expiry':
+	// 						setExpiry(item);
+	// 						break;
+	// 					case 'uid':
+	// 						setUID(item);
+	// 						break;
+	// 					default:
+	// 						break;
+	// 				}
+	// 			});
+	// 			if (response.status === 200) {
+	// 				// console.log('LOGIN SUCCESS');
+	// 				setSuccess(true);
+	// 			}
+	// 		})
+	// 		.catch((error) => console.log('error', error));
+	// };
 
 	const getMyChannels = () => {
 		var requestOptions = {
@@ -327,9 +448,9 @@ function App() {
 	// 		.catch((error) => console.log('error', error));
 	// };
 
-	useEffect(() => {
-		loginUser();
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	// useEffect(() => {
+	// 	loginUser();
+	// }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		getMyChannels();
@@ -387,9 +508,9 @@ function App() {
 				<Router>
 					<Switch>
 						<Route path='/room'>
-							{success ? (
+							{localStorage.getItem('token') !== null ? (
 								<Container>
-									<Header name={uid} />
+									<Header name={localStorage.getItem('uid')} />
 									<Main>
 										<Sidebar
 											channelsList={myChannels}
@@ -414,14 +535,36 @@ function App() {
 						</Route>
 
 						<Route path='/signup'>
-							{success ? <Redirect to='/room/:path/:id' /> : <Register />}
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to='/room/:path/:id' />
+							) : (
+								<Register
+									onSubmit={registerUser}
+									inputUser={inputUser}
+									inputPassword={inputPassword}
+									inputConfirmation={inputConfirmation}
+									error={error}
+								/>
+							)}
 						</Route>
 						<Route path='/login'>
-							{success ? <Redirect to='/room/:path/:id' /> : <Login />}
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to='/room/:path/:id' />
+							) : (
+								<Login
+									onSubmit={loginUser}
+									inputUser={inputUser}
+									inputPassword={inputPassword}
+								/>
+							)}
 						</Route>
 
 						<Route path='/'>
-							{success ? <Redirect to='/room/:path/:id' /> : <Home />}
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to='/room/:path/:id' />
+							) : (
+								<Home />
+							)}
 						</Route>
 					</Switch>
 				</Router>
@@ -445,10 +588,10 @@ const Main = styled.div`
 	grid-template-columns: 260px auto;
 `;
 
-const Login = () => {
-	return <h1>Login Form</h1>;
-};
+// const Login = () => {
+// 	return <h1>Login Form</h1>;
+// };
 
-const Register = () => {
-	return <h1>Register Form</h1>;
-};
+// const Register = () => {
+// 	return <h1>Register Form</h1>;
+// };
