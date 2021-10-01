@@ -4,7 +4,7 @@ import { sidebarItems } from '../../data/SidebarData'
 import { channelsList } from '../../data/ChannelsList'
 import { directMessageData } from '../../data/DirectMessageData'
 
-const Sidebar = () => {
+const Sidebar = (props) => {
     return (
         <Container>
             <WorkspaceContainer>
@@ -75,7 +75,7 @@ const WorkspaceContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     color: var(--workspace-color);
-    height: 60px;
+    height: 50px;
     padding-left: 20px;
     padding-right: 20px;
     border-bottom: 1px solid #532652;
