@@ -22,7 +22,9 @@ export default ChatInput;
 const Container = styled.div`
 	padding-left: 20px;
 	padding-right: 20px;
+	padding-top: 24px;
 	padding-bottom: 24px;
+	border-top: 1px solid rgb(0 0 0 / 20%);
 `;
 
 const InputContainer = styled.div`
