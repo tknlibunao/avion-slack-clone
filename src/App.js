@@ -7,7 +7,6 @@ import {
 	Redirect,
 	// Link,
 	// useRouteMatch,
-	// useParams,
 } from 'react-router-dom';
 
 import Loading from './components/Loading/Loading';
