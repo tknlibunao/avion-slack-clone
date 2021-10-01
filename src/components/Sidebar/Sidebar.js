@@ -1,10 +1,25 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import { sidebarItemsData } from '../../data/SidebarData';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import AddIcon from '@material-ui/icons/Add';
 
-function Sidebar({ channelsList, addChannel }) {
+function Sidebar({ channelsList, addChannel, DMList}) {
+	const history = useHistory();
+
+	const goToChannel = (id) => {
+		if (id) {
+			history.push(`/room/channel/${id}`);
+		}
+	};
+
+	const goToDM = (id) => {
+		if (id) {
+			history.push(`/room/messages/${id}`);
+		}
+	};
+
 	return (
 		<div>
 			<Container>
@@ -33,10 +48,29 @@ function Sidebar({ channelsList, addChannel }) {
 						{/* <Channel>#Channel 1</Channel>
 						<Channel>#Channel 2</Channel> */}
 						{channelsList.map((item, index) => (
-							<Channel key={index}>#{item.name}</Channel>
+							<Channel key={index} onClick={() => goToChannel(item.id)}>
+								▶ {item.name}
+							</Channel>
 						))}
 					</ChannelsList>
 				</ChannelsContainer>
+				<DMContainer>
+					<NewChannelContainer>
+						<div>Recent DMs</div>
+						<NewChannel>
+							<AddIcon />
+						</NewChannel>
+					</NewChannelContainer>
+					<ChannelsList>
+						{/* <Channel>#Channel 1</Channel>
+						<Channel>#Channel 2</Channel> */}
+						{DMList.map((item, index) => (
+							<Channel key={index} onClick={() => goToDM(item.id)}>
+								▶ {item.uid}
+							</Channel>
+						))}
+					</ChannelsList>
+				</DMContainer>
 			</Container>
 		</div>
 	);
@@ -107,6 +141,15 @@ const MainChannelItem = styled.div`
 `;
 
 const ChannelsContainer = styled.div`
+	// background: orange;
+	height: 190px;
+	color: rgb(188, 171, 188);
+	margin-top: 10px;
+`;
+
+const DMContainer = styled.div`
+	// background: red;
+	height: 190px;
 	color: rgb(188, 171, 188);
 	margin-top: 10px;
 `;
@@ -121,7 +164,8 @@ const NewChannelContainer = styled.div`
 `;
 
 const ChannelsList = styled.div`
-	height: 306px;
+	// height: 306px;
+	height: 148px;
 	overflow-y: scroll;
 
 	::-webkit-scrollbar {
