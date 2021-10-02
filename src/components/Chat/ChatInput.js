@@ -1,57 +1,139 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
-const ChatInput = () => {
-    return (
-        <Container>
-            <InputContainer>
-                <form action="">
-                    <input type="text" placeholder='Message' name="" id="" />
-                    <ChatButtons>
-                        <ShortcutButton>
-                            <box-icon name='zap' type='solid' size='18px' color='var(--chatbutton-color)' ></box-icon>
-                        </ShortcutButton>
-                        <TextFormatButtons>
-                            <box-icon name='bold' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='italic' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='strikethrough' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='code-alt' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='link' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='list-ol' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='list-ul' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='poll' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='code-block' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                        </TextFormatButtons>
-                        <MultimediaButtons>
-                            <box-icon name='font-family' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='at' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='smile' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='paperclip' flip='vertical' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='video' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                            <box-icon name='microphone' size='20px' color='var(--chatbutton-color)' ></box-icon>
-                        </MultimediaButtons>
-                        <SendButton>
-                            <SendIcon>
-                                <box-icon type='solid' size='18px' color='var(--chatarea-color)' name='send'></box-icon>
-                            </SendIcon>
-                            <SendOptions>
-                                <box-icon name='chevron-down' size='18px' color='var(--chatarea-color)' ></box-icon>
-                            </SendOptions>
-                        </SendButton>
-                    </ChatButtons>
-                </form>
-            </InputContainer>
-        </Container>
-    )
-}
+const ChatInput = ({ onChange, onClick, message }) => {
+  return (
+    <Container>
+      <InputContainer>
+        <form action="">
+          <input
+            type="text"
+            placeholder="Message"
+            name=""
+            id=""
+            value={message}
+            onChange={onChange}
+          />
+          <ChatButtons>
+            <ShortcutButton>
+              <box-icon
+                name="zap"
+                type="solid"
+                size="18px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+            </ShortcutButton>
+            <TextFormatButtons>
+              <box-icon
+                name="bold"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="italic"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="strikethrough"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="code-alt"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="link"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="list-ol"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="list-ul"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="poll"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="code-block"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+            </TextFormatButtons>
+            <MultimediaButtons>
+              <box-icon
+                name="font-family"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="at"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="smile"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="paperclip"
+                flip="vertical"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="video"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+              <box-icon
+                name="microphone"
+                size="20px"
+                color="var(--chatbutton-color)"
+              ></box-icon>
+            </MultimediaButtons>
+            <SendButton>
+              <SendIcon onClick={onClick}>
+                <box-icon
+                  type="solid"
+                  size="18px"
+                  color="var(--chatarea-color)"
+                  name="send"
+                ></box-icon>
+              </SendIcon>
+              <SendOptions>
+                <box-icon
+                  name="chevron-down"
+                  size="18px"
+                  color="var(--chatarea-color)"
+                ></box-icon>
+              </SendOptions>
+            </SendButton>
+          </ChatButtons>
+        </form>
+      </InputContainer>
+    </Container>
+  );
+};
 
-export default ChatInput
+export default ChatInput;
 
 const Container = styled.div`
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 24px;
-`
+`;
 
 const InputContainer = styled.div`
     border: 1px solid #808080;
@@ -72,7 +154,7 @@ const InputContainer = styled.div`
             border: none;
         }
     }
-`
+`;
 
 const ChatButtons = styled.div`
     position: relative;
@@ -92,7 +174,7 @@ const ChatButtons = styled.div`
         background: #DCDCDC;
         border-radius: 2px;
     }
-`
+`;
 
 const ShortcutButton = styled.div`
     position: absolute;
@@ -108,7 +190,7 @@ const ShortcutButton = styled.div`
         border-radius: 2px;
     }
 
-`
+`;
 
 const TextFormatButtons = styled.div`
     position: absolute;
@@ -123,7 +205,7 @@ const TextFormatButtons = styled.div`
     width: 100%;
     overflow: hidden;
     cursor: pointer;
-`
+`;
 
 const MultimediaButtons = styled.div`
     position: absolute;
@@ -135,7 +217,7 @@ const MultimediaButtons = styled.div`
     width: 100%;
     right: 80px;
     cursor: pointer;
-`
+`;
 
 const SendButton = styled.div`
     position: absolute;
@@ -150,17 +232,16 @@ const SendButton = styled.div`
     background-color: #007A5A;
     border-radius: 4px;
     cursor: pointer;
-`
+`;
 
 const SendIcon = styled.div`
     display: flex;
     align-items: center;
     padding-right: 10px;
     border-right: 1px solid #FFFFFF;
-`
+`;
 
 const SendOptions = styled.div`
     display: flex;
     align-items: center;
-`
-
+`;

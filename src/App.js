@@ -20,6 +20,7 @@ function App() {
   const [confirmation, setConfirmation] = useState("");
 
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const [success, setSuccess] = useState(false);
 
@@ -31,6 +32,9 @@ function App() {
   };
   const inputConfirmation = (e) => {
     setConfirmation(e.target.value);
+  };
+  const inputMessage = (e) => {
+    setMessage(e.target.value);
   };
 
   var myHeaders = new Headers();
@@ -128,6 +132,32 @@ function App() {
       .catch((error) => console.log("error", error));
   };
 
+  const sendMessage = (e) => {
+    e.preventDefault();
+
+    if (message === "") {
+      return;
+    } else {
+      fetch(`${url}/messages`, {
+        method: "POST",
+        body: JSON.stringify({
+          receiver_id: 1,
+          receiver_class: "User",
+          body: message,
+        }),
+        headers: myHeaders,
+        redirect: "follow",
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            setMessage("");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <div className="App">
       <Router>
@@ -137,7 +167,11 @@ function App() {
               <Header />
               <Main>
                 <Sidebar />
-                <Chat />
+                <Chat
+                  onClick={sendMessage}
+                  message={message}
+                  onChange={inputMessage}
+                />
               </Main>
             </Route>
             <Route path="/signup">
