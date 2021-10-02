@@ -11,9 +11,9 @@ import Chat from "./components/Chat/Chat";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Login from "./components/Login/Login";
 import Header from "./components/Header/Header";
+import Home from "./components/Home/Home";
 
 function App() {
-  /* USER PARAMETERS */
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -40,7 +40,6 @@ function App() {
     e.preventDefault();
     let raw = JSON.stringify({
       email: email,
-      // email: 'usersample03@gmail.com',
       password: password,
     });
 
@@ -76,9 +75,7 @@ function App() {
           }
         });
         if (response.status === 200) {
-          // alert("LOGIN SUCCESS");
           setSuccess(true);
-          // localStorage.setItem("success", success);
         }
       })
       .catch((error) => console.log("error", error));
@@ -96,7 +93,7 @@ function App() {
                 <Chat />
               </Main>
             </Route>
-            <Route path="/">
+            <Route path="/login">
               {localStorage.getItem("token") !== null ? (
                 <Redirect to="/room/:path/:id" />
               ) : (
@@ -105,6 +102,13 @@ function App() {
                   inputUser={inputUser}
                   inputPassword={inputPassword}
                 />
+              )}
+            </Route>
+            <Route path="/">
+              {localStorage.getItem("token") !== null ? (
+                <Redirect to="/room/:path/:id" />
+              ) : (
+                <Home />
               )}
             </Route>
           </Switch>
