@@ -12,11 +12,14 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Login from "./components/Login/Login";
 import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
+import Register from "./components/Register/Register";
 
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+
+  const [error, setError] = useState("");
 
   const [success, setSuccess] = useState(false);
 
@@ -25,6 +28,9 @@ function App() {
   };
   const inputPassword = (e) => {
     setPassword(e.target.value);
+  };
+  const inputConfirmation = (e) => {
+    setConfirmation(e.target.value);
   };
 
   var myHeaders = new Headers();
@@ -35,6 +41,47 @@ function App() {
   myHeaders.append("uid", localStorage.getItem("uid"));
 
   const url = "http://206.189.91.54//api/v1";
+
+  const registerUser = (e) => {
+    e.preventDefault();
+    fetch("http://206.189.91.54//api/v1/auth", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        password_confirmation: confirmation,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+    })
+      .then((result) => {
+        if (email === "") {
+          setError("Field empty: email");
+        } else if (password === "") {
+          setError("Field empty: password");
+        } else if (confirmation === "") {
+          setError("Field empty: password confirmation");
+        } else if (password !== confirmation) {
+          setError("Password does not match");
+        } else if (result.status === 422) {
+          setError("Email already taken");
+        } else {
+          alert("Registration Successful!");
+          setError("");
+          e.target.reset();
+          setEmail("");
+          setPassword("");
+          setConfirmation("");
+        }
+
+        // history.push("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const loginUser = (e) => {
     e.preventDefault();
@@ -93,6 +140,19 @@ function App() {
                 <Chat />
               </Main>
             </Route>
+            <Route path="/signup">
+              {localStorage.getItem("token") !== null ? (
+                <Redirect to="/room/:path/:id" />
+              ) : (
+                <Register
+                  onSubmit={registerUser}
+                  inputUser={inputUser}
+                  inputPassword={inputPassword}
+                  inputConfirmation={inputConfirmation}
+                  error={error}
+                />
+              )}
+            </Route>
             <Route path="/login">
               {localStorage.getItem("token") !== null ? (
                 <Redirect to="/room/:path/:id" />
@@ -104,6 +164,7 @@ function App() {
                 />
               )}
             </Route>
+
             <Route path="/">
               {localStorage.getItem("token") !== null ? (
                 <Redirect to="/room/:path/:id" />
