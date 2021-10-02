@@ -1,10 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useHistory } from 'react-router'
 import { sidebarItems } from '../../data/SidebarData'
-import { channelsList } from '../../data/ChannelsList'
-import { directMessageData } from '../../data/DirectMessageData'
 
-const Sidebar = (props) => {
+const Sidebar = ({ channelsList, addChannel, DMList}) => {
+    const history = useHistory();
+
+    const goToChannel = (id) => {
+        if (id) {
+        history.push(`/room/channel/${id}`);
+        }
+    };
+
+    const goToDM = (id) => {
+        if (id) {
+        history.push(`/room/messages/${id}`);
+        }
+    };
+
     return (
         <Container>
             <WorkspaceContainer>
@@ -31,14 +44,14 @@ const Sidebar = (props) => {
                     <div>
                         <span>Channels</span>
                     </div>  
-                    <box-icon name='plus' color='var(--sidebar-font-color)'></box-icon>
+                    <box-icon name='plus' color='var(--sidebar-font-color)' onClick={addChannel}></box-icon>
                 </NewChannelContainer>
                 <ChannelsList>
                     {
-                        channelsList.map(item => (
-                            <Channel>
-                                {item.icon}
-                                {item.text}
+                        channelsList.map((item, index) => (
+                            <Channel key={index} onClick={() => goToChannel(item.id)}>
+                                <box-icon name='hash' color='var(--sidebar-font-color)'></box-icon>
+                                <span>{item.name}</span>
                             </Channel>
                         ))
                     }
@@ -51,10 +64,10 @@ const Sidebar = (props) => {
                 </NewDirectMessage>
                 <DirectMessageList>
                     {
-                        directMessageData.map(item => (
-                            <DirectMessage>
-                                {item.userImage}
-                                {item.userName}
+                        DMList.map((item, index) => (
+                            <DirectMessage key={index} onClick={() => goToDM(item.id)}>
+                                <box-icon name='user-rectangle' color='var(--sidebar-font-color)' type='solid' ></box-icon>
+                                <span>{item.uid}</span>
                             </DirectMessage>
                         ))
                     }
