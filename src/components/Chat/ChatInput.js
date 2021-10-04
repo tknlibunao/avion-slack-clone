@@ -103,43 +103,25 @@ const ChatInput = ({ onChange, onClick, message }) => {
                 color="var(--chatbutton-color)"
               ></box-icon>
             </MultimediaButtons>
-            {message === "" ? (
-              <SendButtonInactive>
-                <SendIcon onClick={onClick}>
-                  <box-icon
-                    type="solid"
-                    size="18px"
-                    color="var(--chatarea-color)"
-                    name="send"
-                  ></box-icon>
-                </SendIcon>
-                <SendOptions>
-                  <box-icon
-                    name="chevron-down"
-                    size="18px"
-                    color="var(--chatarea-color)"
-                  ></box-icon>
-                </SendOptions>
-              </SendButtonInactive>
-            ) : (
-              <SendButton>
-                <SendIcon onClick={onClick}>
-                  <box-icon
-                    type="solid"
-                    size="18px"
-                    color="var(--chatarea-color)"
-                    name="send"
-                  ></box-icon>
-                </SendIcon>
-                <SendOptions>
-                  <box-icon
-                    name="chevron-down"
-                    size="18px"
-                    color="var(--chatarea-color)"
-                  ></box-icon>
-                </SendOptions>
-              </SendButton>
-            )}
+            <SendButton
+              style={{ backgroundColor: message === "" ? "#ccc" : "#007A5A" }}
+            >
+              <SendIcon onClick={onClick}>
+                <box-icon
+                  type="solid"
+                  size="18px"
+                  color="var(--chatarea-color)"
+                  name="send"
+                ></box-icon>
+              </SendIcon>
+              <SendOptions>
+                <box-icon
+                  name="chevron-down"
+                  size="18px"
+                  color="var(--chatarea-color)"
+                ></box-icon>
+              </SendOptions>
+            </SendButton>
           </ChatButtons>
         </form>
       </InputContainer>
@@ -239,21 +221,6 @@ const MultimediaButtons = styled.div`
     cursor: pointer;
 `;
 
-const SendButtonInactive = styled.div`
-    position: absolute;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 60px;
-    height: 32px;
-    margin-right: 5px;
-    padding-left: 10px;
-    background-color: #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-`;
-
 const SendButton = styled.div`
     position: absolute;
     right: 0;
@@ -264,7 +231,6 @@ const SendButton = styled.div`
     height: 32px;
     margin-right: 5px;
     padding-left: 10px;
-    background-color: #007A5A;
     border-radius: 4px;
     cursor: pointer;
 `;
