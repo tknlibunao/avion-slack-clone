@@ -1,122 +1,202 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
-import styled from "styled-components";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import ChatInput from "./ChatInput";
-import ChatMessage from "./ChatMessage";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import styled from 'styled-components';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
+import AddIcon from '@material-ui/icons/Add';
 
 function Chat({
-  channelsList,
-  DMList,
-  myHeaders,
-  url,
-  onChange,
-  message,
-  onClick,
+	channelsList,
+	myChannels,
+	DMList,
+	myHeaders,
+	url,
+	// onChange,
+	// message,
+	// onClick,
 }) {
-  let { path, id } = useParams();
-  const [display, setDisplay] = useState({ id });
-  const [messageList, setMessageList] = useState([]);
+	let { path, id } = useParams();
+	const [display, setDisplay] = useState({ id });
+	const [message, setMessage] = useState('');
+	const [messageList, setMessageList] = useState([]);
 
-  const getChatDisplay = () => {
-    let items = [];
-    switch (path) {
-      case "channel":
-        items = channelsList;
-        break;
-      case "messages":
-        items = DMList;
-        break;
-      default:
-    }
-    items.forEach((item) => {
-      if (Number(id) === Number(item.id)) {
-        setDisplay(item);
-      }
-    });
-  };
+	const addMember = (channelId, memberId) => {
+		console.log(`Member id is ${memberId} and ChannelId is ${channelId}`);
+		var raw = JSON.stringify({
+			id: channelId,
+			member_id: memberId,
+		});
 
-  const retrieveMessage = (param) => {
-    setMessageList([]);
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+		var requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
+		};
 
-    // receiver_id: check id from recently DMs
-    // NOTE: receiver_id can also be the sender of the message to our user
-    // check the result.data.forEach(item.[sender/receiver].uid) to see who is sender/receiver
+		fetch(`${url}/channel/add_member`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => console.log(result))
+			.catch((error) => console.log('error', error));
+	};
 
-    // receiver_class: [Channel/User]
-    fetch(
-      `${url}/messages?receiver_class=${param}&receiver_id=${id}`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        let updatedList = [];
-        result.data.forEach((item) => {
-          updatedList.push({
-            body: item.body,
-            created_at: item.created_at,
-            receiver: item.receiver.uid,
-            sender: item.sender.uid,
-          });
-        });
-        setMessageList(updatedList);
-      })
-      .catch((error) => console.log("error", error));
-  };
+	const inputMessage = (e) => {
+		setMessage(e.target.value);
+	};
 
-  // useEffect(() => {
-  // 	console.log('Messages: ', messageList);
-  // }, [messageList]);
+	const sendMessage = (e) => {
+		e.preventDefault();
 
-  useEffect(() => {
-    getChatDisplay();
-  }, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
+		if (message === '') {
+			return;
+		} else {
+			let receiver_class = '';
+			switch (path) {
+				case 'channel':
+					receiver_class = 'Channel';
+					break;
+				case 'messages':
+					receiver_class = 'User';
+					break;
+				default:
+			}
+			fetch(`${url}/messages`, {
+				method: 'POST',
+				body: JSON.stringify({
+					receiver_id: `${id}`,
+					receiver_class: `${receiver_class}`,
+					body: message,
+				}),
+				headers: myHeaders,
+				redirect: 'follow',
+			})
+				.then((res) => {
+					// console.log(res);
+					if (res.status === 200) {
+						setMessage('');
+					}
+					retrieveMessage(receiver_class);
+				})
+				.catch((err) => console.log(err));
+		}
+	};
 
-  useEffect(() => {
-    switch (path) {
-      case "channel":
-        retrieveMessage("Channel");
-        break;
-      case "messages":
-        retrieveMessage("User");
-        break;
-      default:
-    }
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+	const getChatDisplay = () => {
+		let items = [];
+		switch (path) {
+			case 'channel':
+				items = channelsList;
+				break;
+			case 'messages':
+				items = DMList;
+				break;
+			default:
+		}
+		items.forEach((item) => {
+			if (Number(id) === Number(item.id)) {
+				setDisplay(item);
+			}
+		});
+	};
 
-  return (
-    <Container>
-      <Header>
-        <Channel>
-          <ChannelName>
-            {path === "channel" ? display.name : display.uid}
-          </ChannelName>
-          <ChannelInfo>First viewed on {display.created_at}</ChannelInfo>
-        </Channel>
-        <ChannelDetails>
-          <div>Details</div>
-          <Info />
-        </ChannelDetails>
-      </Header>
-      <MessageContainer>
-        {/* <ChatMessage messageList={messageList} /> */}
-        {messageList.map((item, index) => (
-          <ChatMessage
-            key={index}
-            sender={item.sender}
-            body={item.body}
-            date={item.created_at}
-          />
-        ))}
-      </MessageContainer>
-      <ChatInput onClick={onClick} message={message} onChange={onChange} />
-    </Container>
-  );
+	const retrieveMessage = (param) => {
+		setMessageList([]);
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
+
+		// receiver_id: check id from recently DMs
+		// NOTE: receiver_id can also be the sender of the message to our user
+		// check the result.data.forEach(item.[sender/receiver].uid) to see who is sender/receiver
+
+		// receiver_class: [Channel/User]
+		fetch(
+			`${url}/messages?receiver_class=${param}&receiver_id=${id}`,
+			requestOptions
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				console.log('Message retrieved: ', result);
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						body: item.body,
+						created_at: item.created_at,
+						receiver: item.receiver.uid,
+						sender: item.sender.uid,
+					});
+				});
+				setMessageList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
+
+	// useEffect(() => {
+	// 	console.log('Messages: ', messageList);
+	// }, [messageList]);
+
+	useEffect(() => {
+		getChatDisplay();
+	}, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		switch (path) {
+			case 'channel':
+				retrieveMessage('Channel');
+				break;
+			case 'messages':
+				retrieveMessage('User');
+				break;
+			default:
+		}
+	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	return (
+		<Container>
+			<Header>
+				<Channel>
+					<ChannelName>
+						{path === 'channel' ? display.name : display.uid}
+					</ChannelName>
+					<ChannelInfo>First viewed on {display.created_at}</ChannelInfo>
+				</Channel>
+				<ChannelDetails>
+					<div>
+						{path === 'messages' ? (
+							<span>Details</span>
+						) : (
+							<span>Add member</span>
+						)}
+					</div>
+					{path === 'messages' ? (
+						<Info />
+					) : (
+						<Add onClick={() => addMember(id, '696')} />
+					)}
+				</ChannelDetails>
+			</Header>
+			<MessageContainer>
+				{/* <ChatMessage messageList={messageList} /> */}
+				{messageList.map((item, index) => (
+					<ChatMessage
+						key={index}
+						sender={item.sender}
+						body={item.body}
+						date={item.created_at}
+					/>
+				))}
+			</MessageContainer>
+			<ChatInput
+				onSubmit={sendMessage}
+				onClick={sendMessage}
+				message={message}
+				onChange={inputMessage}
+			/>
+		</Container>
+	);
 }
 export default Chat;
 
@@ -129,7 +209,7 @@ const Channel = styled.div``;
 
 const ChannelDetails = styled.div`
 	display: flex;
-	align-channels: center;
+	align-items: center;
 	color: #606060;
 `;
 
@@ -146,6 +226,11 @@ const ChannelInfo = styled.div`
 
 const Info = styled(InfoOutlinedIcon)`
 	margin-left: 10px;
+`;
+
+const Add = styled(AddIcon)`
+	margin-left: 10px;
+	cursor: pointer;
 `;
 
 const Header = styled.div`
