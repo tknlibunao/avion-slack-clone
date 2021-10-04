@@ -548,6 +548,7 @@ function App() {
                     />
                     <Route path="/room/:path/:id">
                       <Chat
+                        onKeyPress={submitOnEnter}
                         channelsList={myChannels}
                         DMList={DMList}
                         myHeaders={myHeaders}

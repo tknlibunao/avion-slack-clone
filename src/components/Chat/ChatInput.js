@@ -104,7 +104,10 @@ const ChatInput = ({ onChange, onClick, message }) => {
               ></box-icon>
             </MultimediaButtons>
             <SendButton
-              style={{ backgroundColor: message === "" ? "#ccc" : "#007A5A" }}
+              style={{
+                backgroundColor: message === "" ? "#ccc" : "#007A5A",
+                cursor: message === "" ? "default" : "pointer",
+              }}
             >
               <SendIcon onClick={onClick}>
                 <box-icon
@@ -232,7 +235,6 @@ const SendButton = styled.div`
     margin-right: 5px;
     padding-left: 10px;
     border-radius: 4px;
-    cursor: pointer;
 `;
 
 const SendIcon = styled.div`
