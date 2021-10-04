@@ -1,74 +1,95 @@
-import React from 'react'
-import styled from 'styled-components'
-import { sidebarItems } from '../../data/SidebarData'
-import { channelsList } from '../../data/ChannelsList'
-import { directMessageData } from '../../data/DirectMessageData'
+import React from "react";
+import styled from "styled-components";
+import { useHistory } from "react-router";
+import { sidebarItems } from "../../data/SidebarData";
 
-const Sidebar = (props) => {
-    return (
-        <Container>
-            <WorkspaceContainer>
-                <Name>
-                    <span>Avion School</span>
-                    <box-icon name='chevron-down' color='var(--sidebar-font-color)'></box-icon>
-                </Name>
-                <NewMessage>
-                    <box-icon name='edit' color='var(--sidebar-color)'></box-icon>
-                </NewMessage>
-            </WorkspaceContainer>
-            <MainChannels>
-                {
-                    sidebarItems.map(item => (
-                        <MainChannelItem>
-                            {item.icon}
-                            {item.text}
-                        </MainChannelItem>
-                    ))
-                }
-            </MainChannels>
-            <ChannelsContainer>
-                <NewChannelContainer>
-                    <div>
-                        <span>Channels</span>
-                    </div>  
-                    <box-icon name='plus' color='var(--sidebar-font-color)'></box-icon>
-                </NewChannelContainer>
-                <ChannelsList>
-                    {
-                        channelsList.map(item => (
-                            <Channel>
-                                {item.icon}
-                                {item.text}
-                            </Channel>
-                        ))
-                    }
-                </ChannelsList>
-            </ChannelsContainer>
-            <DirectMessageContainer>
-                <NewDirectMessage>
-                    <span>Direct Messages</span>
-                    <box-icon name='plus' color='var(--sidebar-font-color)'></box-icon>
-                </NewDirectMessage>
-                <DirectMessageList>
-                    {
-                        directMessageData.map(item => (
-                            <DirectMessage>
-                                {item.userImage}
-                                {item.userName}
-                            </DirectMessage>
-                        ))
-                    }
-                </DirectMessageList>
-            </DirectMessageContainer>
-        </Container>
-    )
-}
+const Sidebar = ({ channelsList, addChannel, DMList }) => {
+  const history = useHistory();
 
-export default Sidebar
+  const goToChannel = (id) => {
+    if (id) {
+      history.push(`/room/channel/${id}`);
+    }
+  };
+
+  const goToDM = (id) => {
+    if (id) {
+      history.push(`/room/messages/${id}`);
+    }
+  };
+
+  return (
+    <Container>
+      <WorkspaceContainer>
+        <Name>
+          <span>Avion School</span>
+          <box-icon
+            name="chevron-down"
+            color="var(--sidebar-font-color)"
+          ></box-icon>
+        </Name>
+        <NewMessage>
+          <box-icon name="edit" color="var(--sidebar-color)"></box-icon>
+        </NewMessage>
+      </WorkspaceContainer>
+      <MainChannels>
+        {sidebarItems.map((item) => (
+          <MainChannelItem>
+            {item.icon}
+            {item.text}
+          </MainChannelItem>
+        ))}
+      </MainChannels>
+      <ChannelsContainer>
+        <NewChannelContainer>
+          <div>
+            <span>Channels</span>
+          </div>
+          <box-icon
+            name="plus"
+            color="var(--sidebar-font-color)"
+            onClick={addChannel}
+          ></box-icon>
+        </NewChannelContainer>
+        <ChannelsList>
+          {channelsList.map((item, index) => (
+            <Channel key={index} onClick={() => goToChannel(item.id)}>
+              <box-icon
+                name="hash"
+                color="var(--sidebar-font-color)"
+              ></box-icon>
+              <span>{item.name}</span>
+            </Channel>
+          ))}
+        </ChannelsList>
+      </ChannelsContainer>
+      <DirectMessageContainer>
+        <NewDirectMessage>
+          <span>Direct Messages</span>
+          <box-icon name="plus" color="var(--sidebar-font-color)"></box-icon>
+        </NewDirectMessage>
+        <DirectMessageList>
+          {DMList.map((item, index) => (
+            <DirectMessage key={index} onClick={() => goToDM(item.id)}>
+              <box-icon
+                name="user-rectangle"
+                color="var(--sidebar-font-color)"
+                type="solid"
+              ></box-icon>
+              <span>{item.uid}</span>
+            </DirectMessage>
+          ))}
+        </DirectMessageList>
+      </DirectMessageContainer>
+    </Container>
+  );
+};
+
+export default Sidebar;
 
 const Container = styled.div`
     background-color: var(--sidebar-color);
-`
+`;
 
 const WorkspaceContainer = styled.div`
     display: flex;
@@ -79,7 +100,7 @@ const WorkspaceContainer = styled.div`
     padding-left: 20px;
     padding-right: 20px;
     border-bottom: 1px solid #532652;
-`
+`;
 
 const Name = styled.div`
     display: flex;
@@ -89,7 +110,7 @@ const Name = styled.div`
         font-weight: bolder;
         font-size: 1.2em;
     }
-`
+`;
 
 const NewMessage = styled.div`
     display: flex;
@@ -100,13 +121,13 @@ const NewMessage = styled.div`
     background-color: var(--workspace-color);
     border-radius: 50%;
     cursor: pointer;
-`
+`;
 
 const MainChannels = styled.div`
     align-items: center;
     padding-top: 20px;
     cursor: pointer;
-`
+`;
 
 const MainChannelItem = styled.div`
     display: grid;
@@ -126,12 +147,12 @@ const MainChannelItem = styled.div`
     :hover:last-child {
         color: var(--workspace-color) !important;
     }
-`
+`;
 
 const ChannelsContainer = styled.div`
     color: var(--sidebar-font-color);
     margin-top: 10px;
-`
+`;
 
 const NewChannelContainer = styled.div`
     display: flex;
@@ -140,11 +161,20 @@ const NewChannelContainer = styled.div`
     height: 30px;
     padding-left: 20px;
     padding-right: 20px;
-`
+`;
 
 const ChannelsList = styled.div`
+height:200px;
+overflow-y: auto;
 
-`
+::-webkit-scrollbar{
+    width:2vw;
+}
+::-webkit-scrollbar-thumb{
+    background-color:#2b0029;
+    border-radius:10px;
+}
+`;
 
 const Channel = styled.div`
     display: flex;
@@ -160,12 +190,12 @@ const Channel = styled.div`
     :hover {
         background-color: var(--sidebar-hover);
     }
-`
+`;
 
 const DirectMessageContainer = styled.div`
     color: var(--sidebar-font-color);
     margin-top: 10px;
-`
+`;
 
 const NewDirectMessage = styled.div`
     display: flex;
@@ -174,11 +204,20 @@ const NewDirectMessage = styled.div`
     height: 30px;
     padding-left: 20px;
     padding-right: 20px;
-`
+`;
 
 const DirectMessageList = styled.div`
+height:200px;
+overflow-y: auto;
 
-`
+::-webkit-scrollbar{
+    width:2vw;
+}
+::-webkit-scrollbar-thumb{
+    background-color:#2b0029;
+    border-radius:10px;
+}
+`;
 
 const DirectMessage = styled.div`
     display: flex;
@@ -194,4 +233,4 @@ const DirectMessage = styled.div`
     :hover {
         background-color: var(--sidebar-hover);
     }
-`
+`;
