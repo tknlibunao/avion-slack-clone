@@ -2,11 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import SendIcon from "@material-ui/icons/Send";
 
-function ChatInput({ onChange, onClick, message }) {
+function ChatInput({ onChange, onClick, onSubmit, message }) {
   return (
     <Container>
       <InputContainer>
-        <form>
+        <form onSubmit={onSubmit}>
           <input
             type="text"
             value={message}
