@@ -103,23 +103,43 @@ const ChatInput = ({ onChange, onClick, message }) => {
                 color="var(--chatbutton-color)"
               ></box-icon>
             </MultimediaButtons>
-            <SendButton>
-              <SendIcon onClick={onClick}>
-                <box-icon
-                  type="solid"
-                  size="18px"
-                  color="var(--chatarea-color)"
-                  name="send"
-                ></box-icon>
-              </SendIcon>
-              <SendOptions>
-                <box-icon
-                  name="chevron-down"
-                  size="18px"
-                  color="var(--chatarea-color)"
-                ></box-icon>
-              </SendOptions>
-            </SendButton>
+            {message === "" ? (
+              <SendButtonInactive>
+                <SendIcon onClick={onClick}>
+                  <box-icon
+                    type="solid"
+                    size="18px"
+                    color="var(--chatarea-color)"
+                    name="send"
+                  ></box-icon>
+                </SendIcon>
+                <SendOptions>
+                  <box-icon
+                    name="chevron-down"
+                    size="18px"
+                    color="var(--chatarea-color)"
+                  ></box-icon>
+                </SendOptions>
+              </SendButtonInactive>
+            ) : (
+              <SendButton>
+                <SendIcon onClick={onClick}>
+                  <box-icon
+                    type="solid"
+                    size="18px"
+                    color="var(--chatarea-color)"
+                    name="send"
+                  ></box-icon>
+                </SendIcon>
+                <SendOptions>
+                  <box-icon
+                    name="chevron-down"
+                    size="18px"
+                    color="var(--chatarea-color)"
+                  ></box-icon>
+                </SendOptions>
+              </SendButton>
+            )}
           </ChatButtons>
         </form>
       </InputContainer>
@@ -216,6 +236,21 @@ const MultimediaButtons = styled.div`
     min-width: 50px;
     width: 100%;
     right: 80px;
+    cursor: pointer;
+`;
+
+const SendButtonInactive = styled.div`
+    position: absolute;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60px;
+    height: 32px;
+    margin-right: 5px;
+    padding-left: 10px;
+    background-color: #ccc;
+    border-radius: 4px;
     cursor: pointer;
 `;
 
