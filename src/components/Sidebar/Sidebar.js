@@ -161,6 +161,10 @@ const NewChannelContainer = styled.div`
     height: 30px;
     padding-left: 20px;
     padding-right: 20px;
+
+    box-icon:hover {
+        cursor: pointer;
+    }
 `;
 
 const ChannelsList = styled.div`
@@ -204,6 +208,10 @@ const NewDirectMessage = styled.div`
     height: 30px;
     padding-left: 20px;
     padding-right: 20px;
+
+    box-icon:hover {
+        cursor: pointer;
+    }
 `;
 
 const DirectMessageList = styled.div`
