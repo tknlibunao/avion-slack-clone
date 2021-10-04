@@ -12,6 +12,7 @@ function Chat({
 	DMList,
 	myHeaders,
 	url,
+	usersList,
 	// onChange,
 	// message,
 	// onClick,
@@ -20,9 +21,32 @@ function Chat({
 	const [display, setDisplay] = useState({ id });
 	const [message, setMessage] = useState('');
 	const [messageList, setMessageList] = useState([]);
+	const [channelMembers, setChannelMembers] = useState([]);
 
-	const addMember = (channelId, memberId) => {
-		console.log(`Member id is ${memberId} and ChannelId is ${channelId}`);
+	const selectChannel = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
+
+		fetch(`${url}/channels/${id}`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				// console.log(result.data);
+				let updatedList = [];
+				result.data.channel_members.forEach((item) => {
+					updatedList.push(item.user_id);
+				});
+				setChannelMembers(updatedList);
+				console.log(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
+
+	const addMember = (channelId) => {
+		// console.log(`Member id is ${memberId} and ChannelId is ${channelId}`);
+		let memberId = prompt('Enter member ID:');
 		var raw = JSON.stringify({
 			id: channelId,
 			member_id: memberId,
@@ -37,8 +61,10 @@ function Chat({
 
 		fetch(`${url}/channel/add_member`, requestOptions)
 			.then((response) => response.json())
-			.then((result) => console.log(result))
+			// .then((result) => console.log(result))
 			.catch((error) => console.log('error', error));
+
+		selectChannel();
 	};
 
 	const inputMessage = (e) => {
@@ -119,7 +145,7 @@ function Chat({
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				console.log('Message retrieved: ', result);
+				// console.log(`Message retrieved (${param} ${id}):`, result);
 				let updatedList = [];
 				result.data.forEach((item) => {
 					updatedList.push({
@@ -137,6 +163,10 @@ function Chat({
 	// useEffect(() => {
 	// 	console.log('Messages: ', messageList);
 	// }, [messageList]);
+
+	useEffect(() => {
+		selectChannel();
+	}, [path, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		getChatDisplay();
@@ -161,7 +191,14 @@ function Chat({
 					<ChannelName>
 						{path === 'channel' ? display.name : display.uid}
 					</ChannelName>
-					<ChannelInfo>First viewed on {display.created_at}</ChannelInfo>
+					<ChannelInfo>
+						{path === 'channel' &&
+							(channelMembers.length > 1
+								? channelMembers.length + ' members'
+								: channelMembers.length + ' member')}
+
+						{path === 'messages' && display.updated_at}
+					</ChannelInfo>
 				</Channel>
 				<ChannelDetails>
 					<div>
@@ -174,7 +211,7 @@ function Chat({
 					{path === 'messages' ? (
 						<Info />
 					) : (
-						<Add onClick={() => addMember(id, '696')} />
+						<Add onClick={() => addMember(id)} />
 					)}
 				</ChannelDetails>
 			</Header>
