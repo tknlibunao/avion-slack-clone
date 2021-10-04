@@ -5,7 +5,7 @@ import styled from "styled-components";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AddIcon from "@material-ui/icons/Add";
 
-function Sidebar({ channelsList, addChannel, DMList }) {
+function Sidebar({ myChannels, channelsList, addChannel, DMList }) {
   const history = useHistory();
 
   const goToChannel = (id) => {
