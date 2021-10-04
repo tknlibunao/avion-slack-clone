@@ -168,7 +168,7 @@ height:200px;
 overflow-y: auto;
 
 ::-webkit-scrollbar{
-    width:2vw;
+    width:10px;
 }
 ::-webkit-scrollbar-thumb{
     background-color:#2b0029;
@@ -209,9 +209,9 @@ const NewDirectMessage = styled.div`
 const DirectMessageList = styled.div`
 height:200px;
 overflow-y: auto;
-
+overflow-x: hidden;
 ::-webkit-scrollbar{
-    width:2vw;
+    width:10px;
 }
 ::-webkit-scrollbar-thumb{
     background-color:#2b0029;
