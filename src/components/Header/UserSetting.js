@@ -1,67 +1,81 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useState } from 'react'
-import userDefaultImage from '../../assets/userDefaultImage.png'
-
+import React from "react";
+import styled from "styled-components";
+import { useState } from "react";
+import userDefaultImage from "../../assets/userDefaultImage.png";
+import { useHistory } from "react-router";
 
 const UserSetting = (props) => {
-    const workspaceName = 'Avion School'
-    const[isUserActive, setUserActive] = useState(false);
+  const workspaceName = "Avion School";
+  const [isUserActive, setUserActive] = useState(false);
 
-    const isUserActiveHandler = () => {
-        setUserActive(!isUserActive)
-    }
+  const history = useHistory();
 
-    const logOutHandler = () => {
-        console.log('Logging out');
-    }
+  const isUserActiveHandler = () => {
+    setUserActive(!isUserActive);
+  };
 
-    return (
-        <Container>
-            <UserInfo>
-                <UserProfile>
-                    <UserImage>
-                        <img src={userDefaultImage} alt="User" />
-                    </UserImage>
-                    <UserName>
-                        <span className='user-name' ><b>Bills</b></span>
-                        <span className='user-status' >{!isUserActive ? 'Active' : 'Away'}</span>
-                    </UserName>
-                </UserProfile>
-                <UserStatus>
-                    <UpdateStatus>
-                        <box-icon name='smile' color='#707070' size='24px'></box-icon>
-                        <span>Update your status</span>
-                    </UpdateStatus>
-                    <SetStatus onClick={isUserActiveHandler}>Set yourself as <b>{isUserActive ? 'active' : 'away'}</b></SetStatus>
-                    <PauseNotification>
-                        <span>Pause notifications</span>
-                        <box-icon name='chevron-right' color='var(--profile-font-color)' size='17px'></box-icon>
-                    </PauseNotification>
-                </UserStatus>
-                <ProfileOptions>
-                    <Profile>
-                        <span>Profile</span>
-                    </Profile>
-                    <Preference>
-                        <span>Preferences</span>
-                    </Preference>
-                </ProfileOptions>
-                <DownloadWrapper>
-                    <Download>
-                        <span>Downloads</span>
-                        <span className='download-shortcut'>Ctrl+Shift+J</span>
-                    </Download>
-                </DownloadWrapper>
-                <SignOut onClick={logOutHandler}>
-                    <span>Sign out of {workspaceName}</span>
-                </SignOut>
-            </UserInfo>
-        </Container>
-    )
-}
+  const logOutHandler = () => {
+    localStorage.clear();
+    history.push("/");
+    window.location.reload();
+  };
 
-export default UserSetting
+  return (
+    <Container>
+      <UserInfo>
+        <UserProfile>
+          <UserImage>
+            <img src={userDefaultImage} alt="User" />
+          </UserImage>
+          <UserName>
+            <span className="user-name">
+              <b>Bills</b>
+            </span>
+            <span className="user-status">
+              {!isUserActive ? "Active" : "Away"}
+            </span>
+          </UserName>
+        </UserProfile>
+        <UserStatus>
+          <UpdateStatus>
+            <box-icon name="smile" color="#707070" size="24px"></box-icon>
+            <span>Update your status</span>
+          </UpdateStatus>
+          <SetStatus onClick={isUserActiveHandler}>
+            Set yourself as <b>{isUserActive ? "active" : "away"}</b>
+          </SetStatus>
+          <PauseNotification>
+            <span>Pause notifications</span>
+            <box-icon
+              name="chevron-right"
+              color="var(--profile-font-color)"
+              size="17px"
+            ></box-icon>
+          </PauseNotification>
+        </UserStatus>
+        <ProfileOptions>
+          <Profile>
+            <span>Profile</span>
+          </Profile>
+          <Preference>
+            <span>Preferences</span>
+          </Preference>
+        </ProfileOptions>
+        <DownloadWrapper>
+          <Download>
+            <span>Downloads</span>
+            <span className="download-shortcut">Ctrl+Shift+J</span>
+          </Download>
+        </DownloadWrapper>
+        <SignOut onClick={logOutHandler}>
+          <span>Sign out of {workspaceName}</span>
+        </SignOut>
+      </UserInfo>
+    </Container>
+  );
+};
+
+export default UserSetting;
 
 const Container = styled.div`
     position: absolute;
@@ -79,17 +93,17 @@ const Container = styled.div`
     z-index: 10;
     font-size: 15px;
     cursor: default;
-`
+`;
 const UserInfo = styled.div`
     
-`
+`;
 const UserProfile = styled.div`
     display: flex;
     align-items: center;
     margin-top: 24px;
     margin-left: 24px;
     margin-bottom: 10px;
-`
+`;
 const UserImage = styled.div`
     width: 36px;
     height:36px;
@@ -99,17 +113,17 @@ const UserImage = styled.div`
     img {
         width: 100%;
     }
-`
+`;
 const UserName = styled.div`
     display: flex;
     flex-direction: column;
     font-size: 14px;
-`
+`;
 const UserStatus = styled.div`
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
-`
+`;
 const UpdateStatus = styled.div`
     display: flex;
     align-items: center;
@@ -129,7 +143,7 @@ const UpdateStatus = styled.div`
     :hover {
         border: 1px solid #C6C6C6;
     }
-`
+`;
 const SetStatus = styled.div`
     padding: 4px 24px;
     cursor: pointer;
@@ -138,7 +152,7 @@ const SetStatus = styled.div`
         background: #1264A3;
         color: #FFFFFF;
     }
-`
+`;
 const PauseNotification = styled.div`
     display: flex;
     align-items: center;
@@ -153,12 +167,12 @@ const PauseNotification = styled.div`
     box-icon:hover {
         color: #FFFFFF;
     }
-`
+`;
 const ProfileOptions = styled.div`
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
-`
+`;
 const Profile = styled.div`
     display: flex;
     align-items: center;
@@ -169,7 +183,7 @@ const Profile = styled.div`
         background: #1264A3;
         color: #FFFFFF;
     }
-`
+`;
 const Preference = styled.div`
     display: flex;
     align-items: center;
@@ -180,12 +194,12 @@ const Preference = styled.div`
         background: #1264A3;
         color: #FFFFFF;
     }
-`
+`;
 const DownloadWrapper = styled.div`
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
-`
+`;
 const Download = styled.div`
     display: flex;
     align-items: center;
@@ -197,7 +211,7 @@ const Download = styled.div`
         background: #1264A3;
         color: #FFFFFF;
     }
-`
+`;
 const SignOut = styled.div`
     padding: 4px 24px;
     margin-bottom: 10px;
@@ -207,4 +221,4 @@ const SignOut = styled.div`
         background: #1264A3;
         color: #FFFFFF;
     }
-`
+`;
