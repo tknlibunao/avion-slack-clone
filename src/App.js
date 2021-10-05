@@ -287,51 +287,6 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
-	// const selectChannel = () => {
-	// 	var myHeaders = new Headers();
-	// 	myHeaders.append('access-token', `${accessToken}`);
-	// 	myHeaders.append('client', `${client}`);
-	// 	myHeaders.append('expiry', `${expiry}`);
-	// 	myHeaders.append('uid', `${uid}`);
-
-	// 	var requestOptions = {
-	// 		method: 'GET',
-	// 		headers: myHeaders,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	fetch('http://206.189.91.54//api/v1/channels/676', requestOptions)
-	// 		.then((response) => response.json())
-	// 		.then((result) => console.log(result))
-	// 		.catch((error) => console.log('error', error));
-	// };
-
-	// const addMember = () => {
-	// 	var myHeaders = new Headers();
-	// 	myHeaders.append('Content-Type', 'application/json');
-	// 	myHeaders.append('access-token', `${accessToken}`);
-	// 	myHeaders.append('client', `${client}`);
-	// 	myHeaders.append('expiry', `${expiry}`);
-	// 	myHeaders.append('uid', `${uid}`);
-
-	// 	var raw = JSON.stringify({
-	// 		id: 676,
-	// 		member_id: 1,
-	// 	});
-
-	// 	var requestOptions = {
-	// 		method: 'POST',
-	// 		headers: myHeaders,
-	// 		body: raw,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	fetch('http://206.189.91.54//api/v1/channel/add_member', requestOptions)
-	// 		.then((response) => response.text())
-	// 		.then((result) => console.log(result))
-	// 		.catch((error) => console.log('error', error));
-	// };
-
 	useEffect(() => {
 		getMyChannels();
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
