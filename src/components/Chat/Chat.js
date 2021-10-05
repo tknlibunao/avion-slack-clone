@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
@@ -11,6 +11,16 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
   const [messageList, setMessageList] = useState([]);
   const [channelMembers, setChannelMembers] = useState([]);
   const [newMember, setNewMember] = useState(0);
+
+  const messageEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView();
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
 
   const getChatDisplay = () => {
     let items = [];
@@ -241,6 +251,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
             date={item.created_at}
           />
         ))}
+        <div ref={messageEndRef} />
       </MessageContainer>
       <ChatInput
         onSubmit={sendMessage}
