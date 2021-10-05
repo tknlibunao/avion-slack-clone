@@ -20,19 +20,11 @@ import Register from './components/Register/Register';
 import styled from 'styled-components';
 
 function App() {
-	/* HEADER PARAMETERS */
-	// const [accessToken, setAccessToken] = useState('');
-	// const [client, setClient] = useState('');
-	// const [expiry, setExpiry] = useState('');
-	// const [uid, setUID] = useState('');
-
 	/* USER PARAMETERS */
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmation, setConfirmation] = useState('');
-
 	const [error, setError] = useState('');
-	// const [message, setMessage] = useState('');
 
 	/* API DATA */
 	const [channelsList, setChannelsList] = useState([]);
@@ -44,8 +36,34 @@ function App() {
 	const [success, setSuccess] = useState(false);
 	const [newChannel, setNewChannel] = useState(0);
 
-	/* Define URL */
+	/* INITIALIZE HEADERS */
+	var myHeaders = new Headers();
+	myHeaders.append('Content-Type', 'application/json');
+	myHeaders.append('access-token', localStorage.getItem('token'));
+	myHeaders.append('client', localStorage.getItem('client'));
+	myHeaders.append('expiry', localStorage.getItem('expiry'));
+	myHeaders.append('uid', localStorage.getItem('uid'));
+
+	/* DEFINE URL */
 	const url = 'http://206.189.91.54//api/v1';
+
+	/* HELPER FUNCTIONS */
+
+	const sortList = (list) => {
+		return list.sort(function (a, b) {
+			if (a.updated_at > b.updated_at) return -1;
+			if (a.updated_at < b.updated_at) return 1;
+			return 0;
+		});
+	};
+
+	const removeDuplicate = (list) => {
+		return list.filter(
+			(item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
+		);
+	};
+
+	/* MAIN FUNCTIONS */
 
 	const inputUser = (e) => {
 		setEmail(e.target.value);
@@ -57,39 +75,11 @@ function App() {
 	const inputConfirmation = (e) => {
 		setConfirmation(e.target.value);
 	};
-	// const inputMessage = (e) => {
-	// 	setMessage(e.target.value);
-	// };
-
-	/* Initialize Headers */
-	var myHeaders = new Headers();
-	myHeaders.append('Content-Type', 'application/json');
-	myHeaders.append('access-token', localStorage.getItem('token'));
-	myHeaders.append('client', localStorage.getItem('client'));
-	myHeaders.append('expiry', localStorage.getItem('expiry'));
-	myHeaders.append('uid', localStorage.getItem('uid'));
 
 	const registerUser = (e) => {
 		e.preventDefault();
-		// let myHeaders = new Headers();
-		// myHeaders.append("Content-Type", "application/json");
 
-		// let raw = JSON.stringify({
-		//   email: "usersample03@gmail.com",
-		//   password: "12345678",
-		//   password_confirmation: "12345678",
-		// });
-
-		// let requestOptions = {
-		//   method: "POST",
-		//   headers: myHeaders,
-		//   body: raw,
-		//   redirect: "follow",
-		// };
-
-		// call fetch here
-
-		fetch('http://206.189.91.54//api/v1/auth', {
+		fetch(`${url}/auth`, {
 			method: 'POST',
 			body: JSON.stringify({
 				email: email,
@@ -120,19 +110,15 @@ function App() {
 					setPassword('');
 					setConfirmation('');
 				}
-
 				// history.push("/login");
 			})
-			.catch((error) => {
-				console.log(error);
-			});
+			.catch((error) => console.log(error));
 	};
 
 	const loginUser = (e) => {
 		e.preventDefault();
 		let raw = JSON.stringify({
 			email: email,
-			// email: 'usersample03@gmail.com',
 			password: password,
 		});
 
@@ -176,98 +162,6 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
-	// const sendMessage = (e) => {
-	// 	e.preventDefault();
-
-	// 	if (message === '') {
-	// 		return;
-	// 	} else {
-	// 		fetch(`${url}/messages`, {
-	// 			method: 'POST',
-	// 			body: JSON.stringify({
-	// 				receiver_id: 1,
-	// 				receiver_class: 'User',
-	// 				body: message,
-	// 			}),
-	// 			headers: myHeaders,
-	// 			redirect: 'follow',
-	// 		})
-	// 			.then((res) => {
-	// 				console.log(res);
-	// 				if (res.status === 200) {
-	// 					setMessage('');
-	// 				}
-	// 			})
-	// 			.catch((err) => console.log(err));
-	// 	}
-	// };
-	// const registerUser = () => {
-	// 	let myHeaders = new Headers();
-	// 	myHeaders.append('Content-Type', 'application/json');
-
-	// 	let raw = JSON.stringify({
-	// 		email: 'usersample03@gmail.com',
-	// 		password: '12345678',
-	// 		password_confirmation: '12345678',
-	// 	});
-
-	// 	let requestOptions = {
-	// 		method: 'POST',
-	// 		headers: myHeaders,
-	// 		body: raw,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	// call fetch here
-	// 	post('http://206.189.91.54//api/v1/auth', requestOptions)
-	// 		.then((result) =>
-	// 			console.log(`Data: ${result.data.email}\nStatus: ${result.status}`)
-	// 		)
-	// 		.catch((error) => console.log(error.errors));
-	// };
-
-	// const loginUser = () => {
-	// 	let raw = JSON.stringify({
-	// 		email: 'user2@example.com', // already existing in the database beforehand
-	// 		// email: 'usersample03@gmail.com', // own registered test account
-	// 		password: '12345678',
-	// 	});
-
-	// 	let requestOptions = {
-	// 		method: 'POST',
-	// 		headers: myHeaders,
-	// 		body: raw,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	fetch(`${url}/auth/sign_in`, requestOptions)
-	// 		.then((response) => {
-	// 			response.headers.forEach((item, key) => {
-	// 				switch (key) {
-	// 					case 'access-token':
-	// 						setAccessToken(item);
-	// 						break;
-	// 					case 'client':
-	// 						setClient(item);
-	// 						break;
-	// 					case 'expiry':
-	// 						setExpiry(item);
-	// 						break;
-	// 					case 'uid':
-	// 						setUID(item);
-	// 						break;
-	// 					default:
-	// 						break;
-	// 				}
-	// 			});
-	// 			if (response.status === 200) {
-	// 				// console.log('LOGIN SUCCESS');
-	// 				setSuccess(true);
-	// 			}
-	// 		})
-	// 		.catch((error) => console.log('error', error));
-	// };
-
 	const getMyChannels = () => {
 		var requestOptions = {
 			method: 'GET',
@@ -289,14 +183,6 @@ function App() {
 				setMyChannels(sortList(updatedList));
 			})
 			.catch((error) => console.log('error', error));
-	};
-
-	const sortList = (list) => {
-		return list.sort(function (a, b) {
-			if (a.updated_at > b.updated_at) return -1;
-			if (a.updated_at < b.updated_at) return 1;
-			return 0;
-		});
 	};
 
 	const createNewChannel = () => {
@@ -353,7 +239,7 @@ function App() {
 			redirect: 'follow',
 		};
 
-		fetch('http://206.189.91.54//api/v1/users/recent', requestOptions)
+		fetch(`${url}/users/recent`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				let updatedList = [];
@@ -371,39 +257,6 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
-	const removeDuplicate = (list) => {
-		return list.filter(
-			(item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
-		);
-	};
-
-	// const retrieveMessage = () => {
-	// 	var myHeaders = new Headers();
-	// 	myHeaders.append('access-token', `${accessToken}`);
-	// 	myHeaders.append('client', `${client}`);
-	// 	myHeaders.append('expiry', `${expiry}`);
-	// 	myHeaders.append('uid', `${uid}`);
-
-	// 	var requestOptions = {
-	// 		method: 'GET',
-	// 		headers: myHeaders,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	// receiver_id: check id from recently DMs
-	// 	// NOTE: receiver_id can also be the sender of the message to our user
-	// 	// check the result.data.forEach(item.[sender/receiver].uid) to see who is sender/receiver
-
-	// 	// receiver_class: [Channel/User]
-	// 	fetch(
-	// 		'http://206.189.91.54//api/v1/messages?receiver_class=User&receiver_id=496',
-	// 		requestOptions
-	// 	)
-	// 		.then((response) => response.json())
-	// 		.then((result) => console.log(result.data))
-	// 		.catch((error) => console.log('error', error));
-	// };
-
 	const getAllChannels = () => {
 		let requestOptions = {
 			method: 'GET',
@@ -411,7 +264,7 @@ function App() {
 			redirect: 'follow',
 		};
 
-		fetch('http://206.189.91.54//api/v1/channels', requestOptions)
+		fetch(`${url}/channels`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				let updatedList = [];
@@ -479,10 +332,6 @@ function App() {
 	// 		.catch((error) => console.log('error', error));
 	// };
 
-	// useEffect(() => {
-	//   loginUser();
-	// }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
 	useEffect(() => {
 		getMyChannels();
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -491,28 +340,13 @@ function App() {
 		getAllChannels();
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// useEffect(() => {
-	// 	if (success) getAllUsers();
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
-
 	useEffect(() => {
 		getDMs();
 	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// useEffect(() => {
-	// 	console.log(DMList);
-	// }, [DMList]);
-	// useEffect(() => {
-	// 	retrieveMessage();
+	// 	if (success) getAllUsers();
 	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	// useEffect(() => {
-	// 	selectChannel();
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	// useEffect(() => {
-	// 	console.log(myChannels);
-	// }, [myChannels]);
 
 	// useEffect(() => {
 	// 	console.log(DMList);
@@ -525,10 +359,6 @@ function App() {
 	// useEffect(() => {
 	// 	console.log(usersList);
 	// }, [usersList]);
-
-	// useEffect(() => {
-	// 	addMember();
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div className='App'>
