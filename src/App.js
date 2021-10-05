@@ -293,8 +293,8 @@ function App() {
 
 	const sortList = (list) => {
 		return list.sort(function (a, b) {
-			if (a.created_at < b.created_at) return -1;
-			if (a.created_at > b.created_at) return 1;
+			if (a.updated_at > b.updated_at) return -1;
+			if (a.updated_at < b.updated_at) return 1;
 			return 0;
 		});
 	};
@@ -362,9 +362,10 @@ function App() {
 						id: item.id,
 						uid: item.uid,
 						created_at: item.created_at,
+						updated_at: item.updated_at,
 					});
 				});
-				updatedList = removeDuplicate(updatedList);
+				updatedList = sortList(removeDuplicate(updatedList));
 				setDMList(updatedList);
 			})
 			.catch((error) => console.log('error', error));
@@ -548,7 +549,6 @@ function App() {
 										/>
 										<Route path='/room/:path/:id'>
 											<Chat
-												// onKeyPress={submitOnEnter}
 												channelsList={myChannels}
 												DMList={DMList}
 												myHeaders={myHeaders}
@@ -616,6 +616,6 @@ const Container = styled.div`
 `;
 const Main = styled.div`
 	display: grid;
-	grid-template-columns: 260px auto;
+	grid-template-columns: 300px auto;
 	background: var(--chatarea-color);
 `;
