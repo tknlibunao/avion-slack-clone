@@ -1,236 +1,241 @@
-import React from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router";
-import { sidebarItems } from "../../data/SidebarData";
+import React from 'react';
+import styled from 'styled-components';
+import { useHistory } from 'react-router';
+import { sidebarItems } from '../../data/SidebarData';
 
 const Sidebar = ({ channelsList, addChannel, DMList }) => {
-  const history = useHistory();
+	const history = useHistory();
 
-  const goToChannel = (id) => {
-    if (id) {
-      history.push(`/room/channel/${id}`);
-    }
-  };
+	const goToChannel = (id) => {
+		if (id) {
+			history.push(`/room/channel/${id}`);
+		}
+	};
 
-  const goToDM = (id) => {
-    if (id) {
-      history.push(`/room/messages/${id}`);
-    }
-  };
+	const goToDM = (id) => {
+		if (id) {
+			history.push(`/room/messages/${id}`);
+		}
+	};
 
-  return (
-    <Container>
-      <WorkspaceContainer>
-        <Name>
-          <span>Avion School</span>
-          <box-icon
-            name="chevron-down"
-            color="var(--sidebar-font-color)"
-          ></box-icon>
-        </Name>
-        <NewMessage>
-          <box-icon name="edit" color="var(--sidebar-color)"></box-icon>
-        </NewMessage>
-      </WorkspaceContainer>
-      <MainChannels>
-        {sidebarItems.map((item) => (
-          <MainChannelItem>
-            {item.icon}
-            {item.text}
-          </MainChannelItem>
-        ))}
-      </MainChannels>
-      <ChannelsContainer>
-        <NewChannelContainer>
-          <div>
-            <span>Channels</span>
-          </div>
-          <box-icon
-            name="plus"
-            color="var(--sidebar-font-color)"
-            onClick={addChannel}
-          ></box-icon>
-        </NewChannelContainer>
-        <ChannelsList>
-          {channelsList.map((item, index) => (
-            <Channel key={index} onClick={() => goToChannel(item.id)}>
-              <box-icon
-                name="hash"
-                color="var(--sidebar-font-color)"
-              ></box-icon>
-              <span>{item.name}</span>
-            </Channel>
-          ))}
-        </ChannelsList>
-      </ChannelsContainer>
-      <DirectMessageContainer>
-        <NewDirectMessage>
-          <span>Direct Messages</span>
-          <box-icon name="plus" color="var(--sidebar-font-color)"></box-icon>
-        </NewDirectMessage>
-        <DirectMessageList>
-          {DMList.map((item, index) => (
-            <DirectMessage key={index} onClick={() => goToDM(item.id)}>
-              <box-icon
-                name="user-rectangle"
-                color="var(--sidebar-font-color)"
-                type="solid"
-              ></box-icon>
-              <span>{item.uid}</span>
-            </DirectMessage>
-          ))}
-        </DirectMessageList>
-      </DirectMessageContainer>
-    </Container>
-  );
+	return (
+		<Container>
+			<WorkspaceContainer>
+				<Name>
+					<span>Avion School</span>
+					<box-icon
+						name='chevron-down'
+						color='var(--sidebar-font-color)'
+					></box-icon>
+				</Name>
+				<NewMessage>
+					<box-icon name='edit' color='var(--sidebar-color)'></box-icon>
+				</NewMessage>
+			</WorkspaceContainer>
+			<MainChannels>
+				{sidebarItems.map((item, index) => (
+					<MainChannelItem key={index}>
+						{item.icon}
+						{item.text}
+					</MainChannelItem>
+				))}
+			</MainChannels>
+			<ChannelsContainer>
+				<NewChannelContainer>
+					<div>
+						<span>Channels</span>
+					</div>
+						<box-icon
+							name='plus'
+							color='var(--sidebar-font-color)'
+							style={{ cursor: 'pointer' }}
+							onClick={addChannel}
+						></box-icon>
+				</NewChannelContainer>
+				<ChannelsList>
+					{channelsList.map((item, index) => (
+						<Channel key={index} onClick={() => goToChannel(item.id)}>
+							<box-icon
+								name='hash'
+								color='var(--sidebar-font-color)'
+							></box-icon>
+							<span>{item.name}</span>
+						</Channel>
+					))}
+				</ChannelsList>
+			</ChannelsContainer>
+			<DirectMessageContainer>
+				<NewDirectMessage>
+					<span>Direct Messages</span>
+					<box-icon name='plus' color='var(--sidebar-font-color)'></box-icon>
+				</NewDirectMessage>
+				<DirectMessageList>
+					{DMList.map((item, index) => (
+						<DirectMessage key={index} onClick={() => goToDM(item.id)}>
+							<box-icon
+								name='user-rectangle'
+								color='var(--sidebar-font-color)'
+								type='solid'
+							></box-icon>
+							<span>{item.uid}</span>
+						</DirectMessage>
+					))}
+				</DirectMessageList>
+			</DirectMessageContainer>
+		</Container>
+	);
 };
 
 export default Sidebar;
 
 const Container = styled.div`
-    background-color: var(--sidebar-color);
+	background-color: var(--sidebar-color);
+	height: 100%;
 `;
 
 const WorkspaceContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--workspace-color);
-    height: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-bottom: 1px solid #532652;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--workspace-color);
+	height: 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-bottom: 1px solid #532652;
 `;
 
 const Name = styled.div`
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 
-    span {
-        font-weight: bolder;
-        font-size: 1.2em;
-    }
+	span {
+		font-weight: bolder;
+		font-size: 1.2em;
+	}
 `;
 
 const NewMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background-color: var(--workspace-color);
-    border-radius: 50%;
-    cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	background-color: var(--workspace-color);
+	border-radius: 50%;
+	cursor: pointer;
 `;
 
 const MainChannels = styled.div`
-    align-items: center;
-    padding-top: 20px;
-    cursor: pointer;
+	align-items: center;
+	padding-top: 20px;
+	cursor: pointer;
 `;
 
 const MainChannelItem = styled.div`
-    display: grid;
-    grid-template-columns: 15% auto;
-    height: 30px;
-    padding-left: 20px;
-    color: var(--sidebar-font-color);
+	display: grid;
+	grid-template-columns: 15% auto;
+	height: 30px;
+	padding-left: 20px;
+	color: var(--sidebar-font-color);
 
-    span {
-        padding-left: 10px;
-    }
+	span {
+		padding-left: 10px;
+	}
 
-    :hover:not(:last-child) {
-        background-color: var(--sidebar-hover);
-    }
+	:hover:not(:last-child) {
+		background-color: var(--sidebar-hover);
+	}
 
-    :hover:last-child {
-        color: var(--workspace-color) !important;
-    }
+	:hover:last-child {
+		color: var(--workspace-color) !important;
+	}
 `;
 
 const ChannelsContainer = styled.div`
-    color: var(--sidebar-font-color);
-    margin-top: 10px;
+	color: var(--sidebar-font-color);
+	// height: 175px;
+	margin-top: 10px;
 `;
 
 const NewChannelContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 `;
 
 const ChannelsList = styled.div`
-height:200px;
-overflow-y: auto;
+	height: 85%;
+	overflow-y: auto;
 
-::-webkit-scrollbar{
-    width:10px;
-}
-::-webkit-scrollbar-thumb{
-    background-color:#2b0029;
-    border-radius:10px;
-}
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #2b0029;
+		border-radius: 10px;
+	}
 `;
 
 const Channel = styled.div`
-    display: flex;
-    align-items: center;
-    height: 30px;
-    padding-left: 20px;
-    cursor: pointer;
+	display: flex;
+	align-items: center;
+	height: 30px;
+	padding-left: 20px;
+	cursor: pointer;
 
-    span {
-        padding-left: 10px;
-    }
+	span {
+		padding-left: 10px;
+	}
 
-    :hover {
-        background-color: var(--sidebar-hover);
-    }
+	:hover {
+		background-color: var(--sidebar-hover);
+	}
 `;
 
 const DirectMessageContainer = styled.div`
-    color: var(--sidebar-font-color);
-    margin-top: 10px;
+	color: var(--sidebar-font-color);
+	// height: 175px;
+	margin-top: 10px;
 `;
 
 const NewDirectMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 `;
 
 const DirectMessageList = styled.div`
-height:200px;
-overflow-y: auto;
-overflow-x: hidden;
-::-webkit-scrollbar{
-    width:10px;
-}
-::-webkit-scrollbar-thumb{
-    background-color:#2b0029;
-    border-radius:10px;
-}
+	height: 85%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #2b0029;
+		border-radius: 10px;
+	}
 `;
 
 const DirectMessage = styled.div`
-    display: flex;
-    align-items: center;
-    height: 30px;
-    padding-left: 20px;
-    cursor: pointer;
+	display: flex;
+	// font-size: 13px;
+	align-items: center;
+	height: 30px;
+	padding-left: 20px;
+	cursor: pointer;
 
-    span {
-        padding-left: 10px;
-    }
+	span {
+		padding-left: 10px;
+	}
 
-    :hover {
-        background-color: var(--sidebar-hover);
-    }
+	:hover {
+		background-color: var(--sidebar-hover);
+	}
 `;
