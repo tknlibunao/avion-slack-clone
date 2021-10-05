@@ -32,7 +32,7 @@ function App() {
 	const [confirmation, setConfirmation] = useState('');
 
 	const [error, setError] = useState('');
-	const [message, setMessage] = useState('');
+	// const [message, setMessage] = useState('');
 
 	/* API DATA */
 	const [channelsList, setChannelsList] = useState([]);
@@ -57,9 +57,9 @@ function App() {
 	const inputConfirmation = (e) => {
 		setConfirmation(e.target.value);
 	};
-	const inputMessage = (e) => {
-		setMessage(e.target.value);
-	};
+	// const inputMessage = (e) => {
+	// 	setMessage(e.target.value);
+	// };
 
 	/* Initialize Headers */
 	var myHeaders = new Headers();
@@ -176,31 +176,31 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
-	const sendMessage = (e) => {
-		e.preventDefault();
+	// const sendMessage = (e) => {
+	// 	e.preventDefault();
 
-		if (message === '') {
-			return;
-		} else {
-			fetch(`${url}/messages`, {
-				method: 'POST',
-				body: JSON.stringify({
-					receiver_id: 1,
-					receiver_class: 'User',
-					body: message,
-				}),
-				headers: myHeaders,
-				redirect: 'follow',
-			})
-				.then((res) => {
-					console.log(res);
-					if (res.status === 200) {
-						setMessage('');
-					}
-				})
-				.catch((err) => console.log(err));
-		}
-	};
+	// 	if (message === '') {
+	// 		return;
+	// 	} else {
+	// 		fetch(`${url}/messages`, {
+	// 			method: 'POST',
+	// 			body: JSON.stringify({
+	// 				receiver_id: 1,
+	// 				receiver_class: 'User',
+	// 				body: message,
+	// 			}),
+	// 			headers: myHeaders,
+	// 			redirect: 'follow',
+	// 		})
+	// 			.then((res) => {
+	// 				console.log(res);
+	// 				if (res.status === 200) {
+	// 					setMessage('');
+	// 				}
+	// 			})
+	// 			.catch((err) => console.log(err));
+	// 	}
+	// };
 	// const registerUser = () => {
 	// 	let myHeaders = new Headers();
 	// 	myHeaders.append('Content-Type', 'application/json');
@@ -553,9 +553,9 @@ function App() {
 												DMList={DMList}
 												myHeaders={myHeaders}
 												url={url}
-												onClick={sendMessage}
-												message={message}
-												onChange={inputMessage}
+												// onClick={sendMessage}
+												// message={message}
+												// onChange={inputMessage}
 											/>
 										</Route>
 										{/* <Route path='/room'>Select channel</Route> */}
