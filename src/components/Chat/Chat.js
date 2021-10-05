@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 
-const Chat = ({ onChange, message, onClick }) => {
+const Chat = ({ onChange, message, onClick, channelsList, DMList }) => {
+	let { path, id } = useParams();
+	const [display, setDisplay] = useState({ id });
+
+	const getChatDisplay = () => {
+		let items = [];
+		switch (path) {
+			case 'channel':
+				items = channelsList;
+				break;
+			case 'messages':
+				items = DMList;
+				break;
+			default:
+		}
+		items.forEach((item) => {
+			if (Number(id) === Number(item.id)) {
+				setDisplay(item);
+			}
+		});
+	};
+
+	useEffect(() => {
+		getChatDisplay();
+	}, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
+
 	return (
 		<Container>
 			<Header>
 				<Channel>
-					<ChannelName># Channel 1</ChannelName>
+					<ChannelName>
+						{path === 'channel' ? display.name : display.uid}
+					</ChannelName>
 					<ChannelInfo>
 						{/* <box-icon name='plus' color='var(--channelinfo-color)' size='20px'></box-icon>
                         <span>Add a bookmark</span> */}
