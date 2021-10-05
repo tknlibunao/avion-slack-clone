@@ -28,7 +28,7 @@ function App() {
 
 	/* API DATA */
 	const [channelsList, setChannelsList] = useState([]);
-	// const [usersList, setUsersList] = useState([]);
+	const [usersList, setUsersList] = useState([]);
 	const [myChannels, setMyChannels] = useState([]);
 	const [DMList, setDMList] = useState([]);
 
@@ -61,6 +61,14 @@ function App() {
 		return list.filter(
 			(item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
 		);
+	};
+
+	const arrangeList = (list) => {
+		return list.sort(function (a, b) {
+			if (a.id < b.id) return -1;
+			if (a.id > b.id) return 1;
+			return 0;
+		});
 	};
 
 	/* MAIN FUNCTIONS */
@@ -209,28 +217,28 @@ function App() {
 		getMyChannels();
 	};
 
-	// const getAllUsers = () => {
-	// 	var requestOptions = {
-	// 		method: 'GET',
-	// 		headers: myHeaders,
-	// 		redirect: 'follow',
-	// 	};
+	const getAllUsers = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-	// 	fetch('http://206.189.91.54//api/v1/users', requestOptions)
-	// 		.then((response) => response.json())
-	// 		.then((result) => {
-	// 			let updatedList = [];
-	// 			result.data.forEach((item) => {
-	// 				updatedList.push({
-	// 					name: item.name,
-	// 					id: item.id,
-	// 					uid: item.uid,
-	// 				});
-	// 			});
-	// 			setUsersList(updatedList);
-	// 		})
-	// 		.catch((error) => console.log('error', error));
-	// };
+		fetch(`${url}/users`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						uid: item.uid,
+					});
+				});
+				setUsersList(arrangeList(updatedList));
+			})
+			.catch((error) => console.log('error', error));
+	};
 
 	const getDMs = () => {
 		var requestOptions = {
@@ -247,11 +255,15 @@ function App() {
 					updatedList.push({
 						id: item.id,
 						uid: item.uid,
-						created_at: item.created_at,
-						updated_at: item.updated_at,
+						created_at: new Date(item.created_at),
+						updated_at: new Date(item.updated_at),
 					});
 				});
 				updatedList = sortList(removeDuplicate(updatedList));
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+					item.updated_at = item.updated_at.toUTCString();
+				});
 				setDMList(updatedList);
 			})
 			.catch((error) => console.log('error', error));
@@ -299,9 +311,9 @@ function App() {
 		getDMs();
 	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// useEffect(() => {
-	// 	if (success) getAllUsers();
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getAllUsers();
+	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// useEffect(() => {
 	// 	console.log(DMList);
@@ -330,6 +342,7 @@ function App() {
 											channelsList={channelsList}
 											addChannel={createNewChannel}
 											DMList={DMList}
+											usersList={usersList}
 										/>
 										<Route path='/room/:path/:id'>
 											<Chat
@@ -338,9 +351,7 @@ function App() {
 												DMList={DMList}
 												myHeaders={myHeaders}
 												url={url}
-												// onClick={sendMessage}
-												// message={message}
-												// onChange={inputMessage}
+												usersList={usersList}
 											/>
 										</Route>
 										{/* <Route path='/room'>Select channel</Route> */}
