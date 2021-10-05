@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 
-const Chat = ({ channelsList, DMList, myHeaders, url }) => {
+const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
 	const [display, setDisplay] = useState({ id });
 	const [message, setMessage] = useState('');
@@ -32,6 +32,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 
 	/* CHANNEL FUNCTIONS */
 	const getChannelDetails = () => {
+		if (path === 'messages') return;
 		var requestOptions = {
 			method: 'GET',
 			headers: myHeaders,
@@ -149,6 +150,21 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 				updatedList.forEach((item) => {
 					item.created_at = item.created_at.toUTCString();
 				});
+
+				// let user = usersList.find(
+				// 	(item) => item.uid === localStorage.getItem('uid')
+				// );
+
+				// if (path === 'messages' && String(id) === String(user.id)) {
+				// 	console.log(updatedList);
+				// 	let ownDM = [];
+				// 	for (let i = 0; i < updatedList.length; i++) {
+				// 		if (i % 2 === 0) ownDM.push(updatedList[i]);
+				// 	}
+				// 	console.log(ownDM);
+				// 	return setMessageList(ownDM);
+				// }
+
 				setMessageList(updatedList);
 			})
 			.catch((error) => console.log('error', error));
@@ -172,7 +188,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 				break;
 			default:
 		}
-	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [path, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Container>
@@ -189,7 +205,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 								? channelMembers.length + ' members'
 								: channelMembers.length + ' member')}
 
-						{path === 'messages' && display.updated_at}
+						{path === 'messages' && 'Updated on ' + display.updated_at}
 					</ChannelInfo>
 				</Channel>
 				<ChannelDetails>
