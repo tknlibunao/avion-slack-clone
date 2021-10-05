@@ -4,17 +4,10 @@ import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 
-const Chat = ({
-	onChange,
-	message,
-	onClick,
-	channelsList,
-	DMList,
-	myHeaders,
-	url,
-}) => {
+const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 	let { path, id } = useParams();
 	const [display, setDisplay] = useState({ id });
+	const [message, setMessage] = useState('');
 	const [messageList, setMessageList] = useState([]);
 
 	const getChatDisplay = () => {
@@ -33,6 +26,46 @@ const Chat = ({
 				setDisplay(item);
 			}
 		});
+	};
+	const inputMessage = (e) => {
+		setMessage(e.target.value);
+	};
+
+	const sendMessage = (e) => {
+		e.preventDefault();
+
+		if (message === '') {
+			return;
+		} else {
+			let receiver_class = '';
+			switch (path) {
+				case 'channel':
+					receiver_class = 'Channel';
+					break;
+				case 'messages':
+					receiver_class = 'User';
+					break;
+				default:
+			}
+			fetch(`${url}/messages`, {
+				method: 'POST',
+				body: JSON.stringify({
+					receiver_id: id,
+					receiver_class: receiver_class,
+					body: message,
+				}),
+				headers: myHeaders,
+				redirect: 'follow',
+			})
+				.then((res) => {
+					console.log(res);
+					if (res.status === 200) {
+						setMessage('');
+					}
+					retrieveMessage(receiver_class);
+				})
+				.catch((err) => console.log(err));
+		}
 	};
 
 	const retrieveMessage = (receiverClass) => {
@@ -111,7 +144,12 @@ const Chat = ({
 					/>
 				))}
 			</MessageContainer>
-			<ChatInput onClick={onClick} message={message} onChange={onChange} />
+			<ChatInput
+				onSubmit={sendMessage}
+				onClick={sendMessage}
+				message={message}
+				onChange={inputMessage}
+			/>
 		</Container>
 	);
 };
