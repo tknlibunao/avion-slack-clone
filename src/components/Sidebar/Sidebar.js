@@ -167,11 +167,11 @@ const NewChannelContainer = styled.div`
 `;
 
 const ChannelsList = styled.div`
-	height: 85%;
+	// height: 85%;
 	overflow-y: auto;
 
 	::-webkit-scrollbar {
-		width: 10px;
+		width: 7px;
 	}
 	::-webkit-scrollbar-thumb {
 		background-color: #2b0029;
@@ -211,11 +211,11 @@ const NewDirectMessage = styled.div`
 `;
 
 const DirectMessageList = styled.div`
-	height: 85%;
+	// height: 85%;
 	overflow-y: auto;
 	overflow-x: hidden;
 	::-webkit-scrollbar {
-		width: 10px;
+		width: 7px;
 	}
 	::-webkit-scrollbar-thumb {
 		background-color: #2b0029;
