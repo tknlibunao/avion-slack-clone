@@ -153,7 +153,7 @@ const MainChannelItem = styled.div`
 
 const ChannelsContainer = styled.div`
 	color: var(--sidebar-font-color);
-	// height: 175px;
+	height: 175px;
 	margin-top: 10px;
 `;
 
@@ -197,7 +197,7 @@ const Channel = styled.div`
 
 const DirectMessageContainer = styled.div`
 	color: var(--sidebar-font-color);
-	// height: 175px;
+	height: 175px;
 	margin-top: 10px;
 `;
 
