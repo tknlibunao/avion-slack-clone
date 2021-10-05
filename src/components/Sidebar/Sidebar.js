@@ -205,14 +205,6 @@ const DirectMessageContainer = styled.div`
 `;
 
 const NewDirectMessage = styled.div`
-<<<<<<< HEAD
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 30px;
-	padding-left: 20px;
-	padding-right: 20px;
-=======
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -223,7 +215,6 @@ const NewDirectMessage = styled.div`
     box-icon:hover {
         cursor: pointer;
     }
->>>>>>> d68b047a6cd72e1951e4efa239887b9bbd4c1ba1
 `;
 
 const DirectMessageList = styled.div`
