@@ -167,7 +167,7 @@ const NewChannelContainer = styled.div`
 `;
 
 const ChannelsList = styled.div`
-	// height: 85%;
+	height: 85%;
 	overflow-y: auto;
 
 	::-webkit-scrollbar {
@@ -211,7 +211,7 @@ const NewDirectMessage = styled.div`
 `;
 
 const DirectMessageList = styled.div`
-	// height: 85%;
+	height: 85%;
 	overflow-y: auto;
 	overflow-x: hidden;
 	::-webkit-scrollbar {
@@ -225,7 +225,7 @@ const DirectMessageList = styled.div`
 
 const DirectMessage = styled.div`
 	display: flex;
-	// font-size: 13px;
+	font-size: 13px;
 	align-items: center;
 	height: 30px;
 	padding-left: 20px;
