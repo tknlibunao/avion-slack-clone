@@ -9,6 +9,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 	const [display, setDisplay] = useState({ id });
 	const [message, setMessage] = useState('');
 	const [messageList, setMessageList] = useState([]);
+	const [channelMembers, setChannelMembers] = useState([]);
+	const [newMember, setNewMember] = useState(0);
 
 	const getChatDisplay = () => {
 		let items = [];
@@ -27,6 +29,53 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 			}
 		});
 	};
+
+	/* CHANNEL FUNCTIONS */
+	const getChannelDetails = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
+
+		fetch(`${url}/channels/${id}`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				// console.log(result.data);
+				let updatedList = [];
+				result.data.channel_members.forEach((item) => {
+					updatedList.push(item.user_id);
+				});
+				setChannelMembers(updatedList);
+				console.log(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
+
+	const addMember = (channelId) => {
+		let memberId = prompt('Enter member ID:');
+		var raw = JSON.stringify({
+			id: channelId,
+			member_id: memberId,
+		});
+
+		var requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
+		};
+
+		fetch(`${url}/channel/add_member`, requestOptions)
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.log('error', error));
+
+		setNewMember((newMember) => newMember + 1);
+		getChannelDetails();
+	};
+
+	/* MESSAGES FUNCTIONS */
 	const inputMessage = (e) => {
 		setMessage(e.target.value);
 	};
@@ -110,6 +159,10 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 	}, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
+		getChannelDetails();
+	}, [path, id, newMember]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
 		switch (path) {
 			case 'channel':
 				retrieveMessage('Channel');
@@ -126,13 +179,42 @@ const Chat = ({ channelsList, DMList, myHeaders, url }) => {
 			<Header>
 				<Channel>
 					<ChannelName>
-						{path === 'channel' ? display.name : display.uid}
+						{path === 'channel' ? '#' + display.name : display.uid}
 					</ChannelName>
 					<ChannelInfo>
 						{/* <box-icon name='plus' color='var(--channelinfo-color)' size='20px'></box-icon>
                         <span>Add a bookmark</span> */}
+						{path === 'channel' &&
+							(channelMembers.length > 1
+								? channelMembers.length + ' members'
+								: channelMembers.length + ' member')}
+
+						{path === 'messages' && display.updated_at}
 					</ChannelInfo>
 				</Channel>
+				<ChannelDetails>
+					{/* <div>
+						{path === 'messages' ? (
+							<span>Details</span>
+						) : (
+							<span>Add member</span>
+						)}
+					</div> */}
+					{path === 'messages' ? (
+						// <Info />
+						<box-icon
+							name='info-circle'
+							color='var(--sidebar-font-color)'
+						></box-icon>
+					) : (
+						// <Add onClick={() => addMember(id)} />
+						<box-icon
+							name='user-plus'
+							color='var(--sidebar-font-color)'
+							onClick={() => addMember(id)}
+						></box-icon>
+					)}
+				</ChannelDetails>
 			</Header>
 			<MessageContainer>
 				{messageList.map((item, index) => (
@@ -163,6 +245,7 @@ const Container = styled.div`
 
 const Header = styled.div`
 	display: flex;
+	justify-content: space-between;
 	align-items: center;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -195,5 +278,15 @@ const MessageContainer = styled.div`
 	::-webkit-scrollbar-thumb {
 		background: rgb(188, 171, 188);
 		border-radius: 10px;
+	}
+`;
+
+const ChannelDetails = styled.div`
+	display: flex;
+	align-items: center;
+	color: #606060;
+
+	box-icon:hover {
+		cursor: pointer;
 	}
 `;
