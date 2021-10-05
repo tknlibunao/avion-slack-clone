@@ -48,7 +48,6 @@ const Sidebar = ({ channelsList, addChannel, DMList }) => {
 						<box-icon
 							name='plus'
 							color='var(--sidebar-font-color)'
-							style={{ cursor: 'pointer' }}
 							onClick={addChannel}
 						></box-icon>
 				</NewChannelContainer>
@@ -158,12 +157,16 @@ const ChannelsContainer = styled.div`
 `;
 
 const NewChannelContainer = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 30px;
-	padding-left: 20px;
-	padding-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    box-icon:hover {
+        cursor: pointer;
+    }
 `;
 
 const ChannelsList = styled.div`
@@ -202,12 +205,25 @@ const DirectMessageContainer = styled.div`
 `;
 
 const NewDirectMessage = styled.div`
+<<<<<<< HEAD
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	height: 30px;
 	padding-left: 20px;
 	padding-right: 20px;
+=======
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    box-icon:hover {
+        cursor: pointer;
+    }
+>>>>>>> d68b047a6cd72e1951e4efa239887b9bbd4c1ba1
 `;
 
 const DirectMessageList = styled.div`

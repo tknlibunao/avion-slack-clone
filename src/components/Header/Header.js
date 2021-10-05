@@ -1,9 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useState } from 'react'
 import 'boxicons'
 import userDefaultImage from '../../assets/userDefaultImage.png'
+import UserSetting from './UserSetting'
 
 const Header = () => {
+    const [isDisplaySettings, setDisplaySettings] = useState(false);
+    
+    const displaySettings = () => { 
+        setDisplaySettings(prevValue => !prevValue)
+    }
+    
     return (
         <Container>
             <Menu>
@@ -27,14 +35,14 @@ const Header = () => {
                     <box-icon name='help-circle' color='#d7cfd7' ></box-icon>
                 </HelpIcon>
             </Main>
-            <UserContainer>
+            <UserContainer onClick={displaySettings}>
                 <UserImage>
                     <img src={userDefaultImage} alt="User" />
                 </UserImage>
+
+                { isDisplaySettings && <UserSetting displaySettings={displaySettings}/> }
             </UserContainer>
-            
         </Container>
-            
     )
 }
 
