@@ -4,9 +4,18 @@ import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 
-const Chat = ({ onChange, message, onClick, channelsList, DMList }) => {
+const Chat = ({
+	onChange,
+	message,
+	onClick,
+	channelsList,
+	DMList,
+	myHeaders,
+	url,
+}) => {
 	let { path, id } = useParams();
 	const [display, setDisplay] = useState({ id });
+	const [messageList, setMessageList] = useState([]);
 
 	const getChatDisplay = () => {
 		let items = [];
@@ -26,9 +35,58 @@ const Chat = ({ onChange, message, onClick, channelsList, DMList }) => {
 		});
 	};
 
+	const retrieveMessage = (receiverClass) => {
+		setMessageList([]);
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
+
+		// receiver_id: check id from recently DMs
+		// NOTE: receiver_id can also be the sender of the message to our user
+		// check the result.data.forEach(item.[sender/receiver].uid) to see who is sender/receiver
+
+		// receiver_class: [Channel/User]
+		fetch(
+			`${url}/messages?receiver_class=${receiverClass}&receiver_id=${id}`,
+			requestOptions
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				// console.log(`Message retrieved (${receiverClass} ${id}):`, result);
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						body: item.body,
+						created_at: new Date(item.created_at),
+						receiver: item.receiver.uid,
+						sender: item.sender.uid,
+					});
+				});
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+				});
+				setMessageList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
+
 	useEffect(() => {
 		getChatDisplay();
 	}, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		switch (path) {
+			case 'channel':
+				retrieveMessage('Channel');
+				break;
+			case 'messages':
+				retrieveMessage('User');
+				break;
+			default:
+		}
+	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Container>
@@ -44,7 +102,14 @@ const Chat = ({ onChange, message, onClick, channelsList, DMList }) => {
 				</Channel>
 			</Header>
 			<MessageContainer>
-				<ChatMessage />
+				{messageList.map((item, index) => (
+					<ChatMessage
+						key={index}
+						sender={item.sender}
+						body={item.body}
+						date={item.created_at}
+					/>
+				))}
 			</MessageContainer>
 			<ChatInput onClick={onClick} message={message} onChange={onChange} />
 		</Container>
@@ -80,10 +145,10 @@ const ChannelInfo = styled.div`
 `;
 
 const MessageContainer = styled.div`
-	height: auto;
+	height: 440px;
 	overflow-y: scroll;
 	::-webkit-scrollbar {
-		width: 5px;
+		width: 7px;
 	}
 	::-webkit-scrollbar-track {
 		box-shadow: inset 0 0 5px grey;
