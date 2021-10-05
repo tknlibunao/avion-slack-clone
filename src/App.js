@@ -35,7 +35,7 @@ function App() {
 	const [message, setMessage] = useState('');
 
 	/* API DATA */
-	// const [channelsList, setChannelsList] = useState([]);
+	const [channelsList, setChannelsList] = useState([]);
 	// const [usersList, setUsersList] = useState([]);
 	const [myChannels, setMyChannels] = useState([]);
 	const [DMList, setDMList] = useState([]);
@@ -404,34 +404,35 @@ function App() {
 	// 		.catch((error) => console.log('error', error));
 	// };
 
-	// const getAllChannels = () => {
-	// 	let myHeaders = new Headers();
-	// 	myHeaders.append('access-token', `${accessToken}`);
-	// 	myHeaders.append('client', `${client}`);
-	// 	myHeaders.append('expiry', `${expiry}`);
-	// 	myHeaders.append('uid', `${uid}`);
+	const getAllChannels = () => {
+		let requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-	// 	let requestOptions = {
-	// 		method: 'GET',
-	// 		headers: myHeaders,
-	// 		redirect: 'follow',
-	// 	};
-
-	// 	fetch('http://206.189.91.54//api/v1/channels', requestOptions)
-	// 		.then((response) => response.json())
-	// 		.then((result) => {
-	// 			let updatedList = [];
-	// 			result.data.forEach((item) => {
-	// 				updatedList.push({
-	// 					name: item.name,
-	// 					id: item.id,
-	// 					owner_id: item.owner_id,
-	// 				});
-	// 			});
-	// 			setChannelsList(updatedList);
-	// 		})
-	// 		.catch((error) => console.log('error', error));
-	// };
+		fetch('http://206.189.91.54//api/v1/channels', requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						owner_id: item.owner_id,
+						created_at: new Date(item.created_at),
+						updated_at: new Date(item.updated_at),
+					});
+				});
+				updatedList = sortList(updatedList);
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+					item.updated_at = item.updated_at.toUTCString();
+				});
+				setChannelsList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
 
 	// const selectChannel = () => {
 	// 	var myHeaders = new Headers();
@@ -486,12 +487,9 @@ function App() {
 		getMyChannels();
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// useEffect(() => {
-	// 	if (success) {
-	// 		console.log('LOGIN SUCCESSFUL!');
-	// 		getAllChannels();
-	// 	}
-	// }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getAllChannels();
+	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// useEffect(() => {
 	// 	if (success) getAllUsers();
@@ -543,13 +541,15 @@ function App() {
 									<Header name={localStorage.getItem('uid')} />
 									<Main>
 										<Sidebar
-											channelsList={myChannels}
+											myChannels={myChannels}
+											channelsList={channelsList}
 											addChannel={createNewChannel}
 											DMList={DMList}
 										/>
 										<Route path='/room/:path/:id'>
 											<Chat
-												channelsList={myChannels}
+												myChannels={myChannels}
+												channelsList={channelsList}
 												DMList={DMList}
 												myHeaders={myHeaders}
 												url={url}
