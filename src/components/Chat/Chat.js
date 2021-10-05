@@ -1,58 +1,68 @@
-import React from "react";
-import styled from "styled-components";
-import ChatInput from "./ChatInput";
-import ChatMessage from "./ChatMessage";
+import React from 'react';
+import styled from 'styled-components';
+import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
 
 const Chat = ({ onChange, message, onClick }) => {
-  return (
-    <Container>
-      <Header>
-        <Channel>
-          <ChannelName># Channel 1</ChannelName>
-          <ChannelInfo>
-            {/* <box-icon name='plus' color='var(--channelinfo-color)' size='20px'></box-icon>
+	return (
+		<Container>
+			<Header>
+				<Channel>
+					<ChannelName># Channel 1</ChannelName>
+					<ChannelInfo>
+						{/* <box-icon name='plus' color='var(--channelinfo-color)' size='20px'></box-icon>
                         <span>Add a bookmark</span> */}
-          </ChannelInfo>
-        </Channel>
-      </Header>
-      <MessageContainer>
-        <ChatMessage />
-      </MessageContainer>
-      <ChatInput onClick={onClick} message={message} onChange={onChange} />
-    </Container>
-  );
+					</ChannelInfo>
+				</Channel>
+			</Header>
+			<MessageContainer>
+				<ChatMessage />
+			</MessageContainer>
+			<ChatInput onClick={onClick} message={message} onChange={onChange} />
+		</Container>
+	);
 };
 
 export default Chat;
 
 const Container = styled.div`
-    display: grid;
-    grid-template-rows: 50px auto min-content;
+	display: grid;
+	grid-template-rows: 50px auto min-content;
 `;
 
 const Header = styled.div`
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-bottom: 1px solid #D3D3D3;
+	display: flex;
+	align-items: center;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-bottom: 1px solid #d3d3d3;
 `;
 
-const Channel = styled.div`
-
-`;
+const Channel = styled.div``;
 
 const ChannelName = styled.div`
-    font-weight: 700;
+	font-weight: 700;
 `;
 
 const ChannelInfo = styled.div`
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    color: var(--channelinfo-color);
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+	color: var(--channelinfo-color);
 `;
 
 const MessageContainer = styled.div`
-
+	height: auto;
+	overflow-y: scroll;
+	::-webkit-scrollbar {
+		width: 5px;
+	}
+	::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 5px grey;
+		border-radius: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		background: rgb(188, 171, 188);
+		border-radius: 10px;
+	}
 `;
