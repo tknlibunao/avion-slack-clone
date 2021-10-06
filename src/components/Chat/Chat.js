@@ -13,33 +13,23 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [newMember, setNewMember] = useState(0);
 	const scrollToBottom = useRef(null)
 
-//   const messageEndRef = useRef(null);
-
-//   const scrollToBottom = () => {
-//     messageEndRef.current.scrollIntoView();
-//   };
-
-//   useEffect(() => {
-//     scrollToBottom();
-//   }, [messageList]);
-
-  const getChatDisplay = () => {
-    let items = [];
-    switch (path) {
-      case "channel":
-        items = channelsList;
-        break;
-      case "messages":
-        items = DMList;
-        break;
-      default:
-    }
-    items.forEach((item) => {
-      if (Number(id) === Number(item.id)) {
-        setDisplay(item);
-      }
-    });
-  };
+	const getChatDisplay = () => {
+		let items = [];
+		switch (path) {
+		case "channel":
+			items = channelsList;
+			break;
+		case "messages":
+			items = DMList;
+			break;
+		default:
+		}
+		items.forEach((item) => {
+		if (Number(id) === Number(item.id)) {
+			setDisplay(item);
+		}
+		});
+	};
 
 	/* CHANNEL FUNCTIONS */
 	const getChannelDetails = () => {
