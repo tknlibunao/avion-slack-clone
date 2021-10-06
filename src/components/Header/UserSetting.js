@@ -126,11 +126,13 @@ const UserImage = styled.div`
 const UserName = styled.div`
 	display: flex;
 	flex-direction: column;
+	user-select: none;
 	font-size: 14px;
 `;
 const UserStatus = styled.div`
 	margin-bottom: 10px;
 	padding-bottom: 10px;
+	user-select: none;
 	border-bottom: 1px solid var(--border-color);
 `;
 const UpdateStatus = styled.div`
@@ -142,6 +144,7 @@ const UpdateStatus = styled.div`
 	border-radius: 4px;
 	border: 1px solid #e2e2e2;
 	margin-bottom: 10px;
+	user-select: none;
 	cursor: pointer;
 
 	span {
@@ -156,7 +159,7 @@ const UpdateStatus = styled.div`
 const SetStatus = styled.div`
 	padding: 4px 24px;
 	cursor: pointer;
-
+	user-select: none;
 	:hover {
 		background: #1264a3;
 		color: #ffffff;
@@ -167,6 +170,7 @@ const PauseNotification = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	padding: 4px 24px;
+	user-select: none;
 	cursor: pointer;
 
 	:hover {
@@ -186,6 +190,7 @@ const Profile = styled.div`
 	display: flex;
 	align-items: center;
 	padding: 4px 24px;
+	user-select: none;
 	cursor: pointer;
 
 	:hover {
@@ -197,6 +202,7 @@ const Preference = styled.div`
 	display: flex;
 	align-items: center;
 	padding: 4px 24px;
+	user-select: none;
 	cursor: pointer;
 
 	:hover {
@@ -214,6 +220,7 @@ const Download = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	padding: 4px 24px;
+	user-select: none;
 	cursor: pointer;
 
 	:hover {
@@ -224,6 +231,7 @@ const Download = styled.div`
 const SignOut = styled.div`
 	padding: 4px 24px;
 	margin-bottom: 10px;
+	user-select: none;
 	cursor: pointer;
 
 	:hover {
