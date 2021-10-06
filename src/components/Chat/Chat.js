@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
+=======
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router";
+import styled from "styled-components";
+import ChatInput from "./ChatInput";
+import ChatMessage from "./ChatMessage";
+>>>>>>> 22db2e97cfcb99f8104aa9698b02ea6d6717fa85
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -13,23 +21,33 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [newMember, setNewMember] = useState(0);
 	const scrollMessage = useRef(null)
 
-	const getChatDisplay = () => {
-		let items = [];
-		switch (path) {
-			case 'channel':
-				items = channelsList;
-				break;
-			case 'messages':
-				items = DMList;
-				break;
-			default:
-		}
-		items.forEach((item) => {
-			if (Number(id) === Number(item.id)) {
-				setDisplay(item);
-			}
-		});
-	};
+  const messageEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView();
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
+
+  const getChatDisplay = () => {
+    let items = [];
+    switch (path) {
+      case "channel":
+        items = channelsList;
+        break;
+      case "messages":
+        items = DMList;
+        break;
+      default:
+    }
+    items.forEach((item) => {
+      if (Number(id) === Number(item.id)) {
+        setDisplay(item);
+      }
+    });
+  };
 
 	/* CHANNEL FUNCTIONS */
 	const getChannelDetails = () => {
@@ -120,7 +138,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	};
 
 	const retrieveMessage = (receiverClass) => {
-		setMessageList([]);
+		// setMessageList([]);
 		var requestOptions = {
 			method: 'GET',
 			headers: myHeaders,
@@ -227,6 +245,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							<span>Add member</span>
 						)}
 					</div> */}
+<<<<<<< HEAD
 					{path === 'messages' ? (
 						// <Info />
 						<box-icon
@@ -261,6 +280,43 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 			/>
 		</Container>
 	);
+=======
+          {path === "messages" ? (
+            // <Info />
+            <box-icon
+              name="info-circle"
+              color="var(--sidebar-font-color)"
+            ></box-icon>
+          ) : (
+            // <Add onClick={() => addMember(id)} />
+            <box-icon
+              name="user-plus"
+              color="var(--sidebar-font-color)"
+              onClick={() => addMember(id)}
+            ></box-icon>
+          )}
+        </ChannelDetails>
+      </Header>
+      <MessageContainer>
+        {messageList.map((item, index) => (
+          <ChatMessage
+            key={index}
+            sender={item.sender}
+            body={item.body}
+            date={item.created_at}
+          />
+        ))}
+        <div ref={messageEndRef} />
+      </MessageContainer>
+      <ChatInput
+        onSubmit={sendMessage}
+        onClick={sendMessage}
+        message={message}
+        onChange={inputMessage}
+      />
+    </Container>
+  );
+>>>>>>> 22db2e97cfcb99f8104aa9698b02ea6d6717fa85
 };
 
 export default Chat;
@@ -293,14 +349,13 @@ const ChannelInfo = styled.div`
 `;
 
 const MessageContainer = styled.div`
-	height: 440px;
-	overflow-y: scroll;
-	::-webkit-scrollbar {
-		width: 7px;
+	height: auto;
+	overflow-y: hidden;
+	:hover {
+		overflow-y: auto;
 	}
-	::-webkit-scrollbar-track {
-		box-shadow: inset 0 0 5px grey;
-		border-radius: 10px;
+	::-webkit-scrollbar {
+		width: 10px;
 	}
 	::-webkit-scrollbar-thumb {
 		background: rgb(188, 171, 188);

@@ -13,37 +13,44 @@ const Header = () => {
     }
     
     return (
-        <Container>
-            <Menu>
-                <box-icon name='menu' color='#d7cfd7' ></box-icon>
-            </Menu>
-            <Main> 
-                <History>
-                    <box-icon name='left-arrow-alt' color='#d7cfd7' ></box-icon>
-                    <box-icon name='right-arrow-alt' color='#d7cfd7' ></box-icon>
-                    <box-icon name='time' color='#d7cfd7' ></box-icon>
-                </History>
-                <SearchContainer>
-                    <Search>
-                        <input type="text" placeholder='Search Avion School' name='' id='' />
-                    </Search>
-                    <SearchIcon>
-                        <box-icon name='search' size='20px' color='#d7cfd7' ></box-icon>
-                    </SearchIcon>
-                </SearchContainer>
-                <HelpIcon>
-                    <box-icon name='help-circle' color='#d7cfd7' ></box-icon>
-                </HelpIcon>
-            </Main>
-            <UserContainer onClick={displaySettings}>
-                <UserImage>
-                    <img src={userDefaultImage} alt="User" />
-                </UserImage>
+			<Container>
+				<Menu>
+					<box-icon name='menu' color='#d7cfd7'></box-icon>
+				</Menu>
+				<Main>
+					<History>
+						<box-icon name='left-arrow-alt' color='#d7cfd7'></box-icon>
+						<box-icon name='right-arrow-alt' color='#d7cfd7'></box-icon>
+						<box-icon name='time' color='#d7cfd7'></box-icon>
+					</History>
+					<SearchContainer>
+						<Search>
+							<input
+								type='text'
+								placeholder='Search Avion School'
+								name=''
+								id=''
+							/>
+						</Search>
+						<SearchIcon>
+							<box-icon name='search' size='20px' color='#d7cfd7'></box-icon>
+						</SearchIcon>
+					</SearchContainer>
+					<HelpIcon>
+						<box-icon name='help-circle' color='#d7cfd7'></box-icon>
+					</HelpIcon>
+				</Main>
+				<UserContainer>
+					<UserImage onClick={displaySettings}>
+						<img src={userDefaultImage} alt='User' />
+					</UserImage>
 
-                { isDisplaySettings && <UserSetting displaySettings={displaySettings}/> }
-            </UserContainer>
-        </Container>
-    )
+					{isDisplaySettings && (
+						<UserSetting displaySettings={displaySettings} />
+					)}
+				</UserContainer>
+			</Container>
+		);
 }
 
 export default Header
