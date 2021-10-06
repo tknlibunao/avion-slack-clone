@@ -164,6 +164,7 @@ function App() {
 				if (response.status === 200) {
 					// alert("LOGIN SUCCESS");
 					setSuccess(true);
+					localStorage.setItem('isUserActive', true);
 					// localStorage.setItem("success", success);
 				}
 			})
@@ -365,7 +366,7 @@ function App() {
 
 						<Route path='/signup'>
 							{localStorage.getItem('token') !== null ? (
-								<Redirect to='/room/:path/:id' />
+								<Redirect to='/room/' />
 							) : (
 								<Register
 									onSubmit={registerUser}
@@ -378,7 +379,7 @@ function App() {
 						</Route>
 						<Route path='/login'>
 							{localStorage.getItem('token') !== null ? (
-								<Redirect to='/room/:path/:id' />
+								<Redirect to='/room/' />
 							) : (
 								<Login
 									onSubmit={loginUser}
@@ -390,7 +391,7 @@ function App() {
 
 						<Route path='/'>
 							{localStorage.getItem('token') !== null ? (
-								<Redirect to='/room/:path/:id' />
+								<Redirect to='/room/' />
 							) : (
 								<Home />
 							)}
