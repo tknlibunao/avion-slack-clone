@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
-=======
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router";
-import styled from "styled-components";
-import ChatInput from "./ChatInput";
-import ChatMessage from "./ChatMessage";
->>>>>>> 22db2e97cfcb99f8104aa9698b02ea6d6717fa85
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -19,17 +11,17 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [messageList, setMessageList] = useState([]);
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
-	const scrollMessage = useRef(null)
+	const scrollToBottom = useRef(null)
 
-  const messageEndRef = useRef(null);
+//   const messageEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messageEndRef.current.scrollIntoView();
-  };
+//   const scrollToBottom = () => {
+//     messageEndRef.current.scrollIntoView();
+//   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messageList]);
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messageList]);
 
   const getChatDisplay = () => {
     let items = [];
@@ -211,8 +203,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 
 	// Scroll to bottom
 	useEffect(() => {
-		if (scrollMessage) {
-			scrollMessage.current.addEventListener('DOMNodeInserted', event => {
+		if (scrollToBottom) {
+			scrollToBottom.current.addEventListener('DOMNodeInserted', event => {
 				const { currentTarget: target } = event
 				target.scroll({ top: target.scrollHeight })
 			})
@@ -245,7 +237,6 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							<span>Add member</span>
 						)}
 					</div> */}
-<<<<<<< HEAD
 					{path === 'messages' ? (
 						// <Info />
 						<box-icon
@@ -262,7 +253,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 					)}
 				</ChannelDetails>
 			</Header>
-			<MessageContainer ref={scrollMessage}>
+			<MessageContainer ref={scrollToBottom}>
 				{messageList.map((item, index) => (
 					<ChatMessage
 						key={index}
@@ -280,43 +271,6 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 			/>
 		</Container>
 	);
-=======
-          {path === "messages" ? (
-            // <Info />
-            <box-icon
-              name="info-circle"
-              color="var(--sidebar-font-color)"
-            ></box-icon>
-          ) : (
-            // <Add onClick={() => addMember(id)} />
-            <box-icon
-              name="user-plus"
-              color="var(--sidebar-font-color)"
-              onClick={() => addMember(id)}
-            ></box-icon>
-          )}
-        </ChannelDetails>
-      </Header>
-      <MessageContainer>
-        {messageList.map((item, index) => (
-          <ChatMessage
-            key={index}
-            sender={item.sender}
-            body={item.body}
-            date={item.created_at}
-          />
-        ))}
-        <div ref={messageEndRef} />
-      </MessageContainer>
-      <ChatInput
-        onSubmit={sendMessage}
-        onClick={sendMessage}
-        message={message}
-        onChange={inputMessage}
-      />
-    </Container>
-  );
->>>>>>> 22db2e97cfcb99f8104aa9698b02ea6d6717fa85
 };
 
 export default Chat;
