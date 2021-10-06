@@ -45,11 +45,11 @@ const Sidebar = ({ channelsList, addChannel, DMList }) => {
 					<div>
 						<span>Channels</span>
 					</div>
-						<box-icon
-							name='plus'
-							color='var(--sidebar-font-color)'
-							onClick={addChannel}
-						></box-icon>
+					<box-icon
+						name='plus'
+						color='var(--sidebar-font-color)'
+						onClick={addChannel}
+					></box-icon>
 				</NewChannelContainer>
 				<ChannelsList>
 					{channelsList.map((item, index) => (
@@ -157,22 +157,25 @@ const ChannelsContainer = styled.div`
 `;
 
 const NewChannelContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 
-    box-icon:hover {
-        cursor: pointer;
-    }
+	box-icon:hover {
+		cursor: pointer;
+	}
 `;
 
 const ChannelsList = styled.div`
 	height: 85%;
-	overflow-y: auto;
-
+	overflow-x: hidden;
+	overflow-y: hidden;
+	:hover {
+		overflow-y: auto;
+	}
 	::-webkit-scrollbar {
 		width: 7px;
 	}
@@ -205,22 +208,25 @@ const DirectMessageContainer = styled.div`
 `;
 
 const NewDirectMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 
-    box-icon:hover {
-        cursor: pointer;
-    }
+	box-icon:hover {
+		cursor: pointer;
+	}
 `;
 
 const DirectMessageList = styled.div`
 	height: 85%;
-	overflow-y: auto;
 	overflow-x: hidden;
+	overflow-y: hidden;
+	:hover {
+		overflow-y: auto;
+	}
 	::-webkit-scrollbar {
 		width: 7px;
 	}
@@ -232,7 +238,7 @@ const DirectMessageList = styled.div`
 
 const DirectMessage = styled.div`
 	display: flex;
-	font-size: 13px;
+	// font-size: 13px;
 	align-items: center;
 	height: 30px;
 	padding-left: 20px;
