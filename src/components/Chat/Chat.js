@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
-import styled from 'styled-components';
-import ChatInput from './ChatInput';
-import ChatMessage from './ChatMessage';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router";
+import styled from "styled-components";
+import ChatInput from "./ChatInput";
+import ChatMessage from "./ChatMessage";
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -12,23 +12,33 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
 
-	const getChatDisplay = () => {
-		let items = [];
-		switch (path) {
-			case 'channel':
-				items = channelsList;
-				break;
-			case 'messages':
-				items = DMList;
-				break;
-			default:
-		}
-		items.forEach((item) => {
-			if (Number(id) === Number(item.id)) {
-				setDisplay(item);
-			}
-		});
-	};
+  const messageEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView();
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList]);
+
+  const getChatDisplay = () => {
+    let items = [];
+    switch (path) {
+      case "channel":
+        items = channelsList;
+        break;
+      case "messages":
+        items = DMList;
+        break;
+      default:
+    }
+    items.forEach((item) => {
+      if (Number(id) === Number(item.id)) {
+        setDisplay(item);
+      }
+    });
+  };
 
 	/* CHANNEL FUNCTIONS */
 	const getChannelDetails = () => {
@@ -216,40 +226,41 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							<span>Add member</span>
 						)}
 					</div> */}
-					{path === 'messages' ? (
-						// <Info />
-						<box-icon
-							name='info-circle'
-							color='var(--sidebar-font-color)'
-						></box-icon>
-					) : (
-						// <Add onClick={() => addMember(id)} />
-						<box-icon	
-							name='user-plus'
-							color='var(--sidebar-font-color)'
-							onClick={() => addMember(id)}
-						></box-icon>
-					)}
-				</ChannelDetails>
-			</Header>
-			<MessageContainer>
-				{messageList.map((item, index) => (
-					<ChatMessage
-						key={index}
-						sender={item.sender}
-						body={item.body}
-						date={item.created_at}
-					/>
-				))}
-			</MessageContainer>
-			<ChatInput
-				onSubmit={sendMessage}
-				onClick={sendMessage}
-				message={message}
-				onChange={inputMessage}
-			/>
-		</Container>
-	);
+          {path === "messages" ? (
+            // <Info />
+            <box-icon
+              name="info-circle"
+              color="var(--sidebar-font-color)"
+            ></box-icon>
+          ) : (
+            // <Add onClick={() => addMember(id)} />
+            <box-icon
+              name="user-plus"
+              color="var(--sidebar-font-color)"
+              onClick={() => addMember(id)}
+            ></box-icon>
+          )}
+        </ChannelDetails>
+      </Header>
+      <MessageContainer>
+        {messageList.map((item, index) => (
+          <ChatMessage
+            key={index}
+            sender={item.sender}
+            body={item.body}
+            date={item.created_at}
+          />
+        ))}
+        <div ref={messageEndRef} />
+      </MessageContainer>
+      <ChatInput
+        onSubmit={sendMessage}
+        onClick={sendMessage}
+        message={message}
+        onChange={inputMessage}
+      />
+    </Container>
+  );
 };
 
 export default Chat;
