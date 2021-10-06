@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
@@ -11,6 +11,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [messageList, setMessageList] = useState([]);
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
+	const scrollMessage = useRef(null)
 
 	const getChatDisplay = () => {
 		let items = [];
@@ -190,6 +191,16 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		}
 	}, [path, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	// Scroll to bottom
+	useEffect(() => {
+		if (scrollMessage) {
+			scrollMessage.current.addEventListener('DOMNodeInserted', event => {
+				const { currentTarget: target } = event
+				target.scroll({ top: target.scrollHeight })
+			})
+		}
+	}, [])
+	
 	return (
 		<Container>
 			<Header>
@@ -232,7 +243,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 					)}
 				</ChannelDetails>
 			</Header>
-			<MessageContainer>
+			<MessageContainer ref={scrollMessage}>
 				{messageList.map((item, index) => (
 					<ChatMessage
 						key={index}
