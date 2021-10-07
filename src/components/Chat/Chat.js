@@ -15,10 +15,6 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const scrollToBottom = useRef(null)
     const [isOpenAddMember, setOpenAddMember] = useState(false)
 
-	const displayAddMember = () => { 
-        setOpenAddMember(prevValue => !prevValue)
-    }
-
 	const getChatDisplay = () => {
 		let items = [];
 		switch (path) {
@@ -244,10 +240,17 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 						<box-icon
 							name='user-plus'
 							color='var(--sidebar-font-color)'
-							onClick={() => addMember(id)}
+							// onClick={() => addMember(id)}
+							onClick={() => setOpenAddMember(true)}
 						>
 						</box-icon>
 					)}
+					<AddMember 
+						open={isOpenAddMember} 
+						onClose={() => setOpenAddMember(false)}
+						onAddMember={() => addMember(id)}	
+					>
+					</AddMember>
 				</ChannelDetails>
 			</Header>
 			<MessageContainer ref={scrollToBottom}>
