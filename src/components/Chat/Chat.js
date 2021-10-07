@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router';
-import styled from 'styled-components';
-import ChatInput from './ChatInput';
-import ChatMessage from './ChatMessage';
+import React, { useState, useEffect, useRef } from 'react'
+import { useParams } from 'react-router'
+import styled from 'styled-components'
+import ChatInput from './ChatInput'
+import ChatMessage from './ChatMessage'
+import AddMember from './AddMember'
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -12,34 +13,29 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
 	const scrollToBottom = useRef(null)
+    const [isOpenAddMember, setOpenAddMember] = useState(false)
 
-//   const messageEndRef = useRef(null);
-
-//   const scrollToBottom = () => {
-//     messageEndRef.current.scrollIntoView();
-//   };
-
-//   useEffect(() => {
-//     scrollToBottom();
-//   }, [messageList]);
-
-  const getChatDisplay = () => {
-    let items = [];
-    switch (path) {
-      case "channel":
-        items = channelsList;
-        break;
-      case "messages":
-        items = DMList;
-        break;
-      default:
+	const displayAddMember = () => { 
+        setOpenAddMember(prevValue => !prevValue)
     }
-    items.forEach((item) => {
-      if (Number(id) === Number(item.id)) {
-        setDisplay(item);
-      }
-    });
-  };
+
+	const getChatDisplay = () => {
+		let items = [];
+		switch (path) {
+		case "channel":
+			items = channelsList;
+			break;
+		case "messages":
+			items = DMList;
+			break;
+		default:
+		}
+		items.forEach((item) => {
+		if (Number(id) === Number(item.id)) {
+			setDisplay(item);
+		}
+		});
+	};
 
 	/* CHANNEL FUNCTIONS */
 	const getChannelDetails = () => {
@@ -249,7 +245,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							name='user-plus'
 							color='var(--sidebar-font-color)'
 							onClick={() => addMember(id)}
-						></box-icon>
+						>
+						</box-icon>
 					)}
 				</ChannelDetails>
 			</Header>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import userDefaultImage from '../../assets/userDefaultImage.png';
 import { useHistory } from 'react-router';
 
-const UserSetting = (props) => {
+const UserSetting = () => {
 	const workspaceName = 'Avion School';
 	const [isUserActive, setUserActive] = useState(
 		localStorage.getItem('isUserActive')
