@@ -47,6 +47,7 @@ const Modal = styled.div`
     transform: translate(-50%,-50%);
     border-radius: 10px;
     padding: 25px;
+    box-shadow: 0px 0px 25px 10px rgba(0,0,0,0.2);
 `
 const Header = styled.div`
     display: flex;
