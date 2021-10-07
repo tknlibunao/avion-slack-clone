@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router';
-import styled from 'styled-components';
-import ChatInput from './ChatInput';
-import ChatMessage from './ChatMessage';
+import React, { useState, useEffect, useRef } from 'react'
+import { useParams } from 'react-router'
+import styled from 'styled-components'
+import ChatInput from './ChatInput'
+import ChatMessage from './ChatMessage'
+import AddMember from './AddMember'
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -12,6 +13,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
 	const scrollToBottom = useRef(null)
+    const [isOpenAddMember, setOpenAddMember] = useState(false)
+
+	const displayAddMember = () => { 
+        setOpenAddMember(prevValue => !prevValue)
+    }
 
 	const getChatDisplay = () => {
 		let items = [];
@@ -239,7 +245,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							name='user-plus'
 							color='var(--sidebar-font-color)'
 							onClick={() => addMember(id)}
-						></box-icon>
+						>
+						</box-icon>
 					)}
 				</ChannelDetails>
 			</Header>
