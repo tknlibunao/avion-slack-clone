@@ -19,6 +19,10 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import styled from 'styled-components';
 
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:3001');
+
 function App() {
 	/* USER PARAMETERS */
 	const [email, setEmail] = useState('');
