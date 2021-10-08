@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router'
-import styled from 'styled-components'
-import ChatInput from './ChatInput'
-import ChatMessage from './ChatMessage'
-import AddMember from './AddMember'
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router';
+import styled from 'styled-components';
+import ChatInput from './ChatInput';
+import ChatMessage from './ChatMessage';
+import AddMember from './AddMember';
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	let { path, id } = useParams();
@@ -12,24 +12,24 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [messageList, setMessageList] = useState([]);
 	const [channelMembers, setChannelMembers] = useState([]);
 	const [newMember, setNewMember] = useState(0);
-	const scrollToBottom = useRef(null)
-    const [isOpenAddMember, setOpenAddMember] = useState(false)
+	const scrollToBottom = useRef(null);
+	const [isOpenAddMember, setOpenAddMember] = useState(false);
 
 	const getChatDisplay = () => {
 		let items = [];
 		switch (path) {
-		case "channel":
-			items = channelsList;
-			break;
-		case "messages":
-			items = DMList;
-			break;
-		default:
+			case 'channel':
+				items = channelsList;
+				break;
+			case 'messages':
+				items = DMList;
+				break;
+			default:
 		}
 		items.forEach((item) => {
-		if (Number(id) === Number(item.id)) {
-			setDisplay(item);
-		}
+			if (Number(id) === Number(item.id)) {
+				setDisplay(item);
+			}
 		});
 	};
 
@@ -56,10 +56,12 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 			.catch((error) => console.log('error', error));
 	};
 
-	const addMember = (channelId) => {
-		let memberId = prompt('Enter member ID:');
+	const addMember = (e, memberId) => {
+		// let memberId = prompt('Enter member ID:');
+		e.preventDefault();
+
 		var raw = JSON.stringify({
-			id: channelId,
+			id: id,
 			member_id: memberId,
 		});
 
@@ -71,7 +73,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		};
 
 		fetch(`${url}/channel/add_member`, requestOptions)
-			.then((response) => response.text())
+			.then((response) => response.json())
 			.then((result) => console.log(result))
 			.catch((error) => console.log('error', error));
 
@@ -196,13 +198,13 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	// Scroll to bottom
 	useEffect(() => {
 		if (scrollToBottom) {
-			scrollToBottom.current.addEventListener('DOMNodeInserted', event => {
-				const { currentTarget: target } = event
-				target.scroll({ top: target.scrollHeight })
-			})
+			scrollToBottom.current.addEventListener('DOMNodeInserted', (event) => {
+				const { currentTarget: target } = event;
+				target.scroll({ top: target.scrollHeight });
+			});
 		}
-	}, [])
-	
+	}, []);
+
 	return (
 		<Container>
 			<Header>
@@ -242,15 +244,14 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 							color='var(--sidebar-font-color)'
 							// onClick={() => addMember(id)}
 							onClick={() => setOpenAddMember(true)}
-						>
-						</box-icon>
+						></box-icon>
 					)}
-					<AddMember 
-						open={isOpenAddMember} 
+					<AddMember
+						open={isOpenAddMember}
 						onClose={() => setOpenAddMember(false)}
-						onAddMember={() => addMember(id)}	
-					>
-					</AddMember>
+						onAddMember={addMember}
+						onSubmit={addMember}
+					></AddMember>
 				</ChannelDetails>
 			</Header>
 			<MessageContainer ref={scrollToBottom}>
