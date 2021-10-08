@@ -14,6 +14,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [newMember, setNewMember] = useState(0);
 	const scrollToBottom = useRef(null);
 	const [isOpenAddMember, setOpenAddMember] = useState(false);
+	const [newMemberId, setNewMemberId] = useState('');
 
 	const getChatDisplay = () => {
 		let items = [];
@@ -56,13 +57,17 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 			.catch((error) => console.log('error', error));
 	};
 
-	const addMember = (e, memberId) => {
+	const inputMemberId = (e) => {
+		setNewMemberId(e.target.value);
+	};
+
+	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
 
 		var raw = JSON.stringify({
 			id: id,
-			member_id: memberId,
+			member_id: newMemberId,
 		});
 
 		var requestOptions = {
@@ -79,6 +84,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 
 		setNewMember((newMember) => newMember + 1);
 		getChannelDetails();
+		setNewMemberId('');
 	};
 
 	/* MESSAGES FUNCTIONS */
@@ -249,8 +255,10 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 					<AddMember
 						open={isOpenAddMember}
 						onClose={() => setOpenAddMember(false)}
-						onAddMember={addMember}
+						onClick={addMember}
 						onSubmit={addMember}
+						onChange={inputMemberId}
+						newMemberId={newMemberId}
 					></AddMember>
 				</ChannelDetails>
 			</Header>
