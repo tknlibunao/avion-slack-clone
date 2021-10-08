@@ -61,6 +61,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		setNewMemberId(e.target.value);
 	};
 
+	const closeAddMember = () => {
+		setNewMemberId('')
+		setOpenAddMember(false)
+	}
+
 	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
@@ -85,6 +90,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		setNewMember((newMember) => newMember + 1);
 		getChannelDetails();
 		setNewMemberId('');
+		if (newMemberId !== '') setOpenAddMember(false)
 	};
 
 	/* MESSAGES FUNCTIONS */
@@ -241,20 +247,20 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 						// <Info />
 						<box-icon
 							name='info-circle'
-							color='var(--sidebar-font-color)'
+							color='var(--chatbutton-color)'
 						></box-icon>
 					) : (
 						// <Add onClick={() => addMember(id)} />
 						<box-icon
 							name='user-plus'
-							color='var(--sidebar-font-color)'
+							color='var(--chatbutton-color)'
 							// onClick={() => addMember(id)}
 							onClick={() => setOpenAddMember(true)}
 						></box-icon>
 					)}
 					<AddMember
 						open={isOpenAddMember}
-						onClose={() => setOpenAddMember(false)}
+						onClose={closeAddMember}
 						onClick={addMember}
 						onSubmit={addMember}
 						onChange={inputMemberId}

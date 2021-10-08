@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import { sidebarItems } from "../../data/SidebarData";
+import AddChannel from "./AddChannel";
+import AddDirectMessage from "./AddDirectMessage";
 
 const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
   const history = useHistory();
