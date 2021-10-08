@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import styled from 'styled-components';
 
-const AddMember = ({ open, onClose, onAddMember, onSubmit }) => {
-	const [newMemberId, setNewMemberId] = useState('');
+const AddMember = ({
+	open,
+	onClose,
+	onClick,
+	onSubmit,
+	onChange,
+	newMemberId,
+}) => {
+	// const [newMemberId, setNewMemberId] = useState('');
 	if (!open) return null;
 
 	return (
@@ -14,18 +21,19 @@ const AddMember = ({ open, onClose, onAddMember, onSubmit }) => {
 						<box-icon name='x' color='#686868'></box-icon>
 					</CloseIcon>
 				</Header>
-				<form onSubmit={(e) => onSubmit(e)}>
+				<form onSubmit={() => onSubmit()}>
 					<InputForm>
 						<input
 							type='text'
 							placeholder='Enter member ID'
 							name=''
 							id=''
-							onChange={(e) => setNewMemberId(e.target.value)}
+							value={newMemberId}
+							onChange={onChange}
 						/>
 					</InputForm>
 					<AddButton>
-						<button onClick={(e) => onAddMember(e, newMemberId)}>
+						<button onClick={onClick}>
 							<b>Add</b>
 						</button>
 					</AddButton>
