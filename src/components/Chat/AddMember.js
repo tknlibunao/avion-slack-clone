@@ -20,7 +20,7 @@ const AddMember = ({
 						<box-icon name='x' color='#686868'></box-icon>
 					</CloseIcon>
 				</Header>
-				<form onSubmit={() => onSubmit()}>
+				<form onSubmit={(e) => onSubmit(e)}>
 					<InputForm>
 						<input
 							type='text'
