@@ -360,16 +360,16 @@ function App() {
 											DMList={DMList}
 											usersList={usersList}
 										/>
-										<Route path="/room/:path/:id">
-                    {searchToggle ? <Search toggleSearch={toggleSearch} myHeaders={myHeaders}/> : <Chat
+										{/* <Route path="/room/:path/:id"> */}
+                    {searchToggle ? <Search toggleSearch={toggleSearch} myHeaders={myHeaders}/> : <Route path="/room/:path/:id"><Chat
                         myChannels={myChannels}
                         channelsList={channelsList}
                         DMList={DMList}
                         myHeaders={myHeaders}
                         url={url}
                         usersList={usersList}
-                      />}
-										</Route>
+                      /></Route>}
+										{/* </Route> */}
 										{/* <Route path='/room'>Select channel</Route> */}
 									</Main>
 								</Container>
