@@ -5,7 +5,7 @@ import 'boxicons'
 import userDefaultImage from '../../assets/userDefaultImage.png'
 import UserSetting from './UserSetting'
 
-const Header = () => {
+const Header = ({toggleSearch}) => {
     const [isDisplaySettings, setDisplaySettings] = useState(false);
     
     const displaySettings = () => { 
@@ -26,10 +26,12 @@ const Header = () => {
 					<SearchContainer>
 						<Search>
 							<input
+                                readOnly="true"
 								type='text'
 								placeholder='Search Avion School'
 								name=''
 								id=''
+                                onClick={toggleSearch}
 							/>
 						</Search>
 						<SearchIcon>

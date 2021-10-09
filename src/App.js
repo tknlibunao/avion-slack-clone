@@ -1,6 +1,7 @@
-import "./App.css";
-import React, { useState, useEffect } from "react";
+import './App.css';
+import React, { useState, useEffect } from 'react';
 import {
+<<<<<<< HEAD
   BrowserRouter as Router,
   Switch,
   Route,
@@ -19,342 +20,376 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import NewDirectMessage from "./components/Sidebar/NewDirectMessage";
 import styled from "styled-components";
+=======
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Redirect,
+	// Link,
+	// useRouteMatch,
+	// useParams,
+} from 'react-router-dom';
+
+import Loading from './components/Loading/Loading';
+import Header from './components/Header/Header';
+import Sidebar from './components/Sidebar/Sidebar';
+import Chat from './components/Chat/Chat';
+import Home from './components/Home/Home';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
+import styled from 'styled-components';
+import Search from "./components/Search/Search";
+>>>>>>> 7f9690cfcbe9995227c7e7c9b1085712f659be1e
 
 function App() {
-  /* USER PARAMETERS */
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmation, setConfirmation] = useState("");
-  const [error, setError] = useState("");
+	/* USER PARAMETERS */
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [confirmation, setConfirmation] = useState('');
+	const [error, setError] = useState('');
 
-  /* API DATA */
-  const [channelsList, setChannelsList] = useState([]);
-  const [usersList, setUsersList] = useState([]);
-  const [myChannels, setMyChannels] = useState([]);
-  const [DMList, setDMList] = useState([]);
+	/* API DATA */
+	const [channelsList, setChannelsList] = useState([]);
+	const [usersList, setUsersList] = useState([]);
+	const [myChannels, setMyChannels] = useState([]);
+	const [DMList, setDMList] = useState([]);
 
-  /*  FLAGS */
-  const [success, setSuccess] = useState(false);
-  const [newChannel, setNewChannel] = useState(0);
+	/*  FLAGS */
+	const [success, setSuccess] = useState(false);
+	const [newChannel, setNewChannel] = useState(0);
+  const [searchToggle, setSearchToggle] = useState(false)
 
-  /* INITIALIZE HEADERS */
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("access-token", localStorage.getItem("token"));
-  myHeaders.append("client", localStorage.getItem("client"));
-  myHeaders.append("expiry", localStorage.getItem("expiry"));
-  myHeaders.append("uid", localStorage.getItem("uid"));
+	/* INITIALIZE HEADERS */
+	var myHeaders = new Headers();
+	myHeaders.append('Content-Type', 'application/json');
+	myHeaders.append('access-token', localStorage.getItem('token'));
+	myHeaders.append('client', localStorage.getItem('client'));
+	myHeaders.append('expiry', localStorage.getItem('expiry'));
+	myHeaders.append('uid', localStorage.getItem('uid'));
 
-  /* DEFINE URL */
-  const url = "http://206.189.91.54//api/v1";
+	/* DEFINE URL */
+	const url = 'http://206.189.91.54//api/v1';
 
-  /* HELPER FUNCTIONS */
+	/* HELPER FUNCTIONS */
 
-  const sortList = (list) => {
-    return list.sort(function (a, b) {
-      if (a.updated_at > b.updated_at) return -1;
-      if (a.updated_at < b.updated_at) return 1;
-      return 0;
-    });
-  };
+	const sortList = (list, path) => {
+		if (path === 'channel') {
+			return list.sort(function (a, b) {
+				if (a.name < b.name) return -1;
+				if (a.name > b.name) return 1;
+				return 0;
+			});
+		} else if (path === 'user') {
+			return list.sort(function (a, b) {
+				if (a.uid < b.uid) return -1;
+				if (a.uid > b.uid) return 1;
+				return 0;
+			});
+		}
+	};
 
-  const removeDuplicate = (list) => {
-    return list.filter(
-      (item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
-    );
-  };
+	const removeDuplicate = (list) => {
+		return list.filter(
+			(item, index, self) => index === self.findIndex((t) => t.uid === item.uid)
+		);
+	};
 
-  const arrangeList = (list) => {
-    return list.sort(function (a, b) {
-      if (a.id < b.id) return -1;
-      if (a.id > b.id) return 1;
-      return 0;
-    });
-  };
+	const arrangeList = (list) => {
+		return list.sort(function (a, b) {
+			if (a.id < b.id) return -1;
+			if (a.id > b.id) return 1;
+			return 0;
+		});
+	};
 
-  /* MAIN FUNCTIONS */
+	/* MAIN FUNCTIONS */
 
-  const inputUser = (e) => {
-    setEmail(e.target.value);
-  };
-  const inputPassword = (e) => {
-    setPassword(e.target.value);
-  };
+	const inputUser = (e) => {
+		setEmail(e.target.value);
+	};
+	const inputPassword = (e) => {
+		setPassword(e.target.value);
+	};
 
-  const inputConfirmation = (e) => {
-    setConfirmation(e.target.value);
-  };
+	const inputConfirmation = (e) => {
+		setConfirmation(e.target.value);
+	};
 
-  const registerUser = (e) => {
-    e.preventDefault();
+  const toggleSearch = () => {
+    setSearchToggle(!searchToggle);
+  }
 
-    fetch(`${url}/auth`, {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        password_confirmation: confirmation,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-    })
-      .then((result) => {
-        if (email === "") {
-          setError("Field empty: email");
-        } else if (password === "") {
-          setError("Field empty: password");
-        } else if (confirmation === "") {
-          setError("Field empty: password confirmation");
-        } else if (password !== confirmation) {
-          setError("Password does not match");
-        } else if (result.status === 422) {
-          setError("Email already taken");
-        } else {
-          alert("Registration Successful!");
-          setError("");
-          e.target.reset();
-          setEmail("");
-          setPassword("");
-          setConfirmation("");
-        }
-        // history.push("/login");
-      })
-      .catch((error) => console.log(error));
-  };
+	const registerUser = (e) => {
+		e.preventDefault();
 
-  const loginUser = (e) => {
-    e.preventDefault();
-    let raw = JSON.stringify({
-      email: email,
-      password: password,
-    });
+		fetch(`${url}/auth`, {
+			method: 'POST',
+			body: JSON.stringify({
+				email: email,
+				password: password,
+				password_confirmation: confirmation,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			redirect: 'follow',
+		})
+			.then((result) => {
+				if (email === '') {
+					setError('Field empty: email');
+				} else if (password === '') {
+					setError('Field empty: password');
+				} else if (confirmation === '') {
+					setError('Field empty: password confirmation');
+				} else if (password !== confirmation) {
+					setError('Password does not match');
+				} else if (result.status === 422) {
+					setError('Email already taken');
+				} else {
+					alert('Registration Successful!');
+					setError('');
+					e.target.reset();
+					setEmail('');
+					setPassword('');
+					setConfirmation('');
+				}
+				// history.push("/login");
+			})
+			.catch((error) => console.log(error));
+	};
 
-    let requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+	const loginUser = (e) => {
+		e.preventDefault();
+		let raw = JSON.stringify({
+			email: email,
+			password: password,
+		});
 
-    fetch(`${url}/auth/sign_in`, requestOptions)
-      .then((response) => {
-        response.headers.forEach((item, key) => {
-          switch (key) {
-            case "access-token":
-              // setAccessToken(item);
-              localStorage.setItem("token", item);
-              break;
-            case "client":
-              // setClient(item);
-              localStorage.setItem("client", item);
-              break;
-            case "expiry":
-              // setExpiry(item);
-              localStorage.setItem("expiry", item);
-              break;
-            case "uid":
-              // setUID(item);
-              localStorage.setItem("uid", item);
-              break;
-            default:
-              break;
-          }
-        });
-        if (response.status === 200) {
-          // alert("LOGIN SUCCESS");
-          setSuccess(true);
-          localStorage.setItem("isUserActive", true);
-          // localStorage.setItem("success", success);
-        }
-      })
-      .catch((error) => console.log("error", error));
-  };
+		let requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
+		};
 
-  const getMyChannels = () => {
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+		fetch(`${url}/auth/sign_in`, requestOptions)
+			.then((response) => {
+				response.headers.forEach((item, key) => {
+					switch (key) {
+						case 'access-token':
+							// setAccessToken(item);
+							localStorage.setItem('token', item);
+							break;
+						case 'client':
+							// setClient(item);
+							localStorage.setItem('client', item);
+							break;
+						case 'expiry':
+							// setExpiry(item);
+							localStorage.setItem('expiry', item);
+							break;
+						case 'uid':
+							// setUID(item);
+							localStorage.setItem('uid', item);
+							break;
+						default:
+							break;
+					}
+				});
+				if (response.status === 200) {
+					// alert("LOGIN SUCCESS");
+					setSuccess(true);
+					localStorage.setItem('isUserActive', true);
+					// localStorage.setItem("success", success);
+				}
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-    fetch(`${url}/channel/owned`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        let updatedList = [];
-        result.data.forEach((item) => {
-          updatedList.push({
-            name: item.name,
-            id: item.id,
-            created_at: item.created_at,
-          });
-        });
-        setMyChannels(sortList(updatedList));
-      })
-      .catch((error) => console.log("error", error));
-  };
+	const getMyChannels = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-  const createNewChannel = () => {
-    var channelName = prompt("Create new channel");
+		fetch(`${url}/channel/owned`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						created_at: item.created_at,
+					});
+				});
+				setMyChannels(sortList(updatedList, 'channel'));
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-    var raw = JSON.stringify({
-      name: channelName,
-      user_ids: [],
-    });
+	const createNewChannel = () => {
+		var channelName = prompt('Create new channel');
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+		var raw = JSON.stringify({
+			name: channelName,
+			user_ids: [],
+		});
 
-    fetch(`${url}/channels`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+		var requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: raw,
+			redirect: 'follow',
+		};
 
-    setNewChannel((newChannel) => newChannel + 1);
-    getMyChannels();
-  };
+		fetch(`${url}/channels`, requestOptions)
+			.then((response) => response.text())
+			.then((result) => console.log(result))
+			.catch((error) => console.log('error', error));
 
-  const getAllUsers = () => {
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+		setNewChannel((newChannel) => newChannel + 1);
+		getMyChannels();
+	};
 
-    fetch(`${url}/users`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        let updatedList = [];
-        result.data.forEach((item) => {
-          updatedList.push({
-            name: item.name,
-            id: item.id,
-            uid: item.uid,
-          });
-        });
-        setUsersList(arrangeList(updatedList));
-      })
-      .catch((error) => console.log("error", error));
-  };
+	const getAllUsers = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-  const getDMs = () => {
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+		fetch(`${url}/users`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						uid: item.uid,
+					});
+				});
+				setUsersList(arrangeList(updatedList));
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-    fetch(`${url}/users/recent`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        let updatedList = [];
-        result.data.forEach((item) => {
-          updatedList.push({
-            id: item.id,
-            uid: item.uid,
-            created_at: new Date(item.created_at),
-            updated_at: new Date(item.updated_at),
-          });
-        });
-        updatedList = sortList(removeDuplicate(updatedList));
-        updatedList.forEach((item) => {
-          item.created_at = item.created_at.toUTCString();
-          item.updated_at = item.updated_at.toUTCString();
-        });
-        setDMList(updatedList);
-      })
-      .catch((error) => console.log("error", error));
-  };
+	const getDMs = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-  const getAllChannels = () => {
-    let requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+		fetch(`${url}/users/recent`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						id: item.id,
+						uid: item.uid,
+						created_at: new Date(item.created_at),
+						updated_at: new Date(item.updated_at),
+					});
+				});
+				updatedList = sortList(removeDuplicate(updatedList), 'user');
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+					item.updated_at = item.updated_at.toUTCString();
+				});
+				setDMList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-    fetch(`${url}/channels`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        let updatedList = [];
-        result.data.forEach((item) => {
-          updatedList.push({
-            name: item.name,
-            id: item.id,
-            owner_id: item.owner_id,
-            created_at: new Date(item.created_at),
-            updated_at: new Date(item.updated_at),
-          });
-        });
-        updatedList = sortList(updatedList);
-        updatedList.forEach((item) => {
-          item.created_at = item.created_at.toUTCString();
-          item.updated_at = item.updated_at.toUTCString();
-        });
-        setChannelsList(updatedList);
-      })
-      .catch((error) => console.log("error", error));
-  };
+	const getAllChannels = () => {
+		let requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
 
-  useEffect(() => {
-    getMyChannels();
-  }, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
+		fetch(`${url}/channels`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						owner_id: item.owner_id,
+						created_at: new Date(item.created_at),
+						updated_at: new Date(item.updated_at),
+					});
+				});
+				updatedList = sortList(updatedList, 'channel');
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+					item.updated_at = item.updated_at.toUTCString();
+				});
+				setChannelsList(updatedList);
+			})
+			.catch((error) => console.log('error', error));
+	};
 
-  useEffect(() => {
-    getAllChannels();
-  }, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getMyChannels();
+	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    getDMs();
-  }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getAllChannels();
+	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    getAllUsers();
-  }, [success]); // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		getDMs();
+	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // useEffect(() => {
-  // 	console.log(DMList);
-  // }, [DMList]);
+	useEffect(() => {
+		getAllUsers();
+	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // useEffect(() => {
-  // 	console.log(channelsList);
-  // }, [channelsList]);
+	// useEffect(() => {
+	// 	console.log(DMList);
+	// }, [DMList]);
 
-  // useEffect(() => {
-  // 	console.log(usersList);
-  // }, [usersList]);
+	// useEffect(() => {
+	// 	console.log(channelsList);
+	// }, [channelsList]);
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Router>
-          <Switch>
-            <Route path="/room">
-              {localStorage.getItem("token") !== null ? (
-                <Container>
-                  <Header name={localStorage.getItem("uid")} />
-                  <Main>
-                    <Sidebar
-                      myHeaders={myHeaders}
-                      myChannels={myChannels}
-                      channelsList={channelsList}
-                      addChannel={createNewChannel}
-                      DMList={DMList}
-                      usersList={usersList}
-                    />
-                    <Route path="/room/:path/:id">
-                      <Chat
+	// useEffect(() => {
+	// 	console.log(usersList);
+	// }, [usersList]);
+
+	return (
+		<div className="App">
+			<header className="App-header">
+				<Router>
+					<Switch>
+						<Route path="/room">
+							{localStorage.getItem('token') !== null ? (
+								<Container>
+									<Header name={localStorage.getItem('uid')} toggleSearch={toggleSearch}/>
+									<Main>
+										<Sidebar
+											myHeaders={myHeaders}
+											myChannels={myChannels}
+											channelsList={channelsList}
+											addChannel={createNewChannel}
+											DMList={DMList}
+											usersList={usersList}
+										/>
+										{/* <Route path="/room/:path/:id"> */}
+                    {searchToggle ? <Search toggleSearch={toggleSearch} myHeaders={myHeaders}/> : <Route path="/room/:path/:id"><Chat
                         myChannels={myChannels}
                         channelsList={channelsList}
                         DMList={DMList}
                         myHeaders={myHeaders}
                         url={url}
                         usersList={usersList}
+<<<<<<< HEAD
                       />
                     </Route>
                     <Route path='/room/new-message'>
@@ -406,6 +441,56 @@ function App() {
       </header>
     </div>
   );
+=======
+                      /></Route>}
+										{/* </Route> */}
+										{/* <Route path='/room'>Select channel</Route> */}
+									</Main>
+								</Container>
+							) : (
+								<Loading />
+								// <Home />
+							)}
+						</Route>
+
+						<Route path="/signup">
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to="/room/" />
+							) : (
+								<Register
+									onSubmit={registerUser}
+									inputUser={inputUser}
+									inputPassword={inputPassword}
+									inputConfirmation={inputConfirmation}
+									error={error}
+								/>
+							)}
+						</Route>
+						<Route path="/login">
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to="/room/" />
+							) : (
+								<Login
+									onSubmit={loginUser}
+									inputUser={inputUser}
+									inputPassword={inputPassword}
+								/>
+							)}
+						</Route>
+
+						<Route path="/">
+							{localStorage.getItem('token') !== null ? (
+								<Redirect to="/room/" />
+							) : (
+								<Home />
+							)}
+						</Route>
+					</Switch>
+				</Router>
+			</header>
+		</div>
+	);
+>>>>>>> 7f9690cfcbe9995227c7e7c9b1085712f659be1e
 }
 
 export default App;
