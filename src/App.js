@@ -18,6 +18,7 @@ import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import styled from "styled-components";
+import Search from "./components/Search/Search";
 
 function App() {
   /* USER PARAMETERS */
@@ -35,6 +36,7 @@ function App() {
   /*  FLAGS */
   const [success, setSuccess] = useState(false);
   const [newChannel, setNewChannel] = useState(0);
+  const [searchToggle, setSearchToggle] = useState(false)
 
   /* INITIALIZE HEADERS */
   var myHeaders = new Headers();
@@ -84,6 +86,9 @@ function App() {
     setConfirmation(e.target.value);
   };
 
+  const toggleSearch = () => {
+    setSearchToggle(!searchToggle);
+  }
   const registerUser = (e) => {
     e.preventDefault();
 
@@ -336,8 +341,10 @@ function App() {
             <Route path="/room">
               {localStorage.getItem("token") !== null ? (
                 <Container>
-                  <Header name={localStorage.getItem("uid")} />
+                  <Header name={localStorage.getItem("uid")} toggleSearch={toggleSearch}/>
+                  
                   <Main>
+                  
                     <Sidebar
                       myHeaders={myHeaders}
                       myChannels={myChannels}
@@ -347,22 +354,24 @@ function App() {
                       usersList={usersList}
                     />
                     <Route path="/room/:path/:id">
-                      <Chat
+                    {searchToggle ? <Search toggleSearch={toggleSearch} myHeaders={myHeaders}/> : <Chat
                         myChannels={myChannels}
                         channelsList={channelsList}
                         DMList={DMList}
                         myHeaders={myHeaders}
                         url={url}
                         usersList={usersList}
-                      />
+                      />}
                     </Route>
                     {/* <Route path='/room'>Select channel</Route> */}
+                    
                   </Main>
                 </Container>
               ) : (
                 <Loading />
                 // <Home />
               )}
+              
             </Route>
 
             <Route path="/signup">
