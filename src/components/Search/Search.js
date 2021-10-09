@@ -39,9 +39,9 @@ function Search({toggleSearch, myHeaders}) {
                 console.log(item.id);
                 history.push(`/room/${condition  ? 'messages' : 'channel'}/${item.id}`)
                 toggleSearch();
-                // setID(item.id);
             }
             return
+            
         })})
     }
     useEffect(()=>{

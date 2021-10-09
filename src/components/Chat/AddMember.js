@@ -120,7 +120,6 @@ const AddButton = styled.div`
 	width: 100%;
 	justify-content: flex-end;
 	padding-right: 6px;
-
 	button {
 		width: 80px;
 		height: 40px;
@@ -131,6 +130,7 @@ const AddButton = styled.div`
 		background: #007a5a;
 		padding-left: 10px;
 		padding-right: 10px;
+        cursor: pointer;
 
 		:active {
 			transform: scale(0.99);

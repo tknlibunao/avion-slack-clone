@@ -5,7 +5,7 @@ import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 import AddMember from './AddMember';
 
-const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
+const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	let { path, id } = useParams();
 	const [display, setDisplay] = useState({ id });
 	const [message, setMessage] = useState('');
@@ -17,21 +17,32 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 	const [newMemberId, setNewMemberId] = useState('');
 
 	const getChatDisplay = () => {
-		let items = [];
-		switch (path) {
-			case 'channel':
-				items = channelsList;
-				break;
-			case 'messages':
-				items = DMList;
-				break;
-			default:
-		}
-		items.forEach((item) => {
-			if (Number(id) === Number(item.id)) {
-				setDisplay(item);
+		console.log(usersList);
+		if (path === 'channel') {
+			channelsList.forEach((item) => {
+				if (Number(id) === Number(item.id)) {
+					setDisplay(item);
+				}
+			});
+		} else if (path === 'messages') {
+			let result = DMList.find((item) => Number(id) === Number(item.id));
+			if (result) {
+				console.log('FOUND', result);
+				setDisplay(result);
+			} else {
+				console.log('NOT FOUND');
+				let user = usersList.find((item) => Number(id) === Number(item.id));
+				if (user) localStorage.setItem('newDM', JSON.stringify(user));
+				else user = JSON.parse(localStorage.getItem('newDM'));
+				console.log('USER ON REFRESH: ', user);
+				setDisplay({
+					id: '',
+					uid: user.uid,
+					created_at: '',
+					updated_at: '',
+				});
 			}
-		});
+		}
 	};
 
 	/* CHANNEL FUNCTIONS */
@@ -61,6 +72,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		setNewMemberId(e.target.value);
 	};
 
+	const closeAddMember = () => {
+		setNewMemberId('');
+		setOpenAddMember(false);
+	};
+
 	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
@@ -85,6 +101,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		setNewMember((newMember) => newMember + 1);
 		getChannelDetails();
 		setNewMemberId('');
+		if (newMemberId !== '') setOpenAddMember(false);
 	};
 
 	/* MESSAGES FUNCTIONS */
@@ -119,9 +136,10 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 				redirect: 'follow',
 			})
 				.then((res) => {
-					console.log(res);
+					// console.log(res);
 					if (res.status === 200) {
 						setMessage('');
+						getDMs();
 					}
 					retrieveMessage(receiver_class);
 				})
@@ -206,7 +224,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 		if (scrollToBottom) {
 			scrollToBottom.current.addEventListener('DOMNodeInserted', (event) => {
 				const { currentTarget: target } = event;
-				target.scroll({ top: target.scrollHeight });
+				target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
 			});
 		}
 	}, []);
@@ -226,7 +244,12 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 								? channelMembers.length + ' members'
 								: channelMembers.length + ' member')}
 
-						{path === 'messages' && 'Updated on ' + display.updated_at}
+						{display.updated_at !== '' &&
+							path === 'messages' &&
+							'Updated on ' + display.created_at}
+						{display.updated_at === '' &&
+							path === 'messages' &&
+							'Start a conversation'}
 					</ChannelInfo>
 				</Channel>
 				<ChannelDetails>
@@ -240,21 +263,21 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList }) => {
 					{path === 'messages' ? (
 						// <Info />
 						<box-icon
-							name='info-circle'
-							color='var(--sidebar-font-color)'
+							name="info-circle"
+							color="var(--chatbutton-color)"
 						></box-icon>
 					) : (
 						// <Add onClick={() => addMember(id)} />
 						<box-icon
-							name='user-plus'
-							color='var(--sidebar-font-color)'
+							name="user-plus"
+							color="var(--chatbutton-color)"
 							// onClick={() => addMember(id)}
 							onClick={() => setOpenAddMember(true)}
 						></box-icon>
 					)}
 					<AddMember
 						open={isOpenAddMember}
-						onClose={() => setOpenAddMember(false)}
+						onClose={closeAddMember}
 						onClick={addMember}
 						onSubmit={addMember}
 						onChange={inputMemberId}
