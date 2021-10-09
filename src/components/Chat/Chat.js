@@ -224,7 +224,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 		if (scrollToBottom) {
 			scrollToBottom.current.addEventListener('DOMNodeInserted', (event) => {
 				const { currentTarget: target } = event;
-				target.scroll({ top: target.scrollHeight });
+				target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
 			});
 		}
 	}, []);
