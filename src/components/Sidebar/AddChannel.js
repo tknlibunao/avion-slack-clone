@@ -1,31 +1,26 @@
 import styled from 'styled-components';
 
-const AddChannel = ({
-	onSubmit,
-	onChange,
-	newChannelName,
-}) => {
+const AddChannel = ({ onSubmit, onChange, newChannelName }) => {
 	return (
 		<Container>
 			<Header>
 				<NewChannelWrapper>
-					<NewChannel>
-						Add Channel
-					</NewChannel>
+					<NewChannel>Add Channel</NewChannel>
 				</NewChannelWrapper>
 			</Header>
 			<InputContainer>
-				<form onSubmit={() => onSubmit()}>
-					<input
-						type='text'
-						placeholder='Enter channel name'
-						value={newChannelName}
-						onChange={onChange}
-					/>
+				<form onSubmit={(e) => onSubmit(e)}>
+					<InputForm>
+						<input
+							type="text"
+							placeholder="Enter channel name"
+							value={newChannelName}
+							onChange={onChange}
+						/>
+					</InputForm>
 				</form>
 			</InputContainer>
-			<MessageContainer>
-			</MessageContainer>
+			<MessageContainer></MessageContainer>
 		</Container>
 	);
 };
@@ -111,6 +106,4 @@ const InputForm = styled.div`
 	padding-left: 3px;
 	height: 60px;
 	width: 100%;
-
-	
 `;
