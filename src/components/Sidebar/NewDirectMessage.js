@@ -47,13 +47,6 @@ const NewMessage = styled.div`
 	font-weight: 700;
 `;
 
-const ChannelInfo = styled.div`
-	display: flex;
-	align-items: center;
-	font-size: 13px;
-	color: var(--channelinfo-color);
-`;
-
 const MessageContainer = styled.div`
 	height: auto;
 	overflow-y: hidden;
@@ -93,7 +86,3 @@ const InputContainer = styled.div`
 		border: none;
 	}
 `;
-
-const InputField = styled.div`
-	
-`	

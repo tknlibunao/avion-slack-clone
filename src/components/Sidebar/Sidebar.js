@@ -1,16 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-import { sidebarItems } from "../../data/SidebarData";
-import AddChannel from "./AddChannel";
+import { sidebarItems } from "../../data/SidebarData"
 
 const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
   const history = useHistory();
-  const [openAddChannel, setOpenAddChannel] = useState(false)
-
-  const closeAddChannel = () => {
-		setOpenAddChannel(false)
-  }
 
   const goToChannel = (id) => {
     if (id) {
@@ -23,6 +17,14 @@ const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
       history.push(`/room/messages/${id}`);
     }
   };
+
+	const goToAddChannel = () => {
+		history.push(`/room/add-channel`)
+	}
+
+	const goToNewDM = () => {
+		history.push(`/room/new-message`)
+	}
 
   const newDM = () => {
     var username = prompt(`Enter user email`);
@@ -54,7 +56,7 @@ const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
             color="var(--sidebar-font-color)"
           ></box-icon>
         </Name>
-        <NewMessage onClick={newDM}>
+        <NewMessage onClick={goToNewDM}>
           <box-icon name="edit" color="var(--sidebar-color)"></box-icon>
         </NewMessage>
       </WorkspaceContainer>
@@ -75,13 +77,8 @@ const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
             name="plus"
             color="var(--sidebar-font-color)"
             // onClick={addChannel}
-						onClick={() => setOpenAddChannel(true)}
+						onClick={goToAddChannel}
           ></box-icon>
-		  <AddChannel
-		  	open={openAddChannel}
-				onClose={closeAddChannel}
-		  >
-		  </AddChannel>
         </NewChannelContainer>
         <ChannelsList>
           {channelsList.map((item, index) => (
