@@ -17,7 +17,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	const [newMemberId, setNewMemberId] = useState('');
 
 	const getChatDisplay = () => {
-		console.log(usersList);
+		// console.log(usersList);
 		if (path === 'channel') {
 			channelsList.forEach((item) => {
 				if (Number(id) === Number(item.id)) {
@@ -198,6 +198,27 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 			})
 			.catch((error) => console.log('error', error));
 	};
+
+	//   const newDM = () => {
+	// 		var username = prompt(`Enter user email`);
+	// 		let id = username;
+
+	// 		fetch(`http://206.189.91.54//api/v1/users`, {
+	// 			method: 'GET',
+	// 			headers: myHeaders,
+	// 			redirect: 'follow',
+	// 		})
+	// 			.then((response) => response.json())
+	// 			.then((result) => {
+	// 				console.log(result);
+	// 				result.data.forEach((item) => {
+	// 					if (item.uid === id) {
+	// 						console.log(item.id);
+	// 						history.push(`/room/messages/${item.id}`);
+	// 					}
+	// 				});
+	// 			});
+	// 	};
 
 	useEffect(() => {
 		getChatDisplay();
