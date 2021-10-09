@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import { sidebarItems } from "../../data/SidebarData";
 import AddChannel from "./AddChannel";
-import AddDirectMessage from "./AddDirectMessage";
 
 const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
   const history = useHistory();
+  const [openAddChannel, setOpenAddChannel] = useState(false)
+
+  const closeAddChannel = () => {
+		setOpenAddChannel(false)
+  }
 
   const goToChannel = (id) => {
     if (id) {
@@ -70,8 +74,14 @@ const Sidebar = ({ channelsList, addChannel, DMList, myHeaders }) => {
           <box-icon
             name="plus"
             color="var(--sidebar-font-color)"
-            onClick={addChannel}
+            // onClick={addChannel}
+						onClick={() => setOpenAddChannel(true)}
           ></box-icon>
+		  <AddChannel
+		  	open={openAddChannel}
+				onClose={closeAddChannel}
+		  >
+		  </AddChannel>
         </NewChannelContainer>
         <ChannelsList>
           {channelsList.map((item, index) => (

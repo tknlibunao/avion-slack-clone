@@ -9,7 +9,6 @@ const AddMember = ({
 	onChange,
 	newMemberId,
 }) => {
-	// const [newMemberId, setNewMemberId] = useState('');
 	if (!open) return null;
 
 	return (

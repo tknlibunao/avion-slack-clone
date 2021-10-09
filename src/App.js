@@ -17,6 +17,7 @@ import Chat from "./components/Chat/Chat";
 import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
+import NewDirectMessage from "./components/Sidebar/NewDirectMessage";
 import styled from "styled-components";
 
 function App() {
@@ -355,6 +356,9 @@ function App() {
                         url={url}
                         usersList={usersList}
                       />
+                    </Route>
+                    <Route path='/room/new-message'>
+                      <NewDirectMessage></NewDirectMessage>
                     </Route>
                     {/* <Route path='/room'>Select channel</Route> */}
                   </Main>
