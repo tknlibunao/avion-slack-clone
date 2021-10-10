@@ -56,12 +56,20 @@ function App() {
 
 	/* HELPER FUNCTIONS */
 
-	const sortList = (list) => {
-		return list.sort(function (a, b) {
-			if (a.updated_at > b.updated_at) return -1;
-			if (a.updated_at < b.updated_at) return 1;
-			return 0;
-		});
+	const sortList = (list, type) => {
+		if (type === 'channel') {
+			return list.sort(function (a, b) {
+				if (a.name < b.name) return -1;
+				if (a.name > b.name) return 1;
+				return 0;
+			});
+		} else if (type === 'user') {
+			return list.sort(function (a, b) {
+				if (a.uid < b.uid) return -1;
+				if (a.uid > b.uid) return 1;
+				return 0;
+			});
+		}
 	};
 
 	const removeDuplicate = (list) => {
@@ -200,7 +208,7 @@ function App() {
 						created_at: item.created_at,
 					});
 				});
-				setMyChannels(sortList(updatedList));
+				setMyChannels(sortList(updatedList, 'channel'));
 			})
 			.catch((error) => console.log('error', error));
 	};
@@ -279,7 +287,7 @@ function App() {
 						updated_at: new Date(item.updated_at),
 					});
 				});
-				updatedList = sortList(removeDuplicate(updatedList));
+				updatedList = sortList(removeDuplicate(updatedList), 'user');
 				updatedList.forEach((item) => {
 					item.created_at = item.created_at.toUTCString();
 					item.updated_at = item.updated_at.toUTCString();
@@ -309,7 +317,7 @@ function App() {
 						updated_at: new Date(item.updated_at),
 					});
 				});
-				updatedList = sortList(updatedList);
+				updatedList = sortList(updatedList, 'channel');
 				updatedList.forEach((item) => {
 					item.created_at = item.created_at.toUTCString();
 					item.updated_at = item.updated_at.toUTCString();
