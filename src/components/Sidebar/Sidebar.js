@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router';
 import { sidebarItems } from '../../data/SidebarData';
 
-const Sidebar = ({ channelsList, DMList, myHeaders }) => {
+const Sidebar = ({ channelsList, DMList, usersList }) => {
 	const history = useHistory();
 
 	const goToChannel = (id) => {
@@ -14,6 +14,8 @@ const Sidebar = ({ channelsList, DMList, myHeaders }) => {
 
 	const goToDM = (id) => {
 		if (id) {
+			let user = usersList.find((user) => user.id === id);
+			if (user) localStorage.setItem('newDM', JSON.stringify(user));
 			history.push(`/room/messages/${id}`);
 		}
 	};
