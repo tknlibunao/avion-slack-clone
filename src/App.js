@@ -389,7 +389,12 @@ function App() {
 											</Route>
 										)}
 										<Route path="/room/new-message">
-											<NewDirectMessage></NewDirectMessage>
+											<NewDirectMessage
+												url={url}
+												myHeaders={myHeaders}
+												usersList={usersList}
+												getDMs={getDMs}
+											/>
 										</Route>
 										<Route path="/room/add-channel">
 											{addSuccess ? (
