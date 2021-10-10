@@ -26,7 +26,7 @@ const Header = ({toggleSearch}) => {
 					<SearchContainer>
 						<Search>
 							<input
-                                readOnly="true"
+                                readOnly={true}
 								type='text'
 								placeholder='Search Avion School'
 								name=''
