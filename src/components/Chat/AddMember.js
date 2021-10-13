@@ -7,7 +7,7 @@ const AddMember = ({
 	onClick,
 	onSubmit,
 	onChange,
-	newMemberId,
+	newMemberEmail,
 }) => {
 	if (!open) return null;
 
@@ -24,10 +24,10 @@ const AddMember = ({
 					<InputForm>
 						<input
 							type='text'
-							placeholder='Enter member ID'
+							placeholder='Enter their email'
 							name=''
 							id=''
-							value={newMemberId}
+							value={newMemberEmail}
 							onChange={onChange}
 						/>
 					</InputForm>
