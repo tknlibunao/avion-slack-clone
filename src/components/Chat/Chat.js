@@ -14,10 +14,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	const [newMember, setNewMember] = useState(0);
 	const scrollToBottom = useRef(null);
 	const [isOpenAddMember, setOpenAddMember] = useState(false);
-	const [newMemberId, setNewMemberId] = useState('');
+	const [newMemberEmail, setMemberEmail] = useState('');
 
 	const getChatDisplay = () => {
 		// console.log(usersList);
+		// console.log('DMList: ', DMList);
 		if (path === 'channel') {
 			channelsList.forEach((item) => {
 				if (Number(id) === Number(item.id)) {
@@ -69,17 +70,20 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	};
 
 	const inputMemberId = (e) => {
-		setNewMemberId(e.target.value);
+		setMemberEmail(e.target.value);
 	};
 
 	const closeAddMember = () => {
-		setNewMemberId('');
+		setMemberEmail('');
 		setOpenAddMember(false);
 	};
 
 	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
+
+		var user = usersList.find((user) => user.uid === newMemberEmail);
+		if (user) var newMemberId = user.id;
 
 		var raw = JSON.stringify({
 			id: id,
@@ -100,8 +104,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 
 		setNewMember((newMember) => newMember + 1);
 		getChannelDetails();
-		setNewMemberId('');
-		if (newMemberId !== '') setOpenAddMember(false);
+		setMemberEmail('');
+		if (newMemberEmail !== '') setOpenAddMember(false);
 	};
 
 	/* MESSAGES FUNCTIONS */
@@ -190,10 +194,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 				// 	for (let i = 0; i < updatedList.length; i++) {
 				// 		if (i % 2 === 0) ownDM.push(updatedList[i]);
 				// 	}
-				// 	console.log(ownDM);
 				// 	return setMessageList(ownDM);
 				// }
-
 				setMessageList(updatedList);
 			})
 			.catch((error) => console.log('error', error));
@@ -245,7 +247,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 		if (scrollToBottom) {
 			scrollToBottom.current.addEventListener('DOMNodeInserted', (event) => {
 				const { currentTarget: target } = event;
-				target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+				target.scroll({ top: target.scrollHeight });
 			});
 		}
 	}, []);
@@ -265,10 +267,10 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 								? channelMembers.length + ' members'
 								: channelMembers.length + ' member')}
 
-						{display.updated_at !== '' &&
+						{messageList.length > 0 &&
 							path === 'messages' &&
 							'Updated on ' + display.created_at}
-						{display.updated_at === '' &&
+						{messageList.length === 0 &&
 							path === 'messages' &&
 							'Start a conversation'}
 					</ChannelInfo>
@@ -302,7 +304,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 						onClick={addMember}
 						onSubmit={addMember}
 						onChange={inputMemberId}
-						newMemberId={newMemberId}
+						newMemberEmail={newMemberEmail}
 					></AddMember>
 				</ChannelDetails>
 			</Header>
