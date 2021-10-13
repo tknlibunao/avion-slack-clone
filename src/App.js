@@ -28,6 +28,9 @@ function App() {
 	const [password, setPassword] = useState('');
 	const [confirmation, setConfirmation] = useState('');
 	const [error, setError] = useState('');
+	const [userAuth, setUserAuth] = useState();
+
+	/* NEW CHANNEL VALUES */
 	const [newChannelName, setNewChannelName] = useState('');
 	const [addId, setId] = useState('');
 
@@ -327,6 +330,15 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
+	const getUserAuth = () => {
+		let result = localStorage.getItem('uid');
+		console.log(result);
+	};
+
+	useEffect(() => {
+		if (success) getUserAuth();
+	}, [success]);
+
 	useEffect(() => {
 		getMyChannels();
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -393,6 +405,7 @@ function App() {
 													myHeaders={myHeaders}
 													url={url}
 													usersList={usersList}
+													getDMs={getDMs}
 												/>
 											</Route>
 										)}
@@ -402,6 +415,7 @@ function App() {
 												myHeaders={myHeaders}
 												usersList={usersList}
 												getDMs={getDMs}
+												channelsList={channelsList}
 											/>
 										</Route>
 										<Route path="/room/add-channel">
@@ -476,6 +490,6 @@ const Container = styled.div`
 `;
 const Main = styled.div`
 	display: grid;
-	grid-template-columns: 300px auto;
+	grid-template-columns: 280px auto;
 	background: var(--chatarea-color);
 `;
