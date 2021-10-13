@@ -6,7 +6,7 @@ const ChatMessage = ({ sender, body, date }) => {
 	return (
 		<Container>
 			<UserAvatar>
-				<img src={userDefaultImage} alt='' />
+				<img src={userDefaultImage} alt="" />
 			</UserAvatar>
 			<MessageContent>
 				<Name>
@@ -23,7 +23,7 @@ export default ChatMessage;
 
 const Container = styled.div`
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	padding: 8px 20px;
 
 	:hover {
@@ -34,6 +34,7 @@ const Container = styled.div`
 const UserAvatar = styled.div`
 	width: 36px;
 	height: 36px;
+	margin-top: 5px;
 	border-radius: 4px;
 	overflow: hidden;
 	margin-right: 10px;
@@ -44,6 +45,7 @@ const UserAvatar = styled.div`
 `;
 
 const MessageContent = styled.div`
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 `;
