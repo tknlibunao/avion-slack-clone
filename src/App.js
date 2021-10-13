@@ -1,26 +1,26 @@
-import './App.css';
-import React, { useState, useEffect } from 'react';
+import "./App.css";
+import React, { useState, useEffect } from "react";
 import {
-	BrowserRouter as Router,
-	Switch,
-	Route,
-	Redirect,
-	// Link,
-	// useRouteMatch,
-	// useParams,
-} from 'react-router-dom';
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+  // Link,
+  // useRouteMatch,
+  // useParams,
+} from "react-router-dom";
 
-import Loading from './components/Loading/Loading';
-import Header from './components/Header/Header';
-import Sidebar from './components/Sidebar/Sidebar';
-import Chat from './components/Chat/Chat';
-import Home from './components/Home/Home';
-import Login from './components/Login/Login';
-import Register from './components/Register/Register';
-import NewDirectMessage from './components/Sidebar/NewDirectMessage';
-import AddChannel from './components/Sidebar/AddChannel';
-import styled from 'styled-components';
-import Search from './components/Search/Search';
+import Loading from "./components/Loading/Loading";
+import Header from "./components/Header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Chat from "./components/Chat/Chat";
+import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import NewDirectMessage from "./components/Sidebar/NewDirectMessage";
+import AddChannel from "./components/Sidebar/AddChannel";
+import styled from "styled-components";
+import Search from "./components/Search/Search";
 
 function App() {
 	/* USER PARAMETERS */
@@ -483,10 +483,10 @@ function App() {
 export default App;
 
 const Container = styled.div`
-	display: grid;
-	grid-template-rows: 38px auto;
-	width: 100vw;
-	height: 100vh;
+  display: grid;
+  grid-template-rows: 38px auto;
+  width: 100vw;
+  height: 100vh;
 `;
 const Main = styled.div`
 	display: grid;
