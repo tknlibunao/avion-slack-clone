@@ -155,6 +155,7 @@ const Container = styled.div`
   justify-content: center;
   position: absolute;
   top: 0;
+  color: black;
 `;
 const SearchModal = styled.div`
   width: 700px;

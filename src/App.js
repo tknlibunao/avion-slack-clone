@@ -20,7 +20,6 @@ import Register from "./components/Register/Register";
 import NewDirectMessage from "./components/Sidebar/NewDirectMessage";
 import AddChannel from "./components/Sidebar/AddChannel";
 import styled from "styled-components";
-import Search from "./components/Search/Search";
 
 function App() {
   /* USER PARAMETERS */
@@ -380,8 +379,12 @@ function App() {
               {localStorage.getItem("token") !== null ? (
                 <Container>
                   <Header
-                    name={localStorage.getItem("uid")}
+                    usersList={usersList}
+                    channelsList={channelsList}
                     toggleSearch={toggleSearch}
+                    myHeaders={myHeaders}
+                    name={localStorage.getItem("uid")}
+                    searchToggle={searchToggle}
                   />
                   <Main>
                     <Sidebar
@@ -391,26 +394,17 @@ function App() {
                       DMList={DMList}
                       usersList={usersList}
                     />
-                    {searchToggle ? (
-                      <Search
-                        usersList={usersList}
+                    <Route path="/room/:path/:id">
+                      <Chat
+                        myChannels={myChannels}
                         channelsList={channelsList}
-                        toggleSearch={toggleSearch}
+                        DMList={DMList}
                         myHeaders={myHeaders}
+                        url={url}
+                        usersList={usersList}
+                        getDMs={getDMs}
                       />
-                    ) : (
-                      <Route path="/room/:path/:id">
-                        <Chat
-                          myChannels={myChannels}
-                          channelsList={channelsList}
-                          DMList={DMList}
-                          myHeaders={myHeaders}
-                          url={url}
-                          usersList={usersList}
-                          getDMs={getDMs}
-                        />
-                      </Route>
-                    )}
+                    </Route>
                     <Route path="/room/new-message">
                       <NewDirectMessage
                         url={url}

@@ -311,6 +311,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
             ></box-icon>
           )}
           <AddMember
+            setMemberEmail={setMemberEmail}
+            usersList={usersList}
             open={isOpenAddMember}
             onClose={closeAddMember}
             onClick={addMember}
