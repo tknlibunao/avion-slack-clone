@@ -150,3 +150,9 @@ const InputContainer = styled.div`
 		border: none;
 	}
 `;
+const MembersWrapper = styled.div`
+
+`
+const Member = styled.div`
+
+`

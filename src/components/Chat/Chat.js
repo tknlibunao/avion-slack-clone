@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 import AddMember from './AddMember';
+import ShowMembers from './ShowMembers';
 
 const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	let { path, id } = useParams();
@@ -15,6 +16,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	const scrollToBottom = useRef(null);
 	const [isOpenAddMember, setOpenAddMember] = useState(false);
 	const [newMemberId, setNewMemberId] = useState('');
+	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false)
 
 	const getChatDisplay = () => {
 		// console.log(usersList);
@@ -180,19 +182,19 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 					item.created_at = item.created_at.toUTCString();
 				});
 
-				// let user = usersList.find(
-				// 	(item) => item.uid === localStorage.getItem('uid')
-				// );
+				let user = usersList.find(
+					(item) => item.uid === localStorage.getItem('uid')
+				);
 
-				// if (path === 'messages' && String(id) === String(user.id)) {
-				// 	console.log(updatedList);
-				// 	let ownDM = [];
-				// 	for (let i = 0; i < updatedList.length; i++) {
-				// 		if (i % 2 === 0) ownDM.push(updatedList[i]);
-				// 	}
-				// 	console.log(ownDM);
-				// 	return setMessageList(ownDM);
-				// }
+				if (path === 'messages' && String(id) === String(user.id)) {
+					console.log(updatedList);
+					let ownDM = [];
+					for (let i = 0; i < updatedList.length; i++) {
+						if (i % 2 === 0) ownDM.push(updatedList[i]);
+					}
+					console.log(ownDM);
+					return setMessageList(ownDM);
+				}
 
 				setMessageList(updatedList);
 			})
@@ -257,20 +259,28 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 					<ChannelName>
 						{path === 'channel' ? '#' + display.name : display.uid}
 					</ChannelName>
-					<ChannelInfo>
-						{/* <box-icon name='plus' color='var(--channelinfo-color)' size='20px'></box-icon>
-                        <span>Add a bookmark</span> */}
-						{path === 'channel' &&
-							(channelMembers.length > 1
-								? channelMembers.length + ' members'
-								: channelMembers.length + ' member')}
+					<ChannelInfo >
+						<span 
+							onClick={path === 'channel' ? () => setIsOpenShowMembers(true) : ''}
+							style={path === 'channel' ? {cursor: 'pointer'} : {cursor: 'default'}}
+						>
+							{path === 'channel' &&
+								(channelMembers.length > 1
+									? channelMembers.length + ' members'
+									: channelMembers.length + ' member')}
 
-						{display.updated_at !== '' &&
-							path === 'messages' &&
-							'Updated on ' + display.created_at}
-						{display.updated_at === '' &&
-							path === 'messages' &&
-							'Start a conversation'}
+							{display.updated_at !== '' &&
+								path === 'messages' &&
+								'Updated on ' + display.created_at}
+							{display.updated_at === '' &&
+								path === 'messages' &&
+								'Start a conversation'}
+						</span>
+						<ShowMembers
+							open={isOpenShowMembers}
+							onClose={() => setIsOpenShowMembers(false)}
+							channelName={display.name}
+						/>
 					</ChannelInfo>
 				</Channel>
 				<ChannelDetails>
