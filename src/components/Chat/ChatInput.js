@@ -246,4 +246,5 @@ const SendIcon = styled.div`
 const SendOptions = styled.div`
 	display: flex;
 	align-items: center;
+	padding-right: 2px;
 `;
