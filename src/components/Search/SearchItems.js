@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-function SearchItems({ inputAutoSelect, item, setSearchInput }) {
-  const clicked = () => {
+function SearchItems({ inputAutoSelect, item, setSearchInput, submit }) {
+  const clicked = (e) => {
     setSearchInput(item);
     inputAutoSelect();
+    submit(e);
   };
 
   return (
