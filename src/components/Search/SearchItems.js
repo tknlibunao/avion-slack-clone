@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-function SearchItems({ inputAutoSelect, item, setSearchInput, submit }) {
-  const clicked = (e) => {
+function SearchItems({ inputAutoSelect, item, setSearchInput }) {
+  const clicked = () => {
     setSearchInput(item);
     inputAutoSelect();
-    submit(e);
   };
 
   return (
@@ -20,7 +19,7 @@ function SearchItems({ inputAutoSelect, item, setSearchInput, submit }) {
 const Container = styled.div`
   cursor: pointer;
   padding-left: 5px;
-
+  color: black;
   :hover {
     background-color: #ccc;
   }
