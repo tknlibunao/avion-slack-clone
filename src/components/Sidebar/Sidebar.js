@@ -274,6 +274,7 @@ const DirectMessage = styled.div`
 	cursor: pointer;
 
 	span {
+		width: 100%;
 		padding-left: 10px;
 	}
 
