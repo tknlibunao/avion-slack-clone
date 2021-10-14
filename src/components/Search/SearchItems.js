@@ -19,7 +19,7 @@ function SearchItems({ inputAutoSelect, item, setSearchInput }) {
 const Container = styled.div`
   cursor: pointer;
   padding-left: 5px;
-
+  color: black;
   :hover {
     background-color: #ccc;
   }

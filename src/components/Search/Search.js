@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router";
 import SearchResults from "./SearchResults";
 
-function Search({ toggleSearch, myHeaders }) {
+function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
   const [roomClass, setRoomClass] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [searchItem, setSearchItem] = useState([]);
@@ -34,28 +34,23 @@ function Search({ toggleSearch, myHeaders }) {
   ///// ----- FUNCTION FOR LIST SEARCH ON TYPE ----- /////
   const search = () => {
     let y = [];
-    fetch(`http://206.189.91.54//api/v1/${condition ? "users" : "channels"}`, {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (searchInput === "") {
-          setSearchItem([]);
-        } else {
-          result.data.forEach((item) => {
-            if (
-              condition
-                ? item.uid.includes(searchInput)
-                : item.name.includes(searchInput)
-            ) {
-              y.push(condition ? item.uid : item.name);
+    if (searchInput === "") {
+      setSearchItem([]);
+      return;
+    } else {
+      condition
+        ? usersList.forEach((item) => {
+            if (item.uid.includes(searchInput)) {
+              y.push(item.uid);
+            }
+          })
+        : channelsList.forEach((item) => {
+            if (item.name.includes(searchInput)) {
+              y.push(item.name);
             }
           });
-          setSearchItem(y);
-        }
-      });
+    }
+    setSearchItem(y);
   };
 
   ///// ----- FUNCTION FOR SUBMIT SEARCH ----- /////
@@ -119,6 +114,7 @@ function Search({ toggleSearch, myHeaders }) {
               onKeyDown={onKeyPress}
               onChange={handleChange}
               style={inputStyle}
+              submit={submit}
             />
           </Form>
           <CloseButton onClick={toggleSearch}>
@@ -159,6 +155,7 @@ const Container = styled.div`
   justify-content: center;
   position: absolute;
   top: 0;
+  color: black;
 `;
 const SearchModal = styled.div`
   width: 700px;

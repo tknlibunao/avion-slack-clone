@@ -40,12 +40,12 @@ const NewDirectMessage = ({
 		setSearchPool(sortList(p));
 	};
 
-	const onKeyPress = (e) => {
-		if (e.key === 'Tab' && searchItem.length !== 0) {
-			e.preventDefault();
-			setSearchReceiver(searchItem[0]);
-		}
-	};
+	// const onKeyPress = (e) => {
+	// 	if (e.key === 'Tab' && searchItem.length !== 0) {
+	// 		e.preventDefault();
+	// 		setSearchReceiver(searchItem[0]);
+	// 	}
+	// };
 
 	const inputAutoSelect = () => {
 		let searchReceiver = document.querySelector(`.searchReceiver`);
@@ -300,3 +300,9 @@ const Recepient = styled.div`
 	padding-bottom: 2px;
 	box-shadow: 1px 1px 3px #121212;
 `;
+// const MembersWrapper = styled.div`
+
+// `
+// const Member = styled.div`
+
+// `
