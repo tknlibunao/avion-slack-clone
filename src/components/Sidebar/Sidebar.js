@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router';
 import { sidebarItems } from '../../data/SidebarData';
 
 const Sidebar = ({ channelsList, DMList, usersList }) => {
 	const history = useHistory();
+	const [showMessage, setShowMessage] = useState(false);
+	const [showChannel, setShowChannel] = useState(false);
 
 	const goToChannel = (id) => {
 		if (id) {
@@ -38,9 +40,18 @@ const Sidebar = ({ channelsList, DMList, usersList }) => {
 						color="var(--sidebar-font-color)"
 					></box-icon>
 				</Name>
-				<NewMessage onClick={goToNewDM}>
+				<NewMessage
+					onClick={goToNewDM}
+					onMouseEnter={() => setShowMessage(true)}
+					onMouseLeave={() => setShowMessage(false)}
+				>
 					<box-icon name="edit" color="var(--sidebar-color)"></box-icon>
 				</NewMessage>
+				{showMessage && (
+					<NewMessageTooltip>
+						<h6>New message</h6>
+					</NewMessageTooltip>
+				)}
 			</WorkspaceContainer>
 			<MainChannels>
 				{sidebarItems.map((item, index) => (
@@ -58,10 +69,16 @@ const Sidebar = ({ channelsList, DMList, usersList }) => {
 					<box-icon
 						name="plus"
 						color="var(--sidebar-font-color)"
-						// onClick={addChannel}
 						onClick={goToAddChannel}
+						onMouseEnter={() => setShowChannel(true)}
+						onMouseLeave={() => setShowChannel(false)}
 					></box-icon>
 				</NewChannelContainer>
+				{showChannel && (
+					<AddChannelTooltip>
+						<h6>Add channel</h6>
+					</AddChannelTooltip>
+				)}
 				<ChannelsList>
 					{channelsList.map((item, index) => (
 						<Channel key={index} onClick={() => goToChannel(item.id)}>
@@ -143,6 +160,7 @@ const MainChannels = styled.div`
 
 const MainChannelItem = styled.div`
 	display: grid;
+	align-items: center;
 	grid-template-columns: 15% auto;
 	height: 30px;
 	padding-left: 20px;
@@ -262,4 +280,33 @@ const DirectMessage = styled.div`
 	:hover {
 		background-color: var(--sidebar-hover);
 	}
+`;
+
+const NewMessageTooltip = styled.div`
+	background-color: #121212;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+	height: 30px;
+	border-radius: 5px;
+	z-index: 10;
+	position: absolute;
+	top: 85px;
+	left: 190px;
+`;
+
+const AddChannelTooltip = styled.div`
+	background-color: #121212;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+	height: 30px;
+	border-radius: 5px;
+	z-index: 10;
+	position: absolute;
+	top: 210px;
+	left: 195px;
 `;
