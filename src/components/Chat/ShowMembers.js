@@ -197,6 +197,7 @@ const MembersWrapper = styled.div`
 	align-items: center;
 	font-size: 15px;
 	color: #000000;
+	overflow: auto;
 `
 const Member = styled.div`
 	display: flex;
