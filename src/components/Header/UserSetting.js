@@ -18,6 +18,8 @@ const UserSetting = () => {
 		setUserActive(!isUserActive);
 	};
 
+	let user = localStorage.getItem('uid')
+
 	const logOutHandler = () => {
 		localStorage.clear();
 		history.push('/');
@@ -33,7 +35,7 @@ const UserSetting = () => {
 					</UserImage>
 					<UserName>
 						<span className='user-name'>
-							<b>Bills</b>
+							<b>{user}</b>
 						</span>
 						<span className='user-status'>
 							{localStorage.getItem('isUserActive') === 'true'
