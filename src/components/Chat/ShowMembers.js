@@ -41,17 +41,14 @@ const ShowMembers = ({
 					<input type="text" placeholder='Find members' name="" id="" />
 				</SearchMember>
 				<MembersWrapper>
-                    {/* {membersList.map((item, index) => (
-                        <Member>
-
+                    {membersList.map((item, index) => (
+                        <Member key={index}>
+							<MemberImage>
+								<img src={userDefaultImage} alt="Member" />
+							</MemberImage>
+							<b>{item}</b>
                         </Member>
-                    ))} */}
-                    <Member>
-                        <MemberImage>
-							<img src={userDefaultImage} alt="Member" />
-						</MemberImage>
-						<b>Bills</b>
-                    </Member>
+                    ))}
                 </MembersWrapper>
 			</Modal>
 		</Container>
@@ -160,6 +157,8 @@ const ChannelInfo = styled.div`
 	div {
 		padding-bottom: 5px;
 		margin-right: 25px;
+		cursor: pointer;
+
 		:last-child {
 			border-bottom: 2px solid #007A5A;
 		}
@@ -194,6 +193,7 @@ const SearchMember = styled.div`
 `
 const MembersWrapper = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	font-size: 15px;
 	color: #000000;

@@ -275,9 +275,6 @@ const InputContainer = styled.div`
 		width: 100%;
 		border: none;
 	}
-<<<<<<< HEAD
-`;
-=======
 `;
 
 const Line = styled.div`
@@ -303,10 +300,3 @@ const Recepient = styled.div`
 	padding-bottom: 2px;
 	box-shadow: 1px 1px 3px #121212;
 `;
-// const MembersWrapper = styled.div`
-
-// `
-// const Member = styled.div`
-
-// `
->>>>>>> ba82735948f7995101cf94379f298663802cc9a8
