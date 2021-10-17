@@ -12,19 +12,28 @@ function SearchItems({ inputAutoSelect, item, setSearchInput, select }) {
       style={{ backgroundColor: item === select ? "#ccc" : "white" }}
       onClick={clicked}
     >
-      <p>
+      <Item>
         <b>{item}</b>
-      </p>
+      </Item>
     </Container>
   );
 }
 
 const Container = styled.div`
   cursor: pointer;
-  padding-left: 5px;
+
   color: black;
   :hover {
     background-color: #ccc;
   }
 `;
+
+const Item = styled.div`
+  width: 100%;
+  padding-left: 5px;
+  :hover {
+    background-color: #ccc;
+  }
+`;
+
 export default SearchItems;
