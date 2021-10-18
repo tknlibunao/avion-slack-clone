@@ -10,82 +10,82 @@ const AddMember = ({
   usersList,
   setMemberEmail,
 }) => {
-  const [searchItem, setSearchItem] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+	const [searchItem, setSearchItem] = useState([]);
+	const [searchInput, setSearchInput] = useState('');
 
-  const handleChange = (e) => {
-    setSearchInput(e.target.value);
-  };
-  const searchUser = () => {
-    if (searchInput === "") {
-      return;
-    } else {
-      const y = [];
-      usersList.forEach((item) => {
-        if (item.uid.includes(searchInput)) {
-          y.push(item.uid);
-        }
-      });
-      setSearchItem(y);
-    }
-  };
+	const handleChange = (e) => {
+		setSearchInput(e.target.value);
+	};
+	const searchUser = () => {
+		if (searchInput === '') {
+			return;
+		} else {
+			const y = [];
+			usersList.forEach((item) => {
+				if (item.uid.includes(searchInput)) {
+					y.push(item.uid);
+				}
+			});
+			setSearchItem(y);
+		}
+	};
 
-  const inputAutoSelect = () => {
-    let searchInput = document.querySelector(`.searchInput`);
-    searchInput.select();
-  };
+	const inputAutoSelect = () => {
+		let searchInput = document.querySelector(`.searchInput`);
+		searchInput.select();
+	};
 
-  useEffect(() => {
-    searchUser();
-    setMemberEmail(searchInput);
-  }, [searchInput]);
+	useEffect(() => {
+		searchUser();
+		setMemberEmail(searchInput);
+	}, [searchInput]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    setSearchInput("");
-  }, [open]);
+	useEffect(() => {
+		setSearchInput('');
+	}, [open]);
 
-  if (!open) {
-    return null;
-  }
+	if (!open) {
+		return null;
+	}
 
-  return (
-    <Container>
-      <Modal>
-        <Header>
-          <h3>Add Member</h3>
-          <CloseIcon onClick={onClose}>
-            <box-icon name="x" color="#686868"></box-icon>
-          </CloseIcon>
-        </Header>
-        <form onSubmit={(e) => onSubmit(e)}>
-          <InputForm>
-            <input
-              className="searchInput"
-              type="text"
-              placeholder="Enter their email"
-              name=""
-              id=""
-              value={searchInput}
-              onChange={handleChange}
-            />
-          </InputForm>
-          {searchInput === "" ? null : (
-            <SearchResults
-              inputAutoSelect={inputAutoSelect}
-              setSearchInput={setSearchInput}
-              searchItem={searchItem}
-            />
-          )}
+	return (
+		<Container>
+			<Modal>
+				<Header>
+					<h3>Add Member</h3>
+					<CloseIcon onClick={onClose}>
+						<box-icon name="x" color="#686868"></box-icon>
+					</CloseIcon>
+				</Header>
+				<form onSubmit={(e) => onSubmit(e)}>
+					<InputForm>
+						<input
+							className="searchInput"
+							type="text"
+							placeholder="Enter their email"
+							name=""
+							id=""
+							value={searchInput}
+							onChange={handleChange}
+						/>
+					</InputForm>
+					{searchInput === '' ? null : (
+						<SearchResults
+							inputAutoSelect={inputAutoSelect}
+							setSearchInput={setSearchInput}
+							searchItem={searchItem}
+						/>
+					)}
 
-          <AddButton>
-            <button onClick={onClick}>
-              <b>Add</b>
-            </button>
-          </AddButton>
-        </form>
-      </Modal>
-    </Container>
-  );
+					<AddButton>
+						<button onClick={onClick}>
+							<b>Add</b>
+						</button>
+					</AddButton>
+				</form>
+			</Modal>
+		</Container>
+	);
 };
 
 export default AddMember;

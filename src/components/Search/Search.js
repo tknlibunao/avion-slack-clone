@@ -4,165 +4,165 @@ import { useHistory } from "react-router";
 import SearchResults from "./SearchResults";
 
 function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
-  const [roomClass, setRoomClass] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-  const [searchItem, setSearchItem] = useState([]);
-  const [select, setSelect] = useState("");
-  let [c, setC] = useState(-1);
+	const [roomClass, setRoomClass] = useState('');
+	const [searchInput, setSearchInput] = useState('');
+	const [searchItem, setSearchItem] = useState([]);
+	const [select, setSelect] = useState('');
+	let [c, setC] = useState(-1);
 
-  const history = new useHistory();
+	const history = new useHistory();
 
-  const pickChannel = () => {
-    setRoomClass("channels");
-  };
-  const pickPeople = () => {
-    setRoomClass("users");
-  };
-  const revertClass = () => {
-    setRoomClass("");
-  };
-  const handleChange = (e) => {
-    setSearchInput(e.target.value);
-  };
-  const onKeyPress = (e) => {
-    if (searchInput === "") {
-      setC(-1);
-      return;
-    } else {
-      if (e.key === "Tab") {
-        setSearchInput(searchItem[c]);
-        setSelect("");
-      } else if (e.key === "ArrowDown" && c <= searchItem.length) {
-        setC((c += 1));
-        setSelect(searchItem[c]);
-      } else if (e.key === "ArrowUp" && c !== 0) {
-        setC((c -= 1));
-        setSelect(searchItem[c]);
-      } else if (c === 0 || c > searchItem.length) {
-        return;
-      }
-    }
-  };
+	const pickChannel = () => {
+		setRoomClass('channels');
+	};
+	const pickPeople = () => {
+		setRoomClass('users');
+	};
+	const revertClass = () => {
+		setRoomClass('');
+	};
+	const handleChange = (e) => {
+		setSearchInput(e.target.value);
+	};
+	const onKeyPress = (e) => {
+		if (searchInput === '') {
+			setC(-1);
+			return;
+		} else {
+			if (e.key === 'Tab') {
+				setSearchInput(searchItem[c]);
+				setSelect('');
+			} else if (e.key === 'ArrowDown' && c <= searchItem.length) {
+				setC((c += 1));
+				setSelect(searchItem[c]);
+			} else if (e.key === 'ArrowUp' && c !== 0) {
+				setC((c -= 1));
+				setSelect(searchItem[c]);
+			} else if (c === 0 || c > searchItem.length) {
+				return;
+			}
+		}
+	};
 
-  // useEffect(() => {}, [c]);
+	// useEffect(() => {}, [c]);
 
-  ///// ----- FUNCTION FOR LIST SEARCH ON TYPE ----- /////
-  const condition = roomClass === "users" || roomClass === "";
+	///// ----- FUNCTION FOR LIST SEARCH ON TYPE ----- /////
+	const condition = roomClass === 'users' || roomClass === '';
 
-  const search = () => {
-    let y = [];
-    if (searchInput === "") {
-      setSearchItem([]);
-      return;
-    } else {
-      condition
-        ? usersList.forEach((item) => {
-            if (item.uid.includes(searchInput)) {
-              y.push(item.uid);
-            }
-          })
-        : channelsList.forEach((item) => {
-            if (item.name.includes(searchInput)) {
-              y.push(item.name);
-            }
-          });
-    }
-    setSearchItem(y);
-  };
+	const search = () => {
+		let y = [];
+		if (searchInput === '') {
+			setSearchItem([]);
+			return;
+		} else {
+			condition
+				? usersList.forEach((item) => {
+						if (item.uid.includes(searchInput)) {
+							y.push(item.uid);
+						}
+				  })
+				: channelsList.forEach((item) => {
+						if (item.name.includes(searchInput)) {
+							y.push(item.name);
+						}
+				  });
+		}
+		setSearchItem(y);
+	};
 
-  ///// ----- FUNCTION FOR SUBMIT SEARCH ----- /////
-  const submit = (e) => {
-    e.preventDefault();
-    fetch(`http://206.189.91.54//api/v1/${condition ? "users" : "channels"}`, {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        result.data.forEach((item) => {
-          if (
-            condition ? item.uid === searchInput : item.name === searchInput
-          ) {
-            console.log(item.id);
-            history.push(
-              `/room/${condition ? "messages" : "channel"}/${item.id}`
-            );
-            toggleSearch();
-          }
-          return;
-        });
-      });
-  };
+	///// ----- FUNCTION FOR SUBMIT SEARCH ----- /////
+	const submit = (e) => {
+		e.preventDefault();
+		fetch(`http://206.189.91.54//api/v1/${condition ? 'users' : 'channels'}`, {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		})
+			.then((response) => response.json())
+			.then((result) => {
+				console.log(result);
+				result.data.forEach((item) => {
+					if (
+						condition ? item.uid === searchInput : item.name === searchInput
+					) {
+						console.log(item.id);
+						history.push(
+							`/room/${condition ? 'messages' : 'channel'}/${item.id}`
+						);
+						toggleSearch();
+					}
+					return;
+				});
+			});
+	};
 
-  const inputAutoSelect = () => {
-    let searchInput = document.querySelector(`.searchInput`);
-    searchInput.select();
-  };
-  ///// ----- useEffects ----- //////
-  useEffect(() => {
-    search();
-  }, [searchInput, roomClass]);
+	const inputAutoSelect = () => {
+		let searchInput = document.querySelector(`.searchInput`);
+		searchInput.select();
+	};
+	///// ----- useEffects ----- //////
+	useEffect(() => {
+		search();
+	}, [searchInput, roomClass]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    inputAutoSelect();
-  }, [roomClass]);
+	useEffect(() => {
+		inputAutoSelect();
+	}, [roomClass]);
 
-  ///// ----- RENDER ----- /////
-  return (
-    <Container>
-      <SearchModal>
-        <SearchDiv>
-          <p onClick={revertClass} style={roomClass ? pStyle : null}>
-            {roomClass === "" ? (
-              <box-icon name="search-alt" />
-            ) : roomClass === "users" ? (
-              "People"
-            ) : (
-              "Channel"
-            )}
-          </p>
-          <Form onSubmit={submit}>
-            <input
-              className="searchInput"
-              value={searchInput}
-              type="text"
-              onKeyDown={onKeyPress}
-              onChange={handleChange}
-              style={inputStyle}
-              submit={submit}
-            />
-          </Form>
-          <button style={{ opacity: "0" }} onClick={submit} />
-          <CloseButton onClick={toggleSearch}>
-            <box-icon name="plus"></box-icon>
-          </CloseButton>
-        </SearchDiv>
-        <Line>
-          {searchItem !== "" ? (
-            <SearchResults
-              select={select}
-              searchItem={searchItem}
-              setSearchInput={setSearchInput}
-              searchInput={searchInput}
-              submit={submit}
-              inputAutoSelect={inputAutoSelect}
-            />
-          ) : null}
-          <LineText>I'm looking for...</LineText>
-        </Line>
-        <ButtonContainer>
-          <Button onClick={pickChannel}>
-            <box-icon name="spreadsheet"></box-icon>Channel
-          </Button>
-          <Button onClick={pickPeople}>
-            <box-icon name="user"></box-icon>People
-          </Button>
-        </ButtonContainer>
-      </SearchModal>
-    </Container>
-  );
+	///// ----- RENDER ----- /////
+	return (
+		<Container>
+			<SearchModal>
+				<SearchDiv>
+					<p onClick={revertClass} style={roomClass ? pStyle : null}>
+						{roomClass === '' ? (
+							<box-icon name="search-alt" />
+						) : roomClass === 'users' ? (
+							'People'
+						) : (
+							'Channel'
+						)}
+					</p>
+					<Form onSubmit={submit}>
+						<input
+							className="searchInput"
+							value={searchInput}
+							type="text"
+							onKeyDown={onKeyPress}
+							onChange={handleChange}
+							style={inputStyle}
+							submit={submit}
+						/>
+					</Form>
+					<button style={{ opacity: '0' }} onClick={submit} />
+					<CloseButton onClick={toggleSearch}>
+						<box-icon name="plus"></box-icon>
+					</CloseButton>
+				</SearchDiv>
+				<Line>
+					{searchItem !== '' ? (
+						<SearchResults
+							select={select}
+							searchItem={searchItem}
+							setSearchInput={setSearchInput}
+							searchInput={searchInput}
+							submit={submit}
+							inputAutoSelect={inputAutoSelect}
+						/>
+					) : null}
+					<LineText>I'm looking for...</LineText>
+				</Line>
+				<ButtonContainer>
+					<Button onClick={pickChannel}>
+						<box-icon name="spreadsheet"></box-icon>Channel
+					</Button>
+					<Button onClick={pickPeople}>
+						<box-icon name="user"></box-icon>People
+					</Button>
+				</ButtonContainer>
+			</SearchModal>
+		</Container>
+	);
 }
 
 ///// ----- STYLES ----- /////
