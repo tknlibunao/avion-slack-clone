@@ -280,6 +280,7 @@ function App() {
     fetch(`${url}/users/recent`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result);
         let updatedList = [];
         result.data.forEach((item) => {
           updatedList.push({

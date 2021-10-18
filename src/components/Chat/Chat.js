@@ -17,6 +17,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	const [isOpenAddMember, setOpenAddMember] = useState(false);
 	const [newMemberEmail, setMemberEmail] = useState('');
 	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false)
+	const [membersList, setMembersList] = useState([])
 
 	const getChatDisplay = () => {
 		// console.log(usersList);
@@ -64,7 +65,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 				result.data.channel_members.forEach((item) => {
 					updatedList.push(item.user_id);
 				});
-				setChannelMembers(updatedList);
+				setChannelMembers(updatedList)
 				console.log(updatedList);
 			})
 			.catch((error) => console.log('error', error));
@@ -78,6 +79,17 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 		setMemberEmail('');
 		setOpenAddMember(false);
 	};
+
+	const displayMember = () => {
+		setIsOpenShowMembers(true)
+		let members = []
+		channelMembers.forEach((member)=> {
+			let user = usersList.find((user) => user.id === member)
+			console.log(user.uid);
+			members.push(user.uid)
+			setMembersList(members)
+		} )
+	}
 
 	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
@@ -264,7 +276,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 					</ChannelName>
 					<ChannelInfo >
 						<span 
-							onClick={path === 'channel' ? () => setIsOpenShowMembers(true) : ''}
+							onClick={path === 'channel' ? displayMember : ''}
 							style={path === 'channel' ? {cursor: 'pointer'} : {cursor: 'default'}}
 						>
 							{path === 'channel' &&
@@ -279,11 +291,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 								path === 'messages' &&
 								'Start a conversation'}
 						</span>
-						<ShowMembers
+						<ShowMembers 
 							open={isOpenShowMembers}
 							onClose={() => setIsOpenShowMembers(false)}
 							channelName={display.name}
-              membersList={display.id}
+             				membersList={membersList}
 						/>
 					</ChannelInfo>
 				</Channel>

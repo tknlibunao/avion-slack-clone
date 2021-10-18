@@ -7,6 +7,8 @@ function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
   const [roomClass, setRoomClass] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [searchItem, setSearchItem] = useState([]);
+  const [select, setSelect] = useState("");
+  let [c, setC] = useState(-1);
 
   const history = new useHistory();
 
@@ -23,15 +25,30 @@ function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
     setSearchInput(e.target.value);
   };
   const onKeyPress = (e) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      setSearchInput(searchItem[0]);
+    if (searchInput === "") {
+      setC(-1);
+      return;
+    } else {
+      if (e.key === "Tab") {
+        setSearchInput(searchItem[c]);
+        setSelect("");
+      } else if (e.key === "ArrowDown" && c <= searchItem.length) {
+        setC((c += 1));
+        setSelect(searchItem[c]);
+      } else if (e.key === "ArrowUp" && c !== 0) {
+        setC((c -= 1));
+        setSelect(searchItem[c]);
+      } else if (c === 0 || c > searchItem.length) {
+        return;
+      }
     }
   };
 
-  const condition = roomClass === "users" || roomClass === "";
+  // useEffect(() => {}, [c]);
 
   ///// ----- FUNCTION FOR LIST SEARCH ON TYPE ----- /////
+  const condition = roomClass === "users" || roomClass === "";
+
   const search = () => {
     let y = [];
     if (searchInput === "") {
@@ -117,6 +134,7 @@ function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
               submit={submit}
             />
           </Form>
+          <button style={{ opacity: "0" }} onClick={submit} />
           <CloseButton onClick={toggleSearch}>
             <box-icon name="plus"></box-icon>
           </CloseButton>
@@ -124,6 +142,7 @@ function Search({ toggleSearch, myHeaders, usersList, channelsList }) {
         <Line>
           {searchItem !== "" ? (
             <SearchResults
+              select={select}
               searchItem={searchItem}
               setSearchInput={setSearchInput}
               searchInput={searchInput}
@@ -223,5 +242,6 @@ const CloseButton = styled.button`
   margin-right: 0;
   margin-left: auto;
   transform: rotate(45deg);
+  outline: none;
 `;
 export default Search;

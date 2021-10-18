@@ -3,6 +3,7 @@ import SearchItems from "./SearchItems";
 import styled from "styled-components";
 
 function SearchResults({
+  select,
   inputAutoSelect,
   searchItem,
   setSearchInput,
@@ -19,6 +20,7 @@ function SearchResults({
           setSearchInput={setSearchInput}
           item={item}
           inputAutoSelect={inputAutoSelect}
+          select={select}
         />
       ))}
     </Container>
