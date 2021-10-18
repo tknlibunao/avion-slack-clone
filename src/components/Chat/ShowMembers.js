@@ -1,12 +1,7 @@
 import styled from 'styled-components';
-import userDefaultImage from '../../assets/userDefaultImage.png'
+import userDefaultImage from '../../assets/userDefaultImage.png';
 
-const ShowMembers = ({
-	open,
-	onClose,
-    channelName,
-    membersList
-}) => {
+const ShowMembers = ({ open, onClose, channelName, membersList }) => {
 	if (!open) return null;
 
 	return (
@@ -15,21 +10,21 @@ const ShowMembers = ({
 				<Header>
 					<h2>#{channelName}</h2>
 					<CloseIcon onClick={onClose}>
-						<box-icon name='x' color='#686868' ></box-icon>
+						<box-icon name="x" color="#686868"></box-icon>
 					</CloseIcon>
 				</Header>
 				<ChannelIcons>
 					<StarIcon>
-						<box-icon name='star' size='20px'></box-icon>
-						<box-icon name='chevron-down' size='20px'></box-icon>
+						<box-icon name="star" size="20px"></box-icon>
+						<box-icon name="chevron-down" size="20px"></box-icon>
 					</StarIcon>
 					<BellIcon>
-						<box-icon name='bell' size='20px'></box-icon>
+						<box-icon name="bell" size="20px"></box-icon>
 						<span>Get Notifications for @ Mentions </span>
-						<box-icon name='chevron-down' size='20px'></box-icon>
+						<box-icon name="chevron-down" size="20px"></box-icon>
 					</BellIcon>
 					<PhoneIcon>
-						<box-icon name='phone' size='20px'></box-icon>
+						<box-icon name="phone" size="20px"></box-icon>
 						<span>Start a Call</span>
 					</PhoneIcon>
 				</ChannelIcons>
@@ -38,18 +33,18 @@ const ShowMembers = ({
 					<div>Members</div>
 				</ChannelInfo>
 				<SearchMember>
-					<input type="text" placeholder='Find members' name="" id="" />
+					<input type="text" placeholder="Find members" name="" id="" />
 				</SearchMember>
 				<MembersWrapper>
-                    {membersList.map((item, index) => (
-                        <Member key={index}>
+					{membersList.map((item, index) => (
+						<Member key={index}>
 							<MemberImage>
 								<img src={userDefaultImage} alt="Member" />
 							</MemberImage>
 							<b>{item}</b>
-                        </Member>
-                    ))}
-                </MembersWrapper>
+						</Member>
+					))}
+				</MembersWrapper>
 			</Modal>
 		</Container>
 	);
@@ -79,6 +74,7 @@ const Modal = styled.div`
 	border-radius: 10px;
 	box-shadow: 0px 0px 25px 10px rgba(0, 0, 0, 0.2);
 `;
+
 const Header = styled.div`
 	display: flex;
 	justify-content: space-between;
@@ -88,6 +84,7 @@ const Header = styled.div`
 	padding-left: 25px;
 	padding-right: 25px;
 `;
+
 const CloseIcon = styled.div`
 	display: flex;
 	align-items: center;
@@ -100,6 +97,7 @@ const CloseIcon = styled.div`
 		background: #f6f6f6;
 	}
 `;
+
 const ChannelIcons = styled.div`
 	display: flex;
 	align-items: center;
@@ -108,51 +106,55 @@ const ChannelIcons = styled.div`
 	margin-top: 10px;
 	padding-left: 25px;
 	padding-right: 25px;
-`
+`;
+
 const StarIcon = styled.div`
 	display: flex;
 	padding: 4px 12px;
 	margin-right: 10px;
 	width: 60px;
-	border: 1px solid #BBBABB;
+	border: 1px solid #bbbabb;
 	border-radius: 5px;
 	cursor: pointer;
 
 	:hover {
-		background: #C8C8C8;
+		background: #c8c8c8;
 	}
-`
+`;
+
 const BellIcon = styled.div`
 	display: flex;
 	padding: 4px 12px;
 	margin-right: 10px;
-	border: 1px solid #BBBABB;
+	border: 1px solid #bbbabb;
 	border-radius: 5px;
 	cursor: pointer;
 
 	:hover {
-		background: #C8C8C8;
+		background: #c8c8c8;
 	}
-`
+`;
+
 const PhoneIcon = styled.div`
 	display: flex;
 	padding: 4px 12px;
 	margin-right: 10px;
-	border: 1px solid #BBBABB;
+	border: 1px solid #bbbabb;
 	border-radius: 5px;
 	cursor: pointer;
 
 	:hover {
-		background: #C8C8C8;
+		background: #c8c8c8;
 	}
-`
+`;
+
 const ChannelInfo = styled.div`
 	display: flex;
 	align-items: center;
 	font-size: 14px;
 	color: #000000;
 	padding: 20px 25px 0px 25px;
-	border-bottom: 1px solid #DDDDDD;
+	border-bottom: 1px solid #dddddd;
 
 	div {
 		padding-bottom: 5px;
@@ -160,10 +162,11 @@ const ChannelInfo = styled.div`
 		cursor: pointer;
 
 		:last-child {
-			border-bottom: 2px solid #007A5A;
+			border-bottom: 2px solid #007a5a;
 		}
 	}
-`
+`;
+
 const SearchMember = styled.div`
 	display: flex;
 	align-items: center;
@@ -190,25 +193,41 @@ const SearchMember = styled.div`
 		border: 1px solid #1264a3;
 		box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
 	}
-`
+`;
+
 const MembersWrapper = styled.div`
+	display: flex;
+	width: 95%;
+	height: 60%;
+	margin-bottom: 20px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	font-size: 15px;
 	color: #000000;
-	overflow: auto;
-`
-const Member = styled.div`
-	display: flex;
-	align-items: center;
-	padding: 10px 25px;
-	width: 100%;
-	:hover {
-		background: #F6F6F6;
+	overflow-y: auto;
+
+	::-webkit-scrollbar {
+		width: 8px;
 	}
 
-`
+	::-webkit-scrollbar-thumb {
+		background-color: #ccc;
+		border-radius: 5px;
+	}
+`;
+
+const Member = styled.div`
+	margin: 2px;
+	display: flex;
+	align-items: center;
+	padding: 20px 25px;
+	width: 100%;
+	:hover {
+		background: #f6f6f6;
+	}
+`;
+
 const MemberImage = styled.div`
 	width: 32px;
 	height: 32px;
@@ -217,4 +236,4 @@ const MemberImage = styled.div`
 	img {
 		width: 100%;
 	}
-`
+`;
