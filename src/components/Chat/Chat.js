@@ -5,8 +5,18 @@ import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 import AddMember from './AddMember';
 import ShowMembers from './ShowMembers';
+import { io } from 'socket.io-client';
 
-const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
+const Chat = ({
+	channelsList,
+	DMList,
+	myHeaders,
+	url,
+	usersList,
+	getDMs,
+	userAuth,
+	getAllChannels,
+}) => {
 	let { path, id } = useParams();
 	const [display, setDisplay] = useState({ id });
 	const [message, setMessage] = useState('');
@@ -16,8 +26,56 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	const scrollToBottom = useRef(null);
 	const [isOpenAddMember, setOpenAddMember] = useState(false);
 	const [newMemberEmail, setMemberEmail] = useState('');
-	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false)
-	const [membersList, setMembersList] = useState([])
+	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false);
+	const [membersList, setMembersList] = useState([]);
+	const [arrivalMessage, setArrivalMessage] = useState('');
+	const [currentId, setCurrentId] = useState(id);
+	const [count, setCount] = useState(0);
+	const [channelCount, setChannelCount] = useState(0);
+
+	const socket = useRef();
+
+	useEffect(() => {
+		socket.current = io('ws://localhost:8900');
+		socket.current.on('getMessage', (data) => {
+			console.log('RECEIVED: ', data);
+			console.log(data.senderId.id, path, id, currentId);
+			setCount((prev) => prev + 1);
+		});
+
+		socket.current.on('checkChannel', (data) => {
+			console.log('CHANNEL UPDATE: ', data);
+			setNewMember((prev) => prev + 1);
+			getChannelDetails();
+			setChannelCount((prev) => prev + 1);
+			getAllChannels();
+		});
+	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		getAllChannels();
+	}, [channelCount]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		if (userAuth !== null) {
+			socket.current.emit('addUser', userAuth);
+			socket.current.on('getUsers', (users) => {
+				console.log(users);
+			});
+		}
+	}, [userAuth]);
+
+	useEffect(() => {
+		socket.current = io('ws://localhost:8900');
+		socket.current.on('getMessage', (data) => {
+			console.log('RECEIVED: ', data);
+			getDMs();
+		});
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		arrivalMessage && console.log('NEW MESSAGE! ', arrivalMessage);
+	}, [arrivalMessage, path, id]);
 
 	const getChatDisplay = () => {
 		// console.log(usersList);
@@ -30,14 +88,14 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 		} else if (path === 'messages') {
 			let result = DMList.find((item) => Number(id) === Number(item.id));
 			if (result) {
-				console.log('FOUND', result);
+				// console.log('FOUND', result);
 				setDisplay(result);
 			} else {
-				console.log('NOT FOUND');
+				// console.log('NOT FOUND');
 				let user = usersList.find((item) => Number(id) === Number(item.id));
 				if (user) localStorage.setItem('newDM', JSON.stringify(user));
 				else user = JSON.parse(localStorage.getItem('newDM'));
-				console.log('USER ON REFRESH: ', user);
+				// console.log('USER ON REFRESH: ', user);
 				setDisplay({
 					id: '',
 					uid: user.uid,
@@ -65,8 +123,8 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 				result.data.channel_members.forEach((item) => {
 					updatedList.push(item.user_id);
 				});
-				setChannelMembers(updatedList)
-				console.log(updatedList);
+				setChannelMembers(updatedList);
+				// console.log(updatedList);
 			})
 			.catch((error) => console.log('error', error));
 	};
@@ -81,22 +139,22 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	};
 
 	const displayMember = () => {
-		setIsOpenShowMembers(true)
-		let members = []
-		channelMembers.forEach((member)=> {
-			let user = usersList.find((user) => user.id === member)
-			console.log(user.uid);
-			members.push(user.uid)
-			setMembersList(members)
-		} )
-	}
+		setIsOpenShowMembers(true);
+		let members = [];
+		channelMembers.forEach((member) => {
+			let user = usersList.find((user) => user.id === member);
+			// console.log(user.uid);
+			members.push(user.uid);
+			setMembersList(members);
+		});
+	};
 
 	const addMember = (e) => {
 		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
 
-    var user = usersList.find((user) => user.uid === newMemberEmail);
-    if (user) var newMemberId = user.id;
+		var user = usersList.find((user) => user.uid === newMemberEmail);
+		if (user) var newMemberId = user.id;
 
 		var raw = JSON.stringify({
 			id: id,
@@ -112,8 +170,13 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 
 		fetch(`${url}/channel/add_member`, requestOptions)
 			.then((response) => response.json())
-			.then((result) => console.log(result))
+			// .then((result) => console.log(result))
 			.catch((error) => console.log('error', error));
+
+		socket.current.emit('addMember', {
+			addedBy: userAuth,
+			member: newMemberId,
+		});
 
 		setNewMember((newMember) => newMember + 1);
 		getChannelDetails();
@@ -136,12 +199,23 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 			switch (path) {
 				case 'channel':
 					receiver_class = 'Channel';
+					socket.current.emit('sendMessage', {
+						senderId: userAuth,
+						receiverId: id,
+						text: message,
+					});
 					break;
 				case 'messages':
 					receiver_class = 'User';
+					socket.current.emit('sendMessage', {
+						senderId: userAuth,
+						receiverId: id,
+						text: message,
+					});
 					break;
 				default:
 			}
+
 			fetch(`${url}/messages`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -197,19 +271,19 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 					item.created_at = item.created_at.toUTCString();
 				});
 
-				let user = usersList.find(
-					(item) => item.uid === localStorage.getItem('uid')
-				);
+				// let user = usersList.find(
+				// 	(item) => item.uid === localStorage.getItem('uid')
+				// );
 
-				if (path === 'messages' && String(id) === String(user.id)) {
-					console.log(updatedList);
-					let ownDM = [];
-					for (let i = 0; i < updatedList.length; i++) {
-						if (i % 2 === 0) ownDM.push(updatedList[i]);
-					}
-					console.log(ownDM);
-					return setMessageList(ownDM);
-				}
+				// if (path === 'messages' && String(id) === String(user.id)) {
+				// 	console.log(updatedList);
+				// 	let ownDM = [];
+				// 	for (let i = 0; i < updatedList.length; i++) {
+				// 		if (i % 2 === 0) ownDM.push(updatedList[i]);
+				// 	}
+				// 	console.log(ownDM);
+				// 	return setMessageList(ownDM);
+				// }
 
 				setMessageList(updatedList);
 			})
@@ -246,6 +320,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 	}, [path, id, newMember]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
+		console.log(id);
 		switch (path) {
 			case 'channel':
 				retrieveMessage('Channel');
@@ -255,7 +330,7 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 				break;
 			default:
 		}
-	}, [path, id]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [path, id, count]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Scroll to bottom
 	useEffect(() => {
@@ -274,10 +349,14 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 					<ChannelName>
 						{path === 'channel' ? '#' + display.name : display.uid}
 					</ChannelName>
-					<ChannelInfo >
-						<span 
-							onClick={path === 'channel' ? displayMember : ''}
-							style={path === 'channel' ? {cursor: 'pointer'} : {cursor: 'default'}}
+					<ChannelInfo>
+						<span
+							onClick={path === 'channel' ? displayMember : null}
+							style={
+								path === 'channel'
+									? { cursor: 'pointer' }
+									: { cursor: 'default' }
+							}
 						>
 							{path === 'channel' &&
 								(channelMembers.length > 1
@@ -291,11 +370,11 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 								path === 'messages' &&
 								'Start a conversation'}
 						</span>
-						<ShowMembers 
+						<ShowMembers
 							open={isOpenShowMembers}
 							onClose={() => setIsOpenShowMembers(false)}
 							channelName={display.name}
-             				membersList={membersList}
+							membersList={membersList}
 						/>
 					</ChannelInfo>
 				</Channel>
@@ -307,103 +386,103 @@ const Chat = ({ channelsList, DMList, myHeaders, url, usersList, getDMs }) => {
 							<span>Add member</span>
 						)}
 					</div> */}
-          {path === "messages" ? (
-            // <Info />
-            <box-icon
-              name="info-circle"
-              color="var(--chatbutton-color)"
-            ></box-icon>
-          ) : (
-            // <Add onClick={() => addMember(id)} />
-            <box-icon
-              name="user-plus"
-              color="var(--chatbutton-color)"
-              // onClick={() => addMember(id)}
-              onClick={() => setOpenAddMember(true)}
-            ></box-icon>
-          )}
-          <AddMember
-            setMemberEmail={setMemberEmail}
-            usersList={usersList}
-            open={isOpenAddMember}
-            onClose={closeAddMember}
-            onClick={addMember}
-            onSubmit={addMember}
-            onChange={inputMemberId}
-            newMemberEmail={newMemberEmail}
-          ></AddMember>
-        </ChannelDetails>
-      </Header>
-      <MessageContainer ref={scrollToBottom}>
-        {messageList.map((item, index) => (
-          <ChatMessage
-            key={index}
-            sender={item.sender}
-            body={item.body}
-            date={item.created_at}
-          />
-        ))}
-      </MessageContainer>
-      <ChatInput
-        onSubmit={sendMessage}
-        onClick={sendMessage}
-        message={message}
-        onChange={inputMessage}
-      />
-    </Container>
-  );
+					{path === 'messages' ? (
+						// <Info />
+						<box-icon
+							name="info-circle"
+							color="var(--chatbutton-color)"
+						></box-icon>
+					) : (
+						// <Add onClick={() => addMember(id)} />
+						<box-icon
+							name="user-plus"
+							color="var(--chatbutton-color)"
+							// onClick={() => addMember(id)}
+							onClick={() => setOpenAddMember(true)}
+						></box-icon>
+					)}
+					<AddMember
+						setMemberEmail={setMemberEmail}
+						usersList={usersList}
+						open={isOpenAddMember}
+						onClose={closeAddMember}
+						onClick={addMember}
+						onSubmit={addMember}
+						onChange={inputMemberId}
+						newMemberEmail={newMemberEmail}
+					></AddMember>
+				</ChannelDetails>
+			</Header>
+			<MessageContainer ref={scrollToBottom}>
+				{messageList.map((item, index) => (
+					<ChatMessage
+						key={index}
+						sender={item.sender}
+						body={item.body}
+						date={item.created_at}
+					/>
+				))}
+			</MessageContainer>
+			<ChatInput
+				onSubmit={sendMessage}
+				onClick={sendMessage}
+				message={message}
+				onChange={inputMessage}
+			/>
+		</Container>
+	);
 };
 
 export default Chat;
 
 const Container = styled.div`
-  display: grid;
-  grid-template-rows: 50px auto min-content;
+	display: grid;
+	grid-template-rows: 50px auto min-content;
 `;
 
 const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-bottom: 1px solid #d3d3d3;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-bottom: 1px solid #d3d3d3;
 `;
 
 const Channel = styled.div``;
 
 const ChannelName = styled.div`
-  font-weight: 700;
+	font-weight: 700;
 `;
 
 const ChannelInfo = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  color: var(--channelinfo-color);
+	display: flex;
+	align-items: center;
+	font-size: 13px;
+	color: var(--channelinfo-color);
 `;
 
 const MessageContainer = styled.div`
-  height: auto;
-  overflow-y: hidden;
-  :hover {
-    overflow-y: auto;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgb(188, 171, 188);
-    border-radius: 10px;
-  }
+	height: auto;
+	overflow-y: hidden;
+	:hover {
+		overflow-y: auto;
+	}
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		background: rgb(188, 171, 188);
+		border-radius: 10px;
+	}
 `;
 
 const ChannelDetails = styled.div`
-  display: flex;
-  align-items: center;
-  color: #606060;
+	display: flex;
+	align-items: center;
+	color: #606060;
 
-  box-icon:hover {
-    cursor: pointer;
-  }
+	box-icon:hover {
+		cursor: pointer;
+	}
 `;
