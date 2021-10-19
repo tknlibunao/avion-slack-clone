@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import { io } from 'socket.io-client';
 import styled from 'styled-components';
 import ChatInput from '../Chat/ChatInput';
 import SearchResults from '../Search/SearchResults';
@@ -10,6 +11,9 @@ const NewDirectMessage = ({
 	usersList,
 	getDMs,
 	channelsList,
+	socket,
+	checkMessage,
+	setCheckMessage,
 }) => {
 	const history = useHistory();
 
@@ -171,6 +175,22 @@ const NewDirectMessage = ({
 	useEffect(() => {
 		getSearchPool();
 	}, [usersList, channelsList]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		socket.current = io('ws://localhost:8900');
+
+		//	update messages
+		socket.current.on('getMessage', (data) => {
+			console.log('RECEIVED: ', data);
+			console.log(data.senderId.id);
+			setCheckMessage((prev) => prev + 1);
+			getDMs();
+		});
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		getDMs();
+	}, [checkMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Container>
