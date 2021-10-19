@@ -1,13 +1,10 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	BrowserRouter as Router,
 	Switch,
 	Route,
 	Redirect,
-	// Link,
-	// useRouteMatch,
-	// useParams,
 } from 'react-router-dom';
 
 import Loading from './components/Loading/Loading';
@@ -22,15 +19,14 @@ import AddChannel from './components/Sidebar/AddChannel';
 import styled from 'styled-components';
 
 function App() {
-	const [userAuth, setUserAuth] = useState(
-		JSON.parse(localStorage.getItem('userAuth'))
-	);
-
 	/* USER PARAMETERS */
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmation, setConfirmation] = useState('');
 	const [error, setError] = useState('');
+	const [userAuth, setUserAuth] = useState(
+		JSON.parse(localStorage.getItem('userAuth'))
+	);
 
 	/* NEW CHANNEL VALUES */
 	const [newChannelName, setNewChannelName] = useState('');
@@ -46,7 +42,8 @@ function App() {
 	const [success, setSuccess] = useState(false);
 	const [newChannel, setNewChannel] = useState(0);
 	const [searchToggle, setSearchToggle] = useState(false);
-	const [addSuccess, setAddSuccess] = useState(false);
+	const [addChannelSuccess, setAddChannelSuccess] = useState(false);
+	const [checkMessage, setCheckMessage] = useState(0);
 
 	/* INITIALIZE HEADERS */
 	var myHeaders = new Headers();
@@ -59,8 +56,9 @@ function App() {
 	/* DEFINE URL */
 	const url = 'http://206.189.91.54//api/v1';
 
-	/* HELPER FUNCTIONS */
+	const socket = useRef();
 
+	/* HELPER FUNCTIONS */
 	const sortList = (list, type) => {
 		if (type === 'channel') {
 			return list.sort(function (a, b) {
@@ -93,6 +91,7 @@ function App() {
 
 	/* MAIN FUNCTIONS */
 
+	/* REGISTER AND LOGIN */
 	const inputUser = (e) => {
 		setEmail(e.target.value);
 	};
@@ -102,10 +101,6 @@ function App() {
 
 	const inputConfirmation = (e) => {
 		setConfirmation(e.target.value);
-	};
-
-	const toggleSearch = () => {
-		setSearchToggle(!searchToggle);
 	};
 
 	const registerUser = (e) => {
@@ -142,22 +137,20 @@ function App() {
 					setPassword('');
 					setConfirmation('');
 				}
-				// history.push("/login");
 			})
 			.catch((error) => console.log(error));
 	};
 
 	const loginUser = (e) => {
 		e.preventDefault();
-		let raw = JSON.stringify({
-			email: email,
-			password: password,
-		});
 
 		let requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
-			body: raw,
+			body: JSON.stringify({
+				email: email,
+				password: password,
+			}),
 			redirect: 'follow',
 		};
 
@@ -182,15 +175,48 @@ function App() {
 							localStorage.setItem('uid', item);
 							break;
 						default:
-							break;
 					}
 				});
 				if (response.status === 200) {
-					// alert("LOGIN SUCCESS");
 					setSuccess(true);
 					localStorage.setItem('isUserActive', true);
 					// localStorage.setItem("success", success);
 				}
+			})
+			.catch((error) => console.log('error', error));
+	};
+
+	const toggleSearch = () => {
+		setSearchToggle(!searchToggle);
+	};
+
+	/* CHANNELS FUNCTIONS */
+	const getAllChannels = () => {
+		var requestOptions = {
+			method: 'GET',
+			headers: myHeaders,
+			redirect: 'follow',
+		};
+
+		fetch(`${url}/channels`, requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				let updatedList = [];
+				result.data.forEach((item) => {
+					updatedList.push({
+						name: item.name,
+						id: item.id,
+						owner_id: item.owner_id,
+						created_at: new Date(item.created_at),
+						updated_at: new Date(item.updated_at),
+					});
+				});
+				updatedList = sortList(updatedList, 'channel');
+				updatedList.forEach((item) => {
+					item.created_at = item.created_at.toUTCString();
+					item.updated_at = item.updated_at.toUTCString();
+				});
+				setChannelsList(updatedList);
 			})
 			.catch((error) => console.log('error', error));
 	};
@@ -223,7 +249,6 @@ function App() {
 	};
 
 	const createNewChannel = (e) => {
-		// var channelName = prompt('Create new channel');
 		e.preventDefault();
 		var raw = JSON.stringify({
 			name: newChannelName,
@@ -242,14 +267,15 @@ function App() {
 			.then((result) => {
 				setId(String(result.data.id));
 				setNewChannel((newChannel) => newChannel + 1);
-				setAddSuccess(true);
+				setAddChannelSuccess(true);
 				getAllChannels();
 				setNewChannelName('');
-				setAddSuccess(false);
+				setAddChannelSuccess(false);
 			})
 			.catch((error) => console.log('error', error));
 	};
 
+	/* USERS FUNCTIONS */
 	const getAllUsers = () => {
 		var requestOptions = {
 			method: 'GET',
@@ -283,7 +309,6 @@ function App() {
 		fetch(`${url}/users/recent`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
-				// console.log(result);
 				let updatedList = [];
 				result.data.forEach((item) => {
 					updatedList.push({
@@ -303,39 +328,8 @@ function App() {
 			.catch((error) => console.log('error', error));
 	};
 
-	const getAllChannels = () => {
-		let requestOptions = {
-			method: 'GET',
-			headers: myHeaders,
-			redirect: 'follow',
-		};
-
-		fetch(`${url}/channels`, requestOptions)
-			.then((response) => response.json())
-			.then((result) => {
-				let updatedList = [];
-				result.data.forEach((item) => {
-					updatedList.push({
-						name: item.name,
-						id: item.id,
-						owner_id: item.owner_id,
-						created_at: new Date(item.created_at),
-						updated_at: new Date(item.updated_at),
-					});
-				});
-				updatedList = sortList(updatedList, 'channel');
-				updatedList.forEach((item) => {
-					item.created_at = item.created_at.toUTCString();
-					item.updated_at = item.updated_at.toUTCString();
-				});
-				setChannelsList(updatedList);
-			})
-			.catch((error) => console.log('error', error));
-	};
-
+	/* GET USER AUTHENTICATION */
 	const getUserAuth = () => {
-		let user;
-		// console.log(result);
 		var requestOptions = {
 			method: 'GET',
 			headers: myHeaders,
@@ -355,13 +349,14 @@ function App() {
 				});
 				let users = arrangeList(updatedList);
 				let uid = localStorage.getItem('uid');
-				user = users.find((user) => user.uid === uid);
+				let user = users.find((user) => user.uid === uid);
 				localStorage.setItem('userAuth', JSON.stringify(user));
 				setUserAuth(user);
 			})
 			.catch((error) => console.log('error', error));
-		// setUserAuth(result);
 	};
+
+	/* USE EFFECTS */
 
 	useEffect(() => {
 		if (success) getUserAuth();
@@ -373,9 +368,9 @@ function App() {
 
 	useEffect(() => {
 		getAllChannels();
-		if (addSuccess) {
-			console.log('IT WORKS!', addId, addSuccess);
-			setAddSuccess(false);
+		if (addChannelSuccess) {
+			console.log('NEW CHANNEL ADDED: ', addId, addChannelSuccess);
+			setAddChannelSuccess(false);
 		}
 	}, [success, newChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -386,18 +381,6 @@ function App() {
 	useEffect(() => {
 		getAllUsers();
 	}, [success]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	// useEffect(() => {
-	// 	console.log(DMList);
-	// }, [DMList]);
-
-	// useEffect(() => {
-	// 	console.log(channelsList);
-	// }, [channelsList]);
-
-	// useEffect(() => {
-	// 	console.log(usersList);
-	// }, [usersList]);
 
 	return (
 		<div className="App">
@@ -434,7 +417,9 @@ function App() {
 												getDMs={getDMs}
 												userAuth={userAuth}
 												getAllChannels={getAllChannels}
-												// socket={socket}
+												socket={socket}
+												checkMessage={checkMessage}
+												setCheckMessage={setCheckMessage}
 											/>
 										</Route>
 										<Route path="/room/new-message">
@@ -444,10 +429,11 @@ function App() {
 												usersList={usersList}
 												getDMs={getDMs}
 												channelsList={channelsList}
+												socket={socket}
 											/>
 										</Route>
 										<Route path="/room/add-channel">
-											{addSuccess ? (
+											{addChannelSuccess ? (
 												<Redirect
 													to={{
 														pathname: `/room/channel/${addId}`,
