@@ -29,7 +29,6 @@ io.on('connection', (socket) => {
 
 	//  send and get message
 	socket.on('sendMessage', ({ senderId, receiverId, text }) => {
-		// console.log(senderId, receiverId, text);
 		let receiver;
 		users.forEach((user) => {
 			console.log(user.userId, receiverId);
@@ -54,7 +53,7 @@ io.on('connection', (socket) => {
 		}
 	});
 
-	// add member to a channel
+	// add member to a channel and get updated details
 	socket.on('addMember', ({ addedBy, member }) => {
 		users.forEach((user) => {
 			if (String(addedBy.id) !== String(user.userId)) {
