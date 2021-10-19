@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
+import { io } from 'socket.io-client';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 import AddMember from './AddMember';
 import ShowMembers from './ShowMembers';
-import { io } from 'socket.io-client';
 
 const Chat = ({
 	channelsList,
@@ -16,69 +16,37 @@ const Chat = ({
 	getDMs,
 	userAuth,
 	getAllChannels,
+	socket,
+	checkMessage,
+	setCheckMessage,
 }) => {
+	/* ROUTE PARAMETERS */
 	let { path, id } = useParams();
-	const [display, setDisplay] = useState({ id });
+
+	/* NEW INPUTS */
 	const [message, setMessage] = useState('');
+	const [newMemberEmail, setMemberEmail] = useState('');
+
+	/* DISPLAY PARAMETERS */
+	const [display, setDisplay] = useState({ id });
 	const [messageList, setMessageList] = useState([]);
 	const [channelMembers, setChannelMembers] = useState([]);
-	const [newMember, setNewMember] = useState(0);
-	const scrollToBottom = useRef(null);
-	const [isOpenAddMember, setOpenAddMember] = useState(false);
-	const [newMemberEmail, setMemberEmail] = useState('');
-	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false);
 	const [membersList, setMembersList] = useState([]);
-	const [arrivalMessage, setArrivalMessage] = useState('');
-	const [currentId, setCurrentId] = useState(id);
-	const [count, setCount] = useState(0);
+
+	/* MODAL FLAGS */
+	const [isOpenAddMember, setOpenAddMember] = useState(false);
+	const [isOpenShowMembers, setIsOpenShowMembers] = useState(false);
+
+	/* TRIGGERS */
+	const [newMember, setNewMember] = useState(0);
 	const [channelCount, setChannelCount] = useState(0);
 
-	const socket = useRef();
+	/* REFS */
+	const scrollToBottom = useRef(null);
+	// const socket = useRef();
 
-	useEffect(() => {
-		socket.current = io('ws://localhost:8900');
-		socket.current.on('getMessage', (data) => {
-			console.log('RECEIVED: ', data);
-			console.log(data.senderId.id, path, id, currentId);
-			setCount((prev) => prev + 1);
-		});
-
-		socket.current.on('checkChannel', (data) => {
-			console.log('CHANNEL UPDATE: ', data);
-			setNewMember((prev) => prev + 1);
-			getChannelDetails();
-			setChannelCount((prev) => prev + 1);
-			getAllChannels();
-		});
-	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		getAllChannels();
-	}, [channelCount]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		if (userAuth !== null) {
-			socket.current.emit('addUser', userAuth);
-			socket.current.on('getUsers', (users) => {
-				console.log(users);
-			});
-		}
-	}, [userAuth]);
-
-	useEffect(() => {
-		socket.current = io('ws://localhost:8900');
-		socket.current.on('getMessage', (data) => {
-			console.log('RECEIVED: ', data);
-			getDMs();
-		});
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		arrivalMessage && console.log('NEW MESSAGE! ', arrivalMessage);
-	}, [arrivalMessage, path, id]);
-
+	/* CHAT DISPLAY FUNCTIONS */
 	const getChatDisplay = () => {
-		// console.log(usersList);
 		if (path === 'channel') {
 			channelsList.forEach((item) => {
 				if (Number(id) === Number(item.id)) {
@@ -87,15 +55,11 @@ const Chat = ({
 			});
 		} else if (path === 'messages') {
 			let result = DMList.find((item) => Number(id) === Number(item.id));
-			if (result) {
-				// console.log('FOUND', result);
-				setDisplay(result);
-			} else {
-				// console.log('NOT FOUND');
+			if (result) setDisplay(result);
+			else {
 				let user = usersList.find((item) => Number(id) === Number(item.id));
 				if (user) localStorage.setItem('newDM', JSON.stringify(user));
 				else user = JSON.parse(localStorage.getItem('newDM'));
-				// console.log('USER ON REFRESH: ', user);
 				setDisplay({
 					id: '',
 					uid: user.uid,
@@ -118,13 +82,11 @@ const Chat = ({
 		fetch(`${url}/channels/${id}`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
-				// console.log(result.data);
 				let updatedList = [];
 				result.data.channel_members.forEach((item) => {
 					updatedList.push(item.user_id);
 				});
 				setChannelMembers(updatedList);
-				// console.log(updatedList);
 			})
 			.catch((error) => console.log('error', error));
 	};
@@ -143,28 +105,24 @@ const Chat = ({
 		let members = [];
 		channelMembers.forEach((member) => {
 			let user = usersList.find((user) => user.id === member);
-			// console.log(user.uid);
 			members.push(user.uid);
 			setMembersList(members);
 		});
 	};
 
 	const addMember = (e) => {
-		// let memberId = prompt('Enter member ID:');
 		e.preventDefault();
 
 		var user = usersList.find((user) => user.uid === newMemberEmail);
 		if (user) var newMemberId = user.id;
 
-		var raw = JSON.stringify({
-			id: id,
-			member_id: newMemberId,
-		});
-
 		var requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
-			body: raw,
+			body: JSON.stringify({
+				id: id,
+				member_id: newMemberId,
+			}),
 			redirect: 'follow',
 		};
 
@@ -196,27 +154,16 @@ const Chat = ({
 			return;
 		} else {
 			let receiver_class = '';
-			switch (path) {
-				case 'channel':
-					receiver_class = 'Channel';
-					socket.current.emit('sendMessage', {
-						senderId: userAuth,
-						receiverId: id,
-						text: message,
-					});
-					break;
-				case 'messages':
-					receiver_class = 'User';
-					socket.current.emit('sendMessage', {
-						senderId: userAuth,
-						receiverId: id,
-						text: message,
-					});
-					break;
-				default:
-			}
+			if (path === 'channel') receiver_class = 'Channel';
+			if (path === 'messages') receiver_class = 'User';
 
-			fetch(`${url}/messages`, {
+			socket.current.emit('sendMessage', {
+				senderId: userAuth,
+				receiverId: id,
+				text: message,
+			});
+
+			var requestOptions = {
 				method: 'POST',
 				body: JSON.stringify({
 					receiver_id: id,
@@ -225,9 +172,10 @@ const Chat = ({
 				}),
 				headers: myHeaders,
 				redirect: 'follow',
-			})
+			};
+
+			fetch(`${url}/messages`, requestOptions)
 				.then((res) => {
-					// console.log(res);
 					if (res.status === 200) {
 						setMessage('');
 						getDMs();
@@ -239,25 +187,18 @@ const Chat = ({
 	};
 
 	const retrieveMessage = (receiverClass) => {
-		// setMessageList([]);
 		var requestOptions = {
 			method: 'GET',
 			headers: myHeaders,
 			redirect: 'follow',
 		};
 
-		// receiver_id: check id from recently DMs
-		// NOTE: receiver_id can also be the sender of the message to our user
-		// check the result.data.forEach(item.[sender/receiver].uid) to see who is sender/receiver
-
-		// receiver_class: [Channel/User]
 		fetch(
 			`${url}/messages?receiver_class=${receiverClass}&receiver_id=${id}`,
 			requestOptions
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				// console.log(`Message retrieved (${receiverClass} ${id}):`, result);
 				let updatedList = [];
 				result.data.forEach((item) => {
 					updatedList.push({
@@ -290,27 +231,7 @@ const Chat = ({
 			.catch((error) => console.log('error', error));
 	};
 
-	//   const newDM = () => {
-	// 		var username = prompt(`Enter user email`);
-	// 		let id = username;
-
-	// 		fetch(`http://206.189.91.54//api/v1/users`, {
-	// 			method: 'GET',
-	// 			headers: myHeaders,
-	// 			redirect: 'follow',
-	// 		})
-	// 			.then((response) => response.json())
-	// 			.then((result) => {
-	// 				console.log(result);
-	// 				result.data.forEach((item) => {
-	// 					if (item.uid === id) {
-	// 						console.log(item.id);
-	// 						history.push(`/room/messages/${item.id}`);
-	// 					}
-	// 				});
-	// 			});
-	// 	};
-
+	/* USE EFFECTS */
 	useEffect(() => {
 		getChatDisplay();
 	}, [channelsList, DMList, path, id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -321,18 +242,10 @@ const Chat = ({
 
 	useEffect(() => {
 		console.log(id);
-		switch (path) {
-			case 'channel':
-				retrieveMessage('Channel');
-				break;
-			case 'messages':
-				retrieveMessage('User');
-				break;
-			default:
-		}
-	}, [path, id, count]); // eslint-disable-line react-hooks/exhaustive-deps
+		if (path === 'channel') return retrieveMessage('Channel');
+		if (path === 'messages') return retrieveMessage('User');
+	}, [path, id, checkMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// Scroll to bottom
 	useEffect(() => {
 		if (scrollToBottom) {
 			scrollToBottom.current.addEventListener('DOMNodeInserted', (event) => {
@@ -341,6 +254,44 @@ const Chat = ({
 			});
 		}
 	}, []);
+
+	useEffect(() => {
+		socket.current = io('ws://localhost:8900');
+
+		//	update messages
+		socket.current.on('getMessage', (data) => {
+			console.log('RECEIVED: ', data);
+			console.log(data.senderId.id, path, id);
+			setCheckMessage((prev) => prev + 1);
+			getDMs();
+		});
+
+		// update channels
+		socket.current.on('checkChannel', (data) => {
+			console.log('CHANNEL UPDATE: ', data);
+			setNewMember((prev) => prev + 1);
+			getChannelDetails();
+			setChannelCount((prev) => prev + 1);
+			getAllChannels();
+		});
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		getDMs();
+	}, [checkMessage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		getAllChannels();
+	}, [channelCount]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		if (userAuth !== null) {
+			socket.current.emit('addUser', userAuth);
+			socket.current.on('getUsers', (users) => {
+				console.log(users);
+			});
+		}
+	}, [userAuth]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<Container>
@@ -379,25 +330,15 @@ const Chat = ({
 					</ChannelInfo>
 				</Channel>
 				<ChannelDetails>
-					{/* <div>
-						{path === 'messages' ? (
-							<span>Details</span>
-						) : (
-							<span>Add member</span>
-						)}
-					</div> */}
 					{path === 'messages' ? (
-						// <Info />
 						<box-icon
 							name="info-circle"
 							color="var(--chatbutton-color)"
 						></box-icon>
 					) : (
-						// <Add onClick={() => addMember(id)} />
 						<box-icon
 							name="user-plus"
 							color="var(--chatbutton-color)"
-							// onClick={() => addMember(id)}
 							onClick={() => setOpenAddMember(true)}
 						></box-icon>
 					)}
