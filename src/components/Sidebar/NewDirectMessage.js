@@ -177,7 +177,8 @@ const NewDirectMessage = ({
 	}, [usersList, channelsList]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
-		socket.current = io('ws://localhost:8900');
+		// socket.current = io('ws://localhost:8900');
+		socket.current = io('https://slack-app-react.herokuapp.com/');
 
 		//	update messages
 		socket.current.on('getMessage', (data) => {
