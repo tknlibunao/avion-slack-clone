@@ -1,3 +1,8 @@
+const express = require('express');
+const router = require('./router');
+const app = express();
+app.use(router);
+
 const io = require('socket.io')(8900, {
 	cors: {
 		origin: 'http://localhost:3000',
@@ -18,6 +23,8 @@ const removeUser = (socketId) => {
 io.on('connection', (socket) => {
 	//  establish connection
 	// take userUID and socketId from user
+	console.log('new user connected');
+
 	socket.on('addUser', (user) => {
 		if (user !== null) {
 			console.log(`${user.uid} connected`);
