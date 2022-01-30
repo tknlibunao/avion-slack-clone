@@ -1,31 +1,28 @@
-import React from "react";
-import { useHistory } from "react-router";
-import styled from "styled-components";
+import React from 'react';
+import { useHistory } from 'react-router';
+import styled from 'styled-components';
 
 function Home() {
-  const history = useHistory();
+	const history = useHistory();
 
-  const signIn = () => {
-    history.push("/login");
-  };
+	const signIn = () => {
+		history.push('/login');
+	};
 
-  const signUp = () => {
-    history.push("/signup");
-  };
+	const signUp = () => {
+		history.push('/signup');
+	};
 
-  return (
-    <Container>
-      <Content>
-        <SlackImg src="https://images.prismic.io/smarttask/1c150a8e-9f13-420e-8b0f-e6365219250f_slack.png?auto=compress,format" />
-        <h1>Slack App</h1>
-        <SignInButton onClick={signIn}>Sign In</SignInButton>
-        <SignUpButton onClick={signUp}>Sign Up</SignUpButton>
-        {/* <span>
-					or <a href='/'> create new account </a>
-				</span> */}
-      </Content>
-    </Container>
-  );
+	return (
+		<Container>
+			<Content>
+				<SlackImg src="https://cdn2.hubspot.net/hubfs/521324/slack-logo.png" />
+				<h1>Slack App</h1>
+				<SignInButton onClick={signIn}>Sign In</SignInButton>
+				<SignUpButton onClick={signUp}>Sign Up</SignUpButton>
+			</Content>
+		</Container>
+	);
 }
 
 export default Home;
